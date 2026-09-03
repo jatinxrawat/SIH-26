@@ -309,7 +309,7 @@ export default function FeatureShowcase() {
                   Next Best Action
                 </h3>
                 <p className="mt-4 text-base text-slate-600 leading-relaxed">
-                  Instead of overwhelming entrepreneurs with information, Business Compass tells them what deserves attention now.
+                  Instead of overwhelming entrepreneurs with information, UdyamSaathi tells them what deserves attention now.
                 </p>
 
                 <div className="mt-6 p-5 rounded-2xl bg-emerald-50/90 border border-emerald-300/80 shadow-soft-sm">

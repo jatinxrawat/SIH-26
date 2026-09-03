@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Compass, Menu, X, ArrowRight } from 'lucide-react';
-import Button from './common/Button';
+import { Menu, X, ArrowRight } from 'lucide-react';
+import Logo from './common/Logo';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -34,20 +34,10 @@ export default function Navbar() {
           {/* Logo Mark */}
           <a
             href="#"
-            className="flex items-center gap-2.5 group focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-lg p-1"
+            className="focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-lg p-0.5"
+            aria-label="UdyamSaathi Home"
           >
-            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 text-white shadow-soft-sm group-hover:bg-emerald-700 transition-colors">
-              <Compass className="w-5 h-5 text-emerald-400 transform group-hover:rotate-45 transition-transform duration-500" />
-              <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-[#FBFBFA]" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 leading-none">
-                BUSINESS COMPASS
-              </span>
-              <span className="text-[10px] uppercase font-semibold text-emerald-700 tracking-wider mt-0.5">
-                Digital Business Companion
-              </span>
-            </div>
+            <Logo variant="dark" size="md" />
           </a>
 
           {/* Desktop Navigation */}

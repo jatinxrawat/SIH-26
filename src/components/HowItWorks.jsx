@@ -29,7 +29,7 @@ export default function HowItWorks() {
         
         {/* Section Header */}
         <SectionHeader
-          badge="How Business Compass Works"
+          badge="How UdyamSaathi Works"
           title="Your business. Your context. Your next move."
           subtitle="A structured 4-step framework engineered to remove ambiguity and build clarity from day one."
           align="center"

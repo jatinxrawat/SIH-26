@@ -59,7 +59,7 @@ export default function Hero() {
 
             {/* Supporting Line */}
             <p className="mt-6 text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl font-normal">
-              Business Compass helps first-time entrepreneurs discover government support, plan funding, navigate business setup, and understand what to do next — all in one place.
+              UdyamSaathi helps first-time entrepreneurs discover government support, plan funding, navigate business setup, and understand what to do next — all in one place.
             </p>
 
             {/* CTAs with sleek tactile feel */}

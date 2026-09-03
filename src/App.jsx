@@ -28,7 +28,7 @@ export default function App() {
         {/* Section 3: The Solution (Connected Milestone Track) */}
         <JourneySection />
 
-        {/* Section 4: How Business Compass Works (4 Connected Steps) */}
+        {/* Section 4: How UdyamSaathi Works (4 Connected Steps) */}
         <HowItWorks />
 
         {/* Section 5: Feature Showcase with Segmented Control Toggle */}

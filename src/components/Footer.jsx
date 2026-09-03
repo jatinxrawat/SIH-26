@@ -1,7 +1,8 @@
 import React from 'react';
-import { Compass, Heart, ArrowUp } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
+import Logo from './common/Logo';
 
-export default function Footer({ onOpenDemo }) {
+export default function Footer() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -13,18 +14,8 @@ export default function Footer({ onOpenDemo }) {
           
           {/* Brand Column */}
           <div className="md:col-span-5 flex flex-col items-start">
-            <a href="#" className="flex items-center gap-2.5 group">
-              <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-soft-sm">
-                <Compass className="w-5 h-5" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-extrabold text-lg tracking-tight text-white">
-                  BUSINESS COMPASS
-                </span>
-                <span className="text-[10px] uppercase font-semibold text-emerald-400 tracking-wider">
-                  Digital Business Companion
-                </span>
-              </div>
+            <a href="#" aria-label="UdyamSaathi Home">
+              <Logo variant="light" size="md" />
             </a>
 
             <p className="mt-4 text-slate-400 text-sm leading-relaxed max-w-sm">
@@ -110,7 +101,7 @@ export default function Footer({ onOpenDemo }) {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div>
-            © 2026 Business Compass. Built for entrepreneurial empowerment.
+            © 2026 UdyamSaathi. Built for entrepreneurial empowerment.
           </div>
           <div className="flex items-center gap-2">
             <span>Developed for Smart India Hackathon</span>

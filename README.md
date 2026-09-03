@@ -1,6 +1,6 @@
 <div align="center">
 
-# BUSINESS COMPASS
+# UDYAM SAATHI (उद्यम साथी)
 ### AI-Powered One-Stop Business Companion for Rural & Marginalized Entrepreneurs
 
 [![Smart India Hackathon 2026](https://img.shields.io/badge/SIH-2026-059669?style=for-the-badge&logo=target&logoColor=white)](https://sih.gov.in)
@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <em>Instead of making first-time entrepreneurs navigate 40+ portals, loans, and legal paperwork alone, Business Compass understands their trade context and tells them what they are eligible for, how they can fund it, who can help them, and exactly what to do next.</em>
+  <em>Instead of making first-time entrepreneurs navigate 40+ portals, loans, and legal paperwork alone, UdyamSaathi understands their trade context and tells them what they are eligible for, how they can fund it, who can help them, and exactly what to do next.</em>
 </p>
 
 </div>
@@ -28,13 +28,13 @@ A first-time rural or marginalized entrepreneur in India does not suffer from a 
 3. **Business Setup:** Overwhelming registration (Udyam, GST, FSSAI) and compliance paperwork.
 4. **Decision Paralysis:** Even after collecting documents, they lack a personalized, sequenced **next best action**.
 
-**Business Compass** unifies fragmented business assistance into **one intelligent companion**.
+**UdyamSaathi** unifies fragmented business assistance into **one intelligent companion**.
 
 ---
 
 ## SIH Problem Statements Mapping
 
-Rather than presenting two disconnected hackathon features, Business Compass presents **one cohesive national platform**:
+Rather than presenting two disconnected hackathon features, UdyamSaathi presents **one cohesive national platform**:
 
 | Problem Statement | Focus Area | Role in Platform |
 | :--- | :--- | :--- |
@@ -45,7 +45,7 @@ Rather than presenting two disconnected hackathon features, Business Compass pre
 
 ## Core Philosophy: Every Module Feeds the Next Module
 
-We reject disconnected feature checklists. In Business Compass, every component informs the next:
+We reject disconnected feature checklists. In UdyamSaathi, every component informs the next:
 
 ```text
                ENTREPRENEUR PROFILE (Craft, District, Scale, Margin)

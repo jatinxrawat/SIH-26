@@ -48,7 +48,7 @@ export default function ProblemSection() {
               }`}
             >
               <AlertTriangle className="w-3.5 h-3.5" />
-              <span>Without Business Compass (The Maze)</span>
+              <span>Without UdyamSaathi (The Maze)</span>
             </button>
             <button
               onClick={() => setViewMode('with')}
@@ -59,7 +59,7 @@ export default function ProblemSection() {
               }`}
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>With Business Compass (Guided Journey)</span>
+              <span>With UdyamSaathi (Guided Journey)</span>
             </button>
           </div>
         </div>

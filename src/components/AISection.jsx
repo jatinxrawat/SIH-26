@@ -42,7 +42,7 @@ export default function AISection() {
         <SectionHeader
           badge="Contextual AI Architecture"
           title="AI that understands the journey — not just the question."
-          subtitle="Business Compass doesn’t treat every conversation as a blank chat. Its AI works with your business profile, matched schemes, funding plan, roadmap, and progress to provide context-aware guidance."
+          subtitle="UdyamSaathi doesn’t treat every conversation as a blank chat. Its AI works with your business profile, matched schemes, funding plan, roadmap, and progress to provide context-aware guidance."
           align="center"
         />
 
@@ -88,7 +88,7 @@ export default function AISection() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-white">Business Compass Assistant</span>
+                    <span className="text-sm font-bold text-white">UdyamSaathi AI Assistant</span>
                     <span className="w-2 h-2 rounded-full bg-emerald-400" />
                   </div>
                   <span className="text-xs text-slate-400">Session ID: SITA-UP-4902</span>

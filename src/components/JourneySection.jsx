@@ -41,7 +41,7 @@ export default function JourneySection() {
         <SectionHeader
           badge="The Unified Architecture"
           title="One business journey. Everything connected."
-          subtitle="Business Compass brings fragmented business support into one personalized journey."
+          subtitle="UdyamSaathi brings fragmented business support into one personalized journey."
           align="center"
         />
 

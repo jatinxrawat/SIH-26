@@ -59,7 +59,7 @@ export const heroProfiles = {
 
 export const comparisonData = {
   without: {
-    title: "Without Business Compass",
+    title: "Without UdyamSaathi",
     subtitle: "The Fragmented Maze",
     badge: "The Traditional Way",
     items: [
@@ -86,7 +86,7 @@ export const comparisonData = {
     ]
   },
   with: {
-    title: "With Business Compass",
+    title: "With UdyamSaathi",
     subtitle: "One Guided Journey",
     badge: "The Intelligent Way",
     items: [
@@ -223,7 +223,7 @@ export const howItWorksSteps = [
   {
     number: "02",
     title: "Discover what fits you",
-    description: "Business Compass analyzes your profile against relevant government schemes and support options.",
+    description: "UdyamSaathi analyzes your profile against relevant government schemes and support options.",
     detail: "Eliminates irrelevant programs, highlighting exact subsidies and grants designed for your profile.",
     badge: "Deterministic Filtering"
   },
@@ -295,7 +295,7 @@ export const featureDetails = {
   nextAction: {
     title: "Next Best Action",
     icon: "Target",
-    summary: "Instead of overwhelming entrepreneurs with information, Business Compass tells them what deserves attention now.",
+    summary: "Instead of overwhelming entrepreneurs with information, UdyamSaathi tells them what deserves attention now.",
     currentAction: "Prepare your project report for the funding application.",
     priority: "HIGH PRIORITY",
     estimatedTime: "45 mins",

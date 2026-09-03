@@ -30,7 +30,7 @@ export default function CTASection() {
 
         {/* Supporting Copy */}
         <p className="mt-6 text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-          Start with your business idea. Business Compass helps you understand the opportunities, plan the journey, and take the next step.
+          Start with your business idea. UdyamSaathi helps you understand the opportunities, plan the journey, and take the next step.
         </p>
 
         {/* Primary CTA */}
