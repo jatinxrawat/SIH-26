@@ -12,19 +12,28 @@ const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 // Minimal sanitized profile context for AI prompts (protects sensitive data)
 export function sanitizeProfileForAi(profile) {
   if (!profile) return {};
+  const business = profile.business || {};
+  const personal = profile.personalInfo || {};
+  const eligibility = profile.eligibilityProfile || {};
+  const financial = profile.financialProfile || {};
+
   return {
-    entrepreneurName: profile.personalInfo?.fullName || 'Entrepreneur',
-    state: profile.personalInfo?.state || 'India',
-    localityType: profile.personalInfo?.ruralUrban || 'Urban',
-    category: profile.eligibilityProfile?.category || 'General',
-    gender: profile.personalInfo?.gender || 'Not specified',
-    businessName: profile.business?.name || 'Venture',
-    sector: profile.business?.sector || 'General',
-    businessStage: profile.business?.stage || 'PLANNING',
-    availableCapital: profile.financialProfile?.availableCapital || 'Not declared',
-    projectCost: profile.financialProfile?.estimatedProjectCost || 'Not declared',
-    fundingRequired: profile.financialProfile?.fundingRequired || 'Not declared',
-    existingLoans: profile.financialProfile?.hasExistingLoans || 'No'
+    entrepreneurName: personal.fullName || 'Entrepreneur',
+    state: personal.state || 'India',
+    localityType: personal.ruralUrban || 'Urban',
+    category: eligibility.category || 'General',
+    gender: personal.gender || 'Not specified',
+    businessName: business.name || 'Venture',
+    businessDescription: business.description || '',
+    productService: business.productService || '',
+    targetCustomers: business.targetCustomers || '',
+    businessType: business.type || '',
+    sector: business.sector || 'General',
+    businessStage: business.stage || 'PLANNING',
+    availableCapital: financial.availableCapital || 'Not declared',
+    projectCost: financial.estimatedProjectCost || 'Not declared',
+    fundingRequired: financial.fundingRequired || 'Not declared',
+    existingLoans: financial.hasExistingLoans || 'No'
   };
 }
 
@@ -133,7 +142,10 @@ Format your response concisely with 3-4 bullet points and a brief takeaway.`;
 - Name: ${sanitized.entrepreneurName}
 - Location: ${sanitized.state} (${sanitized.localityType})
 - Category/Gender: ${sanitized.category} / ${sanitized.gender}
-- Business: ${sanitized.businessName} (${sanitized.sector})
+- Business: ${sanitized.businessName}
+- What Company Does: ${sanitized.businessDescription || sanitized.productService || sanitized.sector}
+- Target Customers: ${sanitized.targetCustomers || 'Local buyers'}
+- Registered Sector: ${sanitized.sector}
 - Business Stage: ${sanitized.businessStage}
 - Capital Need: Project Cost ${sanitized.projectCost}, Funding Needed ${sanitized.fundingRequired}
 
@@ -145,11 +157,11 @@ Top Recommended Scheme:
 - Max Funding: ₹${(benefits.maximumFunding || 0).toLocaleString('en-IN')}
 - Matched Parameters: ${matchedPillars.join(', ')}
 
-Explain why ${topScheme.name} is currently the strongest match for this entrepreneur and what immediate benefit they can expect. Keep it under 150 words.`;
+Explain why ${topScheme.name} is currently the strongest match for this entrepreneur and what immediate benefit they can expect based on what their business actually does (${sanitized.businessDescription || sanitized.sector}). Keep it under 150 words.`;
 
   const fallback = () => {
     return `${topScheme.name} is currently your strongest match (${topScheme.matchScore} Match Score) because:\n` +
-      `• It directly supports your sector (${sanitized.sector}) in ${sanitized.state}.\n` +
+      `• It aligns directly with your enterprise (${sanitized.businessName} - ${sanitized.businessDescription || sanitized.sector}) in ${sanitized.state}.\n` +
       `• Provides targeted benefits: ${benefits.subsidyDetails || benefits.loanDetails}.\n` +
       `• Aligns with your current business stage (${sanitized.businessStage}) and project funding requirements (${sanitized.fundingRequired}).\n` +
       `• Requires minimal promoter contribution with collateral-free institutional support.`;

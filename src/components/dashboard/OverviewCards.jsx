@@ -7,6 +7,11 @@ import { useRoadmap } from '../../roadmap/context/RoadmapContext';
 import { schemeApi } from '../../services/schemeApi';
 import { useLanguage } from '../../context/LanguageContext';
 import { localizeBusinessValue } from '../../i18n/platformTranslations';
+import {
+  parseRupeeAmount,
+  formatRupees,
+  calculateFinancingStructure
+} from '../../services/financialCalculationService';
 
 export default function OverviewCards() {
   const { profile } = useEntrepreneurProfile();
@@ -37,10 +42,18 @@ export default function OverviewCards() {
     return () => { isMounted = false; };
   }, [business.sector, business.location, business.type, business.stage]);
 
-  // 2. Funding Required
-  const fundingVal = finances.fundingRequired || '₹2,25,000';
-  const availableCapital = finances.availableCapital || '₹75,000';
-  const projectCost = finances.estimatedProjectCost || '₹3,00,000';
+  // 2. Funding Calculations
+  const margin = parseRupeeAmount(finances.availableMarginCapital || finances.availableCapital || 0);
+  const cost = parseRupeeAmount(finances.estimatedProjectCost || 0);
+  const hasFinancialData = margin > 0 || cost > 0;
+  const structure = hasFinancialData ? calculateFinancingStructure(margin, cost) : null;
+
+  const fundingVal = structure
+    ? formatRupees(structure.potentialLoan)
+    : (finances.fundingRequired || '₹2,25,000');
+
+  const availableCapital = finances.availableCapital || (structure ? formatRupees(structure.margin) : '₹75,000');
+  const projectCost = finances.estimatedProjectCost || (structure ? formatRupees(structure.effectiveProjectCost) : '₹3,00,000');
 
   // 3. Roadmap Progress
   const totalTasks = allTasks?.length || 16;
@@ -65,7 +78,7 @@ export default function OverviewCards() {
       route: '/schemes'
     },
     {
-      title: t('dashboard.fundingRequired', 'Funding Required'),
+      title: t('dashboard.fundingRequired', 'Funding Plan'),
       value: fundingVal,
       subtitle: `${t('business.selfMargin', 'Self Margin')}: ${availableCapital} • ${t('business.totalOutlay', 'Total Outlay')}: ${projectCost}`,
       badge: t('dashboard.capitalPlan', 'Capital Plan'),

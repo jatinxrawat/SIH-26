@@ -36,6 +36,8 @@ export default function AdvisorPage() {
   const sector = business.sector || 'Services';
   const stage = business.stage || 'IDEA';
   const location = business.location || (personal.district ? `${personal.district}, ${personal.state}` : 'India');
+  const businessDescription = business.description || business.productService || '';
+  const state = personal.state || 'India';
 
   // Scoped chat storage key
   const chatStorageKey = `udyamsaathi_advisor_chat_${activeBusinessId || 'default'}`;

@@ -45,14 +45,30 @@ export const DEFAULT_DEMO_ENTREPRENEUR_PROFILE = {
     licensesHeld: 'FSSAI, Udyam MSME Registration'
   },
   financialProfile: {
-    availableCapital: '₹2,50,000',
-    estimatedProjectCost: '₹15,00,000',
-    fundingRequired: '₹12,50,000',
+    availableMarginCapital: '₹1,00,000',
+    availableCapital: '₹1,00,000',
+    estimatedProjectCost: '₹10,00,000',
+    fundingRequired: '₹9,00,000',
+    monthlyRevenue: '₹85,000',
+    annualRevenue: '₹10,20,000',
+    monthlyOperatingExpenses: '₹45,000',
     existingRevenue: '₹85,000 / mo',
     existingExpenses: '₹45,000 / mo',
-    hasExistingLoans: 'NO',
+    hasExistingLoans: 'No',
+    existingLoanAmount: '0',
+    existingMonthlyObligation: '0',
     existingEmi: '0',
-    preferredFundingType: 'GOVT_SUBSIDY_LOAN'
+    expectedMonthlyRevenue: '₹1,20,000',
+    expectedMonthlyOperatingCost: '₹65,000',
+    fundingPurpose: ['Starting a new business', 'Purchasing equipment', 'Working capital'],
+    preferredFundingType: 'Government scheme grant / credit guarantee',
+    projectCostBreakdown: {
+      equipmentMachinery: 450000,
+      infrastructure: 200000,
+      inventory: 150000,
+      workingCapital: 150000,
+      other: 50000
+    }
   },
   goals: {
     supportNeeded: ['Govt Subsidies & Schemes', 'Bank Credit Linkage', 'Food Processing Compliance'],
