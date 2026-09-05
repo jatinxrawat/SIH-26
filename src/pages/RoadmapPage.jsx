@@ -12,7 +12,7 @@ import JourneyTimeline from '../roadmap/components/JourneyTimeline';
 import BusinessReadinessCard from '../roadmap/components/BusinessReadinessCard';
 import BlockersCard from '../roadmap/components/BlockersCard';
 import TaskDetailDrawer from '../roadmap/components/TaskDetailDrawer';
-import SuccessToast from '../roadmap/components/SuccessToast';
+import AIMilestoneModal from '../roadmap/components/AIMilestoneModal';
 
 function RoadmapContent() {
   return (
@@ -39,7 +39,10 @@ function RoadmapContent() {
       {/* 5. Slide-Over Task Detail Drawer */}
       <TaskDetailDrawer />
 
-      {/* 6. Feedback Toast */}
+      {/* 6. AI Milestone Generator Modal */}
+      <AIMilestoneModal />
+
+      {/* 7. Feedback Toast */}
       <SuccessToast />
     </div>
   );

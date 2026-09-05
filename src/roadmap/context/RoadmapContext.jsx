@@ -1,6 +1,7 @@
 /**
  * Roadmap Context & State Management
- * Coordinates deterministic journey engine state, persistence, persona presets, and task actions.
+ * Coordinates deterministic journey engine state, persistence, persona presets,
+ * interactive step-checklists, custom AI milestones, search/filter, and document vault.
  */
 
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
@@ -74,10 +75,36 @@ export function RoadmapProvider({ children }) {
     }
   });
 
-  // UI Drawer and Toast state
+  // Persisted task step checklists (sub-task completion map: { taskId: { [stepIdx]: true } })
+  const storageChecklistsKey = `udyamsathi_checklists_${activePersonaKey}`;
+  const [taskChecklists, setTaskChecklists] = useState(() => {
+    try {
+      const saved = localStorage.getItem(storageChecklistsKey);
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  // Persisted AI custom tasks
+  const storageCustomTasksKey = `udyamsathi_custom_tasks_${activePersonaKey}`;
+  const [customTasks, setCustomTasks] = useState(() => {
+    try {
+      const saved = localStorage.getItem(storageCustomTasksKey);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // UI Interactive States
   const [activeDrawerTaskId, setActiveDrawerTaskId] = useState(null);
   const [expandedStageId, setExpandedStageId] = useState(null);
   const [toast, setToast] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('ALL'); // 'ALL' | 'AVAILABLE' | 'COMPLETED' | 'BLOCKED'
+  const [isAIMilestoneModalOpen, setIsAIMilestoneModalOpen] = useState(false);
+  const [quickAIPlanTask, setQuickAIPlanTask] = useState(null);
 
   // Sync state when switching persona
   const switchPersona = useCallback((key) => {
@@ -93,6 +120,12 @@ export function RoadmapProvider({ children }) {
 
     const savedScheme = localStorage.getItem(`udyamsathi_scheme_${key}`);
     setSelectedSchemeId(savedScheme !== null ? JSON.parse(savedScheme) : target.selectedSchemeId);
+
+    const savedChecklists = localStorage.getItem(`udyamsathi_checklists_${key}`);
+    setTaskChecklists(savedChecklists ? JSON.parse(savedChecklists) : {});
+
+    const savedCustom = localStorage.getItem(`udyamsathi_custom_tasks_${key}`);
+    setCustomTasks(savedCustom ? JSON.parse(savedCustom) : []);
 
     setActiveDrawerTaskId(null);
   }, []);
@@ -122,10 +155,27 @@ export function RoadmapProvider({ children }) {
     }
   }, [selectedSchemeId, storageSchemeKey]);
 
-  // Generate personalized tasks
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageChecklistsKey, JSON.stringify(taskChecklists));
+    } catch (e) {
+      console.warn('LocalStorage error:', e);
+    }
+  }, [taskChecklists, storageChecklistsKey]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageCustomTasksKey, JSON.stringify(customTasks));
+    } catch (e) {
+      console.warn('LocalStorage error:', e);
+    }
+  }, [customTasks, storageCustomTasksKey]);
+
+  // Generate personalized tasks and combine with any custom AI milestones
   const allTasks = useMemo(() => {
-    return generatePersonalizedRoadmap(activeProfile);
-  }, [activeProfile]);
+    const base = generatePersonalizedRoadmap(activeProfile);
+    return [...base, ...customTasks];
+  }, [activeProfile, customTasks]);
 
   // Current active stage
   const currentStageId = useMemo(() => {
@@ -167,7 +217,7 @@ export function RoadmapProvider({ children }) {
     setToast({ id, message, type });
     setTimeout(() => {
       setToast((curr) => (curr?.id === id ? null : curr));
-    }, 4000);
+    }, 4500);
   }, []);
 
   // Action: Toggle task completion
@@ -189,23 +239,83 @@ export function RoadmapProvider({ children }) {
     });
   }, [allTasks, showToast]);
 
+  // Action: Toggle individual sub-task checklist step
+  const toggleTaskStep = useCallback((taskId, stepIndex) => {
+    setTaskChecklists((prev) => {
+      const taskSteps = prev[taskId] || {};
+      const nextVal = !taskSteps[stepIndex];
+      const updated = {
+        ...prev,
+        [taskId]: {
+          ...taskSteps,
+          [stepIndex]: nextVal
+        }
+      };
+
+      const taskObj = allTasks.find((t) => t.id === taskId);
+      const totalSteps = taskObj?.whatToDo?.length || 1;
+      const completedSteps = Object.values(updated[taskId] || {}).filter(Boolean).length;
+
+      if (completedSteps === totalSteps && !completedTaskIds.includes(taskId)) {
+        showToast(`All ${totalSteps} checkpoints completed for "${taskObj?.shortTitle || taskObj?.title}". Milestone ready!`, 'success');
+      } else {
+        showToast(`Step ${stepIndex + 1} ${nextVal ? 'checked' : 'unchecked'}`, 'info');
+      }
+
+      return updated;
+    });
+  }, [allTasks, completedTaskIds, showToast]);
+
   // Action: Toggle document readiness
   const toggleDocumentStatus = useCallback((docId) => {
     setDocumentStatus((prev) => {
       const nextVal = !prev[docId];
       const docObj = MASTER_DOCUMENTS.find((d) => d.id === docId);
       const docName = docObj ? docObj.name : 'Document';
-      showToast(nextVal ? `✓ ${docName} marked as ready` : `${docName} marked as pending`, 'info');
+      showToast(nextVal ? `✓ ${docName} verified & ready` : `${docName} marked as pending`, 'info');
       return { ...prev, [docId]: nextVal };
     });
+  }, [showToast]);
+
+  // Action: Simulate file upload with instant verification
+  const simulateDocumentUpload = useCallback((docId, customName) => {
+    const docObj = MASTER_DOCUMENTS.find((d) => d.id === docId);
+    const docName = customName || (docObj ? docObj.name : 'Document');
+    setDocumentStatus((prev) => ({ ...prev, [docId]: true }));
+    showToast(`✓ Uploaded & verified: ${docName}. Blocker resolved!`, 'success');
   }, [showToast]);
 
   // Action: Formally select scheme
   const selectScheme = useCallback((schemeId) => {
     setSelectedSchemeId(schemeId);
-    // Automatically complete scheme-selection task if not already
     setCompletedTaskIds((prev) => (prev.includes('scheme-selection') ? prev : [...prev, 'scheme-selection']));
     showToast(`✓ Formally linked to ${schemeId} scheme. Required documents checklist updated.`, 'success');
+  }, [showToast]);
+
+  // Action: Add custom AI milestone
+  const addCustomMilestone = useCallback((customTask) => {
+    const id = `custom-${Date.now()}`;
+    const newTask = {
+      id,
+      stage: customTask.stage || 'GROWTH',
+      title: customTask.title,
+      shortTitle: customTask.shortTitle || customTask.title,
+      priority: customTask.priority || 'HIGH',
+      estimatedTime: customTask.estimatedTime || '2-3 days',
+      description: customTask.description || 'Custom business milestone synthesized by AI.',
+      whyThisMatters: customTask.whyThisMatters || 'Accelerates enterprise milestone execution.',
+      whatToDo: customTask.whatToDo || ['Execute preliminary verification.', 'Assemble required filings.', 'Log progress in UdyamSaathi.'],
+      requiredInputs: customTask.requiredInputs || ['Milestone approval'],
+      prerequisites: customTask.prerequisites || [],
+      unlocks: [],
+      requiredDocuments: customTask.requiredDocuments || [],
+      relatedSchemes: customTask.relatedSchemes || [],
+      isCustom: true
+    };
+
+    setCustomTasks((prev) => [...prev, newTask]);
+    showToast(`✨ Added custom milestone: "${newTask.title}"`, 'success');
+    return newTask;
   }, [showToast]);
 
   // Action: Reset journey to demo baseline
@@ -214,9 +324,18 @@ export function RoadmapProvider({ children }) {
     setCompletedTaskIds(target.initialCompletedTasks || []);
     setDocumentStatus(target.initialDocumentStatus || {});
     setSelectedSchemeId(target.selectedSchemeId || null);
+    setTaskChecklists({});
+    setCustomTasks([]);
     setActiveDrawerTaskId(null);
+    setSearchQuery('');
+    setActiveFilter('ALL');
     showToast('Roadmap journey reset to demo baseline.', 'info');
   }, [activePersonaKey, showToast]);
+
+  // Action: Print / Export Clean Roadmap Dossier
+  const printRoadmapSummary = useCallback(() => {
+    window.print();
+  }, []);
 
   const value = {
     // Data
@@ -229,11 +348,21 @@ export function RoadmapProvider({ children }) {
     completedTaskIds,
     documentStatus,
     selectedSchemeId,
+    taskChecklists,
+    customTasks,
     currentStageId,
     expandedStageId: effectiveExpandedStageId,
     setExpandedStageId,
     activeDrawerTaskId,
     toast,
+    searchQuery,
+    setSearchQuery,
+    activeFilter,
+    setActiveFilter,
+    isAIMilestoneModalOpen,
+    setIsAIMilestoneModalOpen,
+    quickAIPlanTask,
+    setQuickAIPlanTask,
     // Metrics
     overallProgress,
     businessReadiness,
@@ -241,13 +370,17 @@ export function RoadmapProvider({ children }) {
     nextBestAction,
     // Actions
     toggleTaskCompletion,
+    toggleTaskStep,
     toggleDocumentStatus,
+    simulateDocumentUpload,
     selectScheme,
+    addCustomMilestone,
     openTaskDrawer: setActiveDrawerTaskId,
     closeTaskDrawer: () => setActiveDrawerTaskId(null),
     switchPersona,
     resetJourney,
-    showToast
+    showToast,
+    printRoadmapSummary
   };
 
   return <RoadmapContext.Provider value={value}>{children}</RoadmapContext.Provider>;
