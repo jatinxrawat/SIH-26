@@ -50,9 +50,5 @@ function RoadmapContent() {
 }
 
 export default function RoadmapPage() {
-  return (
-    <RoadmapProvider>
-      <RoadmapContent />
-    </RoadmapProvider>
-  );
+  return <RoadmapContent />;
 }

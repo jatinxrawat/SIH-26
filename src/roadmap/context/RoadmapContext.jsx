@@ -432,10 +432,59 @@ export function RoadmapProvider({ children }) {
   return <RoadmapContext.Provider value={value}>{children}</RoadmapContext.Provider>;
 }
 
+const fallbackRoadmapContext = {
+  stages: ROADMAP_STAGES,
+  allTasks: [],
+  documents: MASTER_DOCUMENTS,
+  profile: DEMO_PERSONAS.sita,
+  activePersonaKey: 'sita',
+  completedTaskIds: [],
+  documentStatus: {},
+  selectedSchemeId: null,
+  taskChecklists: {},
+  customTasks: [],
+  currentStageId: 1,
+  expandedStageIds: [1],
+  setExpandedStageIds: () => {},
+  toggleStage: () => {},
+  expandStage: () => {},
+  collapseStage: () => {},
+  expandAllStages: () => {},
+  collapseAllStages: () => {},
+  expandedStageId: 1,
+  setExpandedStageId: () => {},
+  activeDrawerTaskId: null,
+  toast: null,
+  searchQuery: '',
+  setSearchQuery: () => {},
+  activeFilter: 'ALL',
+  setActiveFilter: () => {},
+  isAIMilestoneModalOpen: false,
+  setIsAIMilestoneModalOpen: () => {},
+  quickAIPlanTask: null,
+  setQuickAIPlanTask: () => {},
+  overallProgress: 0,
+  businessReadiness: { overallScore: 0, dimensions: {} },
+  blockers: { totalBlockers: 0, blockerList: [] },
+  nextBestAction: null,
+  toggleTaskCompletion: () => {},
+  toggleTaskStep: () => {},
+  toggleDocumentStatus: () => {},
+  simulateDocumentUpload: () => {},
+  selectScheme: () => {},
+  addCustomMilestone: () => {},
+  openTaskDrawer: () => {},
+  closeTaskDrawer: () => {},
+  switchPersona: () => {},
+  resetJourney: () => {},
+  showToast: () => {},
+  printRoadmapSummary: () => {}
+};
+
 export function useRoadmap() {
   const context = useContext(RoadmapContext);
   if (!context) {
-    throw new Error('useRoadmap must be used within a RoadmapProvider');
+    return fallbackRoadmapContext;
   }
   return context;
 }

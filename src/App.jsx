@@ -21,6 +21,7 @@ import AdvisorPage from './pages/AdvisorPage';
 import DocumentsPage from './pages/DocumentsPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
+import { RoadmapProvider } from './roadmap/context/RoadmapContext';
 
 export default function App() {
   return (
@@ -49,7 +50,9 @@ export default function App() {
             element={
               <ProtectedRoute requireCompletedOnboarding={true}>
                 <EntrepreneurProfileProvider>
-                  <AppLayout />
+                  <RoadmapProvider>
+                    <AppLayout />
+                  </RoadmapProvider>
                 </EntrepreneurProfileProvider>
               </ProtectedRoute>
             }
