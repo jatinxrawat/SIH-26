@@ -87,7 +87,7 @@ Respond ONLY with valid JSON containing:
             'Authorization': `Bearer ${activeGroqKey}`
           },
           body: JSON.stringify({
-            model: 'llama-3.3-70b-versatile',
+            model: 'openai/gpt-oss-120b',
             messages: [
               { role: 'system', content: 'You are an expert MSME Business Advisor on Indian government schemes and compliance. Always respond in valid JSON format.' },
               { role: 'user', content: prompt }
