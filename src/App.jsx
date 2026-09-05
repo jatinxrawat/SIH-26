@@ -29,54 +29,54 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          {/* Public Landing Page */}
-          <Route path="/" element={<LandingPage />} />
+        <BusinessProvider>
+          <EntrepreneurProfileProvider>
+            <RoadmapProvider>
+              <Routes>
+                {/* Public Landing Page */}
+                <Route path="/" element={<LandingPage />} />
 
-          {/* Authentication Routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
+                {/* Authentication Routes */}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
 
-          {/* Protected Onboarding Flow (if already completed, redirects to /dashboard) */}
-          <Route
-            path="/onboarding"
-            element={
-              <ProtectedRoute requireIncompleteOnboarding={true}>
-                <OnboardingPage />
-              </ProtectedRoute>
-            }
-          />
+                {/* Protected Onboarding Flow (if already completed, redirects to /dashboard) */}
+                <Route
+                  path="/onboarding"
+                  element={
+                    <ProtectedRoute requireIncompleteOnboarding={true}>
+                      <OnboardingPage />
+                    </ProtectedRoute>
+                  }
+                />
 
-          {/* Protected Business Compass Application Shell & Routes */}
-          <Route
-            element={
-              <ProtectedRoute requireCompletedOnboarding={true}>
-                <BusinessProvider>
-                  <EntrepreneurProfileProvider>
-                    <RoadmapProvider>
+                {/* Protected Business Compass Application Shell & Routes */}
+                <Route
+                  element={
+                    <ProtectedRoute requireCompletedOnboarding={true}>
                       <AppLayout />
-                    </RoadmapProvider>
-                  </EntrepreneurProfileProvider>
-                </BusinessProvider>
-              </ProtectedRoute>
-            }
-          >
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/business" element={<MyBusinessPage />} />
-            <Route path="/schemes" element={<SchemesPage />} />
-            <Route path="/schemes/:id" element={<SchemeDetailPage />} />
-            <Route path="/funding" element={<FundingPage />} />
-            <Route path="/roadmap" element={<RoadmapPage />} />
-            <Route path="/professionals" element={<ProfessionalsPage />} />
-            <Route path="/advisor" element={<AdvisorPage />} />
-            <Route path="/documents" element={<DocumentsPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-          </Route>
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/business" element={<MyBusinessPage />} />
+                  <Route path="/schemes" element={<SchemesPage />} />
+                  <Route path="/schemes/:id" element={<SchemeDetailPage />} />
+                  <Route path="/funding" element={<FundingPage />} />
+                  <Route path="/roadmap" element={<RoadmapPage />} />
+                  <Route path="/professionals" element={<ProfessionalsPage />} />
+                  <Route path="/advisor" element={<AdvisorPage />} />
+                  <Route path="/documents" element={<DocumentsPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/settings" element={<SettingsPage />} />
+                </Route>
 
-          {/* Catch-all route */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+                {/* Catch-all route */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </RoadmapProvider>
+          </EntrepreneurProfileProvider>
+        </BusinessProvider>
       </AuthProvider>
     </BrowserRouter>
   );

@@ -438,10 +438,24 @@ export function BusinessProvider({ children }) {
   );
 }
 
+const fallbackBusinessContext = {
+  businesses: [DEFAULT_BUSINESS],
+  activeBusiness: DEFAULT_BUSINESS,
+  activeBusinessId: DEFAULT_BUSINESS.id,
+  loading: false,
+  error: null,
+  setActiveBusiness: () => {},
+  createBusiness: async () => DEFAULT_BUSINESS,
+  updateBusiness: async () => DEFAULT_BUSINESS,
+  deleteBusiness: async () => false,
+  refreshBusinesses: () => {}
+};
+
 export function useBusiness() {
   const context = useContext(BusinessContext);
   if (!context) {
-    throw new Error('useBusiness must be used within a BusinessProvider');
+    return fallbackBusinessContext;
   }
   return context;
 }
+

@@ -110,10 +110,18 @@ export function EntrepreneurProfileProvider({ children }) {
   );
 }
 
+const fallbackEntrepreneurProfileContext = {
+  profile: DEFAULT_DEMO_ENTREPRENEUR_PROFILE,
+  loading: false,
+  error: null,
+  updateProfileData: async () => true,
+  refreshProfile: async () => DEFAULT_DEMO_ENTREPRENEUR_PROFILE
+};
+
 export function useEntrepreneurProfile() {
   const context = useContext(EntrepreneurProfileContext);
   if (!context) {
-    throw new Error('useEntrepreneurProfile must be used within an EntrepreneurProfileProvider');
+    return fallbackEntrepreneurProfileContext;
   }
   return context;
 }
