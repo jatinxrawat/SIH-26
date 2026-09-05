@@ -14,6 +14,7 @@ import AppLayout from './components/layout/AppLayout';
 import DashboardPage from './pages/DashboardPage';
 import MyBusinessPage from './pages/MyBusinessPage';
 import SchemesPage from './pages/SchemesPage';
+import SchemeDetailPage from './pages/SchemeDetailPage';
 import FundingPage from './pages/FundingPage';
 import RoadmapPage from './pages/RoadmapPage';
 import ProfessionalsPage from './pages/ProfessionalsPage';
@@ -57,6 +58,7 @@ export default function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/business" element={<MyBusinessPage />} />
             <Route path="/schemes" element={<SchemesPage />} />
+            <Route path="/schemes/:id" element={<SchemeDetailPage />} />
             <Route path="/funding" element={<FundingPage />} />
             <Route path="/roadmap" element={<RoadmapPage />} />
             <Route path="/professionals" element={<ProfessionalsPage />} />
