@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Settings,
@@ -11,7 +11,11 @@ import {
   Search,
   Check,
   Sparkles,
-  MapPin
+  MapPin,
+  ChevronDown,
+  ChevronUp,
+  X,
+  SlidersHorizontal
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useEntrepreneurProfile } from '../context/EntrepreneurProfileContext';
@@ -26,6 +30,8 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('account');
   const [savedNote, setSavedNote] = useState('');
   const [langSearch, setLangSearch] = useState('');
+  const [isDragBoxOpen, setIsDragBoxOpen] = useState(true);
+  const dragBoxRef = useRef(null);
 
   const handleLogout = async () => {
     try {
@@ -37,7 +43,7 @@ export default function SettingsPage() {
   };
 
   const tabs = [
-    { id: 'account', label: t('nav.profile', 'Account Information'), icon: Settings },
+    { id: 'account', label: t('nav.profile', 'Account Profile'), icon: Settings },
     { id: 'language', label: `${t('common.language', 'Language')} / ${currentLanguageInfo.nativeName}`, icon: Globe, highlight: true },
     { id: 'notifications', label: 'Notification Preferences', icon: Bell },
     { id: 'security', label: 'Security & Auth', icon: Lock },
@@ -53,10 +59,21 @@ export default function SettingsPage() {
 
   const handleSelectLanguage = (code, name, nativeName) => {
     setLanguage(code);
-    triggerSaveNote(`Language changed to ${nativeName} (${name}) • भाषा सफलतापूर्वक बदली गई!`);
+    triggerSaveNote(`Language set to ${nativeName} (${name}) • भाषा बदली गई`);
   };
 
-  // Filter languages based on search input
+  // Popular quick toggle languages
+  const popularLanguages = [
+    { code: 'en', native: 'English', en: 'English' },
+    { code: 'hi', native: 'हिन्दी', en: 'Hindi' },
+    { code: 'mr', native: 'मराठी', en: 'Marathi' },
+    { code: 'bn', native: 'বাংলা', en: 'Bengali' },
+    { code: 'gu', native: 'ગુજરાતી', en: 'Gujarati' },
+    { code: 'ta', native: 'தமிழ்', en: 'Tamil' },
+    { code: 'te', native: 'తెలుగు', en: 'Telugu' }
+  ];
+
+  // Filter languages for the drag box
   const filteredLanguages = useMemo(() => {
     const q = langSearch.trim().toLowerCase();
     if (!q) return languages;
@@ -78,7 +95,7 @@ export default function SettingsPage() {
             <span>{t('settings.title', 'Workspace Preferences')}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            {t('nav.settings', 'Settings & Security')}
+            {t('nav.settings', 'Settings')}
           </h1>
           <p className="text-sm text-slate-500 mt-1 max-w-2xl">
             {t('settings.subtitle', 'Manage your account security, notification alerts, language options, and privacy preferences.')}
@@ -101,7 +118,7 @@ export default function SettingsPage() {
             <span>{savedNote}</span>
           </div>
           <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-emerald-200 text-emerald-900">
-            Active Now
+            Active
           </span>
         </div>
       )}
@@ -138,114 +155,166 @@ export default function SettingsPage() {
         </div>
 
         {/* Tab Content Body */}
-        <div className="md:col-span-8 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-soft-sm space-y-6">
-          {/* TAB: LANGUAGE SELECTION (ALL 22 OFFICIAL SCHEDULED LANGUAGES + ENGLISH) */}
+        <div className="md:col-span-8 bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-soft-sm space-y-5">
+          {/* TAB: COMPACT SEARCHABLE LANGUAGE SELECTOR & TOGGLE */}
           {activeTab === 'language' && (
-            <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-4">
+            <div className="space-y-5">
+              {/* Header with Active Badge */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
                 <div>
-                  <h2 className="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
-                    <Globe className="w-5 h-5 text-emerald-600" />
-                    <span>{t('settings.languageTitle', 'Official Language Settings')}</span>
+                  <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <Globe className="w-4 h-4 text-emerald-600" />
+                    <span>Language Settings</span>
                   </h2>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    {t('settings.languageSubtitle', 'Select your preferred official language of India. Navigation, advisor insights, and interface will adapt.')}
+                    Switch language instantly or search any of the 22 official languages of India.
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-2xl border border-emerald-200 text-xs text-emerald-950 font-bold shrink-0 self-start sm:self-auto">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs font-bold text-emerald-900 self-start sm:self-auto shrink-0">
                   <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Active: <strong>{currentLanguageInfo.nativeName}</strong> ({currentLanguageInfo.name})</span>
+                  <span>{currentLanguageInfo.nativeName} ({currentLanguageInfo.name})</span>
                 </div>
               </div>
 
-              {/* Search Bar */}
-              <div className="relative">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  value={langSearch}
-                  onChange={(e) => setLangSearch(e.target.value)}
-                  placeholder={t('settings.searchPlaceholder', 'Search by language name, script, or region...')}
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 rounded-2xl pl-10 pr-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
-                />
-                {langSearch && (
+              {/* 1. Quick Language Toggle Bar */}
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Quick Select
+                </label>
+                <div className="flex flex-wrap gap-1.5 p-1 bg-slate-50 rounded-2xl border border-slate-200/80">
+                  {popularLanguages.map((pLang) => {
+                    const isSelected = language === pLang.code;
+                    return (
+                      <button
+                        key={pLang.code}
+                        type="button"
+                        onClick={() => handleSelectLanguage(pLang.code, pLang.en, pLang.native)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                          isSelected
+                            ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-900/20'
+                            : 'text-slate-600 hover:text-slate-900 hover:bg-white'
+                        }`}
+                      >
+                        <span>{pLang.native}</span>
+                        <span className={`text-[10px] ${isSelected ? 'text-emerald-100' : 'text-slate-400'}`}>
+                          ({pLang.en})
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 2. Searchable Official Languages Box ("Drag Box" / Combobox) */}
+              <div className="space-y-2 pt-1" ref={dragBoxRef}>
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                    <SlidersHorizontal className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>All Official Languages (22 Scheduled + English)</span>
+                  </label>
+
                   <button
-                    onClick={() => setLangSearch('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold"
+                    type="button"
+                    onClick={() => setIsDragBoxOpen(!isDragBoxOpen)}
+                    className="text-xs text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1 cursor-pointer"
                   >
-                    Clear
+                    <span>{isDragBoxOpen ? 'Hide list' : 'Show list'}</span>
+                    {isDragBoxOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                   </button>
+                </div>
+
+                {/* Combobox Search & Scrollable Drag Box */}
+                {isDragBoxOpen && (
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-3 space-y-2.5 shadow-soft-xs">
+                    {/* Search Input inside the box */}
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        value={langSearch}
+                        onChange={(e) => setLangSearch(e.target.value)}
+                        placeholder="Search language (e.g. Tamil, Punjabi, اردو, বাংলা)..."
+                        className="w-full bg-white border border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl pl-9 pr-8 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all shadow-inner"
+                      />
+                      {langSearch && (
+                        <button
+                          type="button"
+                          onClick={() => setLangSearch('')}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Scrollable List ("Drag Box") */}
+                    <div className="max-h-52 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+                      {filteredLanguages.map((l) => {
+                        const isCurrent = language === l.code;
+                        return (
+                          <button
+                            key={l.code}
+                            type="button"
+                            onClick={() => handleSelectLanguage(l.code, l.name, l.nativeName)}
+                            className={`w-full p-2.5 rounded-xl border text-left text-xs transition-all flex items-center justify-between gap-3 cursor-pointer ${
+                              isCurrent
+                                ? 'bg-emerald-50 border-emerald-400 text-emerald-950 font-bold shadow-soft-2xs'
+                                : 'bg-white hover:bg-slate-100 border-slate-200/80 text-slate-700'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <span className="w-6 h-6 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 text-[10px] font-mono font-bold flex items-center justify-center shrink-0 uppercase">
+                                {l.code}
+                              </span>
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="font-black text-slate-900 text-[13px] leading-tight">
+                                    {l.nativeName}
+                                  </span>
+                                  <span className="text-slate-400 text-xs">({l.name})</span>
+                                </div>
+                                <span className="text-[10px] text-slate-400 truncate block">
+                                  {l.region}
+                                </span>
+                              </div>
+                            </div>
+
+                            {isCurrent && (
+                              <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                                <Check className="w-3 h-3 stroke-[3]" />
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+
+                      {filteredLanguages.length === 0 && (
+                        <div className="py-6 text-center text-xs text-slate-400">
+                          No official language found for "{langSearch}"
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
 
-              {/* Languages Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {filteredLanguages.map((lang) => {
-                  const isCurrent = language === lang.code;
-                  return (
-                    <button
-                      key={lang.code}
-                      type="button"
-                      onClick={() => handleSelectLanguage(lang.code, lang.name, lang.nativeName)}
-                      className={`p-3.5 rounded-2xl border text-left transition-all relative cursor-pointer group flex flex-col justify-between gap-2 ${
-                        isCurrent
-                          ? 'bg-emerald-50/90 border-emerald-500 shadow-sm ring-1 ring-emerald-500'
-                          : 'bg-white hover:bg-slate-50 border-slate-200/90 hover:border-slate-300'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <span className="text-base font-black text-slate-900 block leading-tight">
-                            {lang.nativeName}
-                          </span>
-                          <span className="text-xs font-semibold text-slate-600">
-                            {lang.name}
-                          </span>
-                        </div>
-
-                        {isCurrent ? (
-                          <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
-                            <Check className="w-3.5 h-3.5 stroke-[3]" />
-                          </div>
-                        ) : (
-                          <span className="text-[10px] font-bold text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                            Select
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="pt-1 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400 font-medium">
-                        <span className="truncate max-w-[130px] flex items-center gap-1">
-                          <MapPin className="w-2.5 h-2.5 text-slate-400 shrink-0" />
-                          <span className="truncate">{lang.region}</span>
-                        </span>
-                        <span className="uppercase font-mono text-[9px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">
-                          {lang.code}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {filteredLanguages.length === 0 && (
-                <div className="py-8 text-center text-slate-400 text-xs">
-                  No official languages matching "{langSearch}". Try searching by English name or native script.
+              {/* 3. Compact Active Language Info Card */}
+              <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/90 text-xs flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <Globe className="w-4 h-4 text-emerald-700 shrink-0" />
+                  <div>
+                    <span className="font-bold text-slate-900 block">
+                      Active: {currentLanguageInfo.nativeName} ({currentLanguageInfo.name})
+                    </span>
+                    <span className="text-[11px] text-slate-500">
+                      Recognized in 8th Schedule • Applied across navigation & AI Advisor
+                    </span>
+                  </div>
                 </div>
-              )}
-
-              {/* Constitutional Notice */}
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-start gap-2.5">
-                <Shield className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-slate-800 block font-bold mb-0.5">
-                    Official 8th Schedule Recognition
-                  </strong>
-                  <span>
-                    UdyamSaathi includes comprehensive support for all 22 official scheduled languages of India alongside English, enabling grass-roots entrepreneurs across every state and union territory to execute government schemes with zero linguistic barriers.
-                  </span>
-                </div>
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-200/80 text-emerald-900 uppercase">
+                  {currentLanguageInfo.code}
+                </span>
               </div>
             </div>
           )}
