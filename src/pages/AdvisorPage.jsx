@@ -9,8 +9,8 @@ export default function AdvisorPage() {
   const [inputVal, setInputVal] = useState('');
 
   const displayName = profile?.personalInfo?.fullName || userProfile?.name || currentUser?.displayName || 'Entrepreneur';
-  const businessName = profile?.business?.name || 'Your Enterprise';
-  const sector = profile?.business?.sector || 'General';
+  const businessName = profile?.name || profile?.business?.name || 'Your Enterprise';
+  const sector = profile?.sector || profile?.business?.sector || 'General';
   const state = profile?.personalInfo?.state || 'India';
 
   const suggestedPrompts = [

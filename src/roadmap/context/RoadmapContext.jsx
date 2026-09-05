@@ -73,8 +73,14 @@ export function RoadmapProvider({ children }) {
     };
   }, [loggedInProfile]);
 
-  // Persisted task completions for user's real business
-  const storageCompletedKey = 'udyamsathi_roadmap_completed_tasks';
+  // Scoped storage keys for active business data isolation
+  const businessId = loggedInProfile?.id || 'biz_primary';
+  const storageCompletedKey = `udyamsathi_roadmap_completed_tasks_${businessId}`;
+  const storageDocsKey = `udyamsathi_roadmap_docs_${businessId}`;
+  const storageSchemeKey = `udyamsathi_roadmap_scheme_${businessId}`;
+  const storageChecklistsKey = `udyamsathi_roadmap_checklists_${businessId}`;
+  const storageCustomTasksKey = `udyamsathi_roadmap_custom_tasks_${businessId}`;
+
   const [completedTaskIds, setCompletedTaskIds] = useState(() => {
     try {
       const saved = localStorage.getItem(storageCompletedKey);
@@ -84,8 +90,6 @@ export function RoadmapProvider({ children }) {
     }
   });
 
-  // Persisted document readiness
-  const storageDocsKey = 'udyamsathi_roadmap_docs';
   const [documentStatus, setDocumentStatus] = useState(() => {
     try {
       const saved = localStorage.getItem(storageDocsKey);
@@ -95,8 +99,6 @@ export function RoadmapProvider({ children }) {
     }
   });
 
-  // Persisted selected scheme
-  const storageSchemeKey = 'udyamsathi_roadmap_scheme';
   const [selectedSchemeId, setSelectedSchemeId] = useState(() => {
     try {
       const saved = localStorage.getItem(storageSchemeKey);
@@ -106,8 +108,6 @@ export function RoadmapProvider({ children }) {
     }
   });
 
-  // Persisted task step checklists
-  const storageChecklistsKey = 'udyamsathi_roadmap_checklists';
   const [taskChecklists, setTaskChecklists] = useState(() => {
     try {
       const saved = localStorage.getItem(storageChecklistsKey);
@@ -117,8 +117,6 @@ export function RoadmapProvider({ children }) {
     }
   });
 
-  // Persisted AI custom tasks
-  const storageCustomTasksKey = 'udyamsathi_roadmap_custom_tasks';
   const [customTasks, setCustomTasks] = useState(() => {
     try {
       const saved = localStorage.getItem(storageCustomTasksKey);
@@ -127,6 +125,28 @@ export function RoadmapProvider({ children }) {
       return [];
     }
   });
+
+  // Re-sync roadmap data whenever the active business switches
+  useEffect(() => {
+    try {
+      const savedTasks = localStorage.getItem(`udyamsathi_roadmap_completed_tasks_${businessId}`);
+      setCompletedTaskIds(savedTasks ? JSON.parse(savedTasks) : (activeProfile.initialCompletedTasks || []));
+
+      const savedDocs = localStorage.getItem(`udyamsathi_roadmap_docs_${businessId}`);
+      setDocumentStatus(savedDocs ? JSON.parse(savedDocs) : (activeProfile.initialDocumentStatus || {}));
+
+      const savedScheme = localStorage.getItem(`udyamsathi_roadmap_scheme_${businessId}`);
+      setSelectedSchemeId(savedScheme !== null ? JSON.parse(savedScheme) : activeProfile.selectedSchemeId);
+
+      const savedChecklists = localStorage.getItem(`udyamsathi_roadmap_checklists_${businessId}`);
+      setTaskChecklists(savedChecklists ? JSON.parse(savedChecklists) : {});
+
+      const savedCustom = localStorage.getItem(`udyamsathi_roadmap_custom_tasks_${businessId}`);
+      setCustomTasks(savedCustom ? JSON.parse(savedCustom) : []);
+    } catch (e) {
+      console.warn('Error syncing roadmap for business:', e);
+    }
+  }, [businessId]);
   // UI Interactive States
   const [activeDrawerTaskId, setActiveDrawerTaskId] = useState(null);
   const [expandedStageIds, setExpandedStageIds] = useState([]);

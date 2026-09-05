@@ -66,103 +66,23 @@ export const DEFAULT_DEMO_ENTREPRENEUR_PROFILE = {
   }
 };
 
+import { useBusiness } from './BusinessContext';
+
 export function EntrepreneurProfileProvider({ children }) {
-  const { currentUser } = useAuth();
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { activeBusiness, loading: bizLoading, error: bizError, updateBusiness, refreshBusinesses } = useBusiness();
 
-  const fetchProfile = async (uid) => {
-    if (!uid) {
-      setProfile(null);
-      setLoading(false);
-      return null;
-    }
-
-    // If running in demo mode or without Firestore db
-    if (!db || currentUser?.isDemo) {
-      setLoading(true);
-      try {
-        const stored = localStorage.getItem(DEMO_PROFILE_DATA_KEY);
-        const data = stored ? JSON.parse(stored) : DEFAULT_DEMO_ENTREPRENEUR_PROFILE;
-        setProfile(data);
-        return data;
-      } catch (e) {
-        setProfile(DEFAULT_DEMO_ENTREPRENEUR_PROFILE);
-        return DEFAULT_DEMO_ENTREPRENEUR_PROFILE;
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-      const docRef = doc(db, 'entrepreneurProfiles', uid);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setProfile(data);
-        return data;
-      } else {
-        setProfile(null);
-        return null;
-      }
-    } catch (err) {
-      console.error('Error fetching entrepreneur profile:', err);
-      setError(err.message || 'Failed to load business profile');
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (currentUser?.uid) {
-      fetchProfile(currentUser.uid);
-    } else {
-      setProfile(null);
-      setLoading(false);
-    }
-  }, [currentUser]);
+  // The active business profile is the single source of truth
+  const profile = activeBusiness;
+  const loading = bizLoading;
+  const error = bizError;
 
   // Update specific sections of the profile
   const updateProfileData = async (sectionKey, sectionData) => {
-    if (!currentUser?.uid) return false;
-
-    if (!db || currentUser?.isDemo) {
-      const updated = {
-        ...(profile || DEFAULT_DEMO_ENTREPRENEUR_PROFILE),
-        [sectionKey]: {
-          ...((profile && profile[sectionKey]) ? profile[sectionKey] : {}),
-          ...sectionData
-        }
-      };
-      setProfile(updated);
-      try {
-        localStorage.setItem(DEMO_PROFILE_DATA_KEY, JSON.stringify(updated));
-      } catch (e) {
-        console.error('LocalStorage save error:', e);
-      }
-      return true;
-    }
-
+    if (!activeBusiness?.id) return false;
     try {
-      const docRef = doc(db, 'entrepreneurProfiles', currentUser.uid);
-      const updates = {
-        [sectionKey]: sectionData,
-        'onboarding.updatedAt': serverTimestamp()
-      };
-
-      await updateDoc(docRef, updates);
-      setProfile((prev) => ({
-        ...prev,
-        [sectionKey]: {
-          ...(prev ? prev[sectionKey] : {}),
-          ...sectionData
-        }
-      }));
+      await updateBusiness(activeBusiness.id, {
+        [sectionKey]: sectionData
+      });
       return true;
     } catch (err) {
       console.error('Error updating entrepreneur profile section:', err);
@@ -171,10 +91,8 @@ export function EntrepreneurProfileProvider({ children }) {
   };
 
   const refreshProfile = async () => {
-    if (currentUser?.uid) {
-      return await fetchProfile(currentUser.uid);
-    }
-    return null;
+    refreshBusinesses();
+    return activeBusiness;
   };
 
   const value = {

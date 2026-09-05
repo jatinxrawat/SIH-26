@@ -15,11 +15,11 @@ export default function WelcomeHeader() {
   };
 
   const displayName = profile?.personalInfo?.fullName || userProfile?.name || currentUser?.displayName || 'Entrepreneur';
-  const businessName = profile?.business?.name || 'Your Enterprise';
-  const stage = profile?.business?.stage || 'PLANNING';
-  const location = profile?.personalInfo?.district
+  const businessName = profile?.name || profile?.business?.name || 'Your Enterprise';
+  const stage = profile?.stage || profile?.business?.stage || 'PLANNING';
+  const location = profile?.location || (profile?.personalInfo?.district
     ? `${profile.personalInfo.district}, ${profile.personalInfo.state}`
-    : 'India';
+    : 'India');
 
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-soft-sm">

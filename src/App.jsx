@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { BusinessProvider } from './context/BusinessContext';
 import { EntrepreneurProfileProvider } from './context/EntrepreneurProfileContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
@@ -50,11 +51,13 @@ export default function App() {
           <Route
             element={
               <ProtectedRoute requireCompletedOnboarding={true}>
-                <EntrepreneurProfileProvider>
-                  <RoadmapProvider>
-                    <AppLayout />
-                  </RoadmapProvider>
-                </EntrepreneurProfileProvider>
+                <BusinessProvider>
+                  <EntrepreneurProfileProvider>
+                    <RoadmapProvider>
+                      <AppLayout />
+                    </RoadmapProvider>
+                  </EntrepreneurProfileProvider>
+                </BusinessProvider>
               </ProtectedRoute>
             }
           >

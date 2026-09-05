@@ -83,9 +83,16 @@ export default function TopHeader({ onToggleMobile }) {
           </button>
 
           <div className="flex items-center gap-2 text-xs sm:text-sm truncate">
-            <span className="text-slate-400 font-medium hidden sm:inline">Business Compass</span>
-            <span className="text-slate-300 hidden sm:inline">/</span>
+            <span className="text-slate-400 font-medium hidden md:inline">Business Compass</span>
+            <span className="text-slate-300 hidden md:inline">/</span>
             <h1 className="font-bold text-slate-900 truncate">{pageTitle}</h1>
+            {profile?.name && (
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold ml-1 shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span className="truncate max-w-[120px]">{profile.name}</span>
+                <span className="text-[10px] text-emerald-600 uppercase font-black">({(profile.stage || 'IDEA').replace('_', ' ')})</span>
+              </span>
+            )}
           </div>
         </div>
 
