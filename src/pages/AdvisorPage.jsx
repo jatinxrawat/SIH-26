@@ -11,6 +11,7 @@ export default function AdvisorPage() {
   const displayName = profile?.personalInfo?.fullName || userProfile?.name || currentUser?.displayName || 'Entrepreneur';
   const businessName = profile?.business?.name || 'Your Enterprise';
   const sector = profile?.business?.sector || 'General';
+  const businessDescription = profile?.business?.description || profile?.business?.productService || '';
   const state = profile?.personalInfo?.state || 'India';
 
   const suggestedPrompts = [
@@ -61,7 +62,7 @@ export default function AdvisorPage() {
               Namaste {displayName}! I am your UdyamSaathi AI Business Advisor.
             </p>
             <p className="text-slate-600 leading-relaxed">
-              I have loaded your enterprise profile for <strong className="text-slate-900">{businessName}</strong> in the <strong className="text-slate-900">{sector}</strong> sector ({state}).
+              I have loaded your enterprise profile for <strong className="text-slate-900">{businessName}</strong> ({businessDescription ? `specializing in "${businessDescription}"` : `${sector} sector`}, {state}).
             </p>
             <p className="text-slate-600 leading-relaxed">
               I will help you understand your next best steps, government subsidy options, institutional bank loans, and license applications without jargon.

@@ -96,26 +96,28 @@ export function evaluateSchemeEligibility(profile, scheme) {
   // 2. SECTOR & BUSINESS TYPE EVALUATION
   const userSector = norm(business.sector);
   const schemeSectors = (scheme.businessSectors || []).map(norm);
+  const descText = norm(`${business.description || ''} ${business.productService || ''} ${business.name || ''} ${business.type || ''}`);
+  const isMachineryOrEquipment = descText.includes('EQUIPMENT') || descText.includes('MACHIN') || descText.includes('TOOL') || descText.includes('FABRICAT') || descText.includes('IMPLEMENT');
   
   let sectorMatch = false;
   if (schemeSectors.includes('ALL')) {
     sectorMatch = true;
     matchedPillars.push('Universal sector support');
-  } else if (userSector) {
+  } else if (userSector || isMachineryOrEquipment) {
     // Check direct match or allied terms
     sectorMatch = schemeSectors.some(s => {
       if (s === userSector) return true;
-      if (s === 'AGRI_PROCESSING' && (userSector.includes('AGRI') || userSector.includes('FOOD') || userSector.includes('PROCESSING'))) return true;
-      if (s === 'MANUFACTURING' && (userSector.includes('MANUFACTURING') || userSector.includes('PRODUCT') || userSector.includes('ENGINEERING'))) return true;
+      if (s === 'AGRI_PROCESSING' && !isMachineryOrEquipment && (userSector.includes('AGRI') || userSector.includes('FOOD') || userSector.includes('PROCESSING'))) return true;
+      if (s === 'MANUFACTURING' && (userSector.includes('MANUFACTURING') || userSector.includes('PRODUCT') || userSector.includes('ENGINEERING') || isMachineryOrEquipment)) return true;
       if (s === 'SERVICES' && (userSector.includes('SERVICE') || userSector.includes('CONSULTING') || userSector.includes('DIGITAL'))) return true;
       if (s === 'HANDICRAFTS' && (userSector.includes('HANDLOOM') || userSector.includes('CRAFT') || userSector.includes('ARTISAN') || userSector.includes('TEXTILE'))) return true;
-      if (s === 'DAIRY_LIVESTOCK' && (userSector.includes('DAIRY') || userSector.includes('ANIMAL') || userSector.includes('FARM'))) return true;
+      if (s === 'DAIRY_LIVESTOCK' && (userSector.includes('DAIRY') || userSector.includes('ANIMAL') || userSector.includes('LIVESTOCK') || userSector.includes('POULTRY') || userSector.includes('CATTLE'))) return true;
       if (s === 'TRADING' && (userSector.includes('TRADE') || userSector.includes('RETAIL') || userSector.includes('WHOLESALE'))) return true;
       return false;
     });
 
     if (sectorMatch) {
-      matchedPillars.push(`Supports ${business.sector || 'your industry'} sector`);
+      matchedPillars.push(`Supports ${isMachineryOrEquipment ? 'Manufacturing & Agri-Engineering' : (business.sector || 'your industry')} sector`);
     } else {
       disqualifications.push(`Scheme targets [${scheme.businessSectors?.join(', ')}], while your business is in [${business.sector || 'Other'}]`);
     }

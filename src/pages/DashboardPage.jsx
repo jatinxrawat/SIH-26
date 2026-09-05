@@ -4,6 +4,7 @@ import BusinessProgressCard from '../components/dashboard/BusinessProgressCard';
 import NextActionCard from '../components/dashboard/NextActionCard';
 import OverviewCards from '../components/dashboard/OverviewCards';
 import BusinessSnapshot from '../components/dashboard/BusinessSnapshot';
+import StrategySnapshot from '../components/dashboard/StrategySnapshot';
 import AdvisorPreview from '../components/dashboard/AdvisorPreview';
 import RecommendationsPreview from '../components/dashboard/RecommendationsPreview';
 import { useEntrepreneurProfile } from '../context/EntrepreneurProfileContext';
@@ -61,8 +62,9 @@ export default function DashboardPage() {
 
       {/* 5. Business Snapshot & AI Advisor Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-8 space-y-6">
           <BusinessSnapshot />
+          <StrategySnapshot />
         </div>
         <div className="lg:col-span-4 h-full">
           <AdvisorPreview />
