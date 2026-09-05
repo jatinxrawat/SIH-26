@@ -12,10 +12,109 @@ export default async function handler(req, res) {
   const grokKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
 
   try {
-    const { provider, task, context, question } = req.body || {};
-    const businessName = context?.businessName || 'Your Business';
+    const { provider, task, context, question, messages, type } = req.body || {};
+    const businessName = context?.businessName || context?.name || 'Your Business';
     const sector = context?.sector || 'General';
     const taskTitle = task?.title || 'this task';
+
+    // --- A. Conversational Chat Mode for AI Advisor ---
+    if (type === 'chat' || messages || (!task && question)) {
+      const userQuestion = question || (Array.isArray(messages) && messages[messages.length - 1]?.content) || 'How can I grow my business?';
+      const activeGroqKey = grokKey || process.env.GROQ_API_KEY;
+      const activeGeminiKey = geminiKey || process.env.GEMINI_API_KEY;
+
+      const systemPrompt = `You are UdyamSaathi AI Business Advisor — an expert digital companion for Indian MSMEs, startups, and entrepreneurs.
+Enterprise Profile:
+- Business: ${businessName} (${context?.stage || 'IDEA'} stage, ${sector} sector)
+- Location: ${context?.location || 'India'} (${context?.areaClassification || 'Urban'})
+- Structure: ${context?.type || 'Proprietorship'}
+- Financials: Project Cost ${context?.estimatedProjectCost || 'N/A'}, Own Margin ${context?.availableCapital || 'N/A'}, Funding Required ${context?.fundingRequired || 'N/A'}
+- Statutory Status: ${context?.registrationStatus || 'Unregistered'}
+- 12-Month Goal: ${context?.twelveMonthGoal || 'Commercial launch and revenue stability'}
+- Primary Challenge: ${context?.primaryChallenge || 'Navigating government schemes & paperwork'}
+
+Guidelines:
+- Provide actionable, factual advice tailored specifically to this business in India.
+- Cite relevant government programs with official subsidy/guarantee terms (e.g. PMEGP 25-35% capital subsidy, Mudra loan up to ₹10L, CGTMSE collateral-free guarantee, Stand-Up India, PMFME 35% credit-linked subsidy).
+- Highlight statutory steps (Udyam, GST, Shop & Establishment, FSSAI) and bank DPR norms.
+- Warn against middlemen fees and unverified external agents.
+- Format with clean markdown: bold headings, bullet points, and actionable next steps.`;
+
+      if (activeGroqKey) {
+        try {
+          const groqHistory = [
+            { role: 'system', content: systemPrompt },
+            ...(Array.isArray(messages) ? messages.map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content })) : [{ role: 'user', content: userQuestion }])
+          ];
+
+          const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${activeGroqKey}`
+            },
+            body: JSON.stringify({
+              model: 'openai/gpt-oss-120b',
+              messages: groqHistory,
+              temperature: 0.3,
+              max_tokens: 1200
+            })
+          });
+
+          if (groqRes.ok) {
+            const groqData = await groqRes.json();
+            const reply = groqData?.choices?.[0]?.message?.content;
+            if (reply) {
+              return res.status(200).json({
+                success: true,
+                reply: reply.trim(),
+                provider: 'Groq (Ultra-Fast Cloud)',
+                isLive: true
+              });
+            }
+          }
+        } catch (e) {
+          console.warn('Groq serverless chat exception:', e);
+        }
+      }
+
+      if (activeGeminiKey) {
+        try {
+          const conversationText = Array.isArray(messages)
+            ? messages.map(m => `${m.role === 'assistant' ? 'Advisor' : 'User'}: ${m.content}`).join('\n\n')
+            : `User: ${userQuestion}`;
+
+          const fullPrompt = `${systemPrompt}\n\nConversation History:\n${conversationText}\n\nAdvisor:`;
+
+          const geminiRes = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${activeGeminiKey}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: fullPrompt }] }],
+                generationConfig: { temperature: 0.3, maxOutputTokens: 1200 }
+              })
+            }
+          );
+
+          if (geminiRes.ok) {
+            const geminiData = await geminiRes.json();
+            const reply = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (reply) {
+              return res.status(200).json({
+                success: true,
+                reply: reply.trim(),
+                provider: 'Google Gemini 3.5 Flash',
+                isLive: true
+              });
+            }
+          }
+        } catch (e) {
+          console.warn('Gemini serverless chat exception:', e);
+        }
+      }
+    }
 
     if (provider === 'gemini' && geminiKey) {
       try {
