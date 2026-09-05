@@ -37,29 +37,29 @@ export default function ProblemSection() {
         />
 
         {/* Cool Comparison Toggle */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10">
-          <div className="inline-flex items-center p-1.5 rounded-2xl bg-white border border-slate-200 shadow-soft-sm">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10 w-full max-w-full px-2">
+          <div className="flex flex-col sm:inline-flex sm:flex-row items-center p-1 sm:p-1.5 rounded-2xl bg-white border border-slate-200 shadow-soft-sm w-full sm:w-auto max-w-full">
             <button
               onClick={() => setViewMode('without')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+              className={`w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
                 viewMode === 'without'
                   ? 'bg-rose-50 text-rose-800 border border-rose-200 shadow-soft-sm'
                   : 'text-slate-500 hover:text-slate-800'
               }`}
             >
-              <AlertTriangle className="w-3.5 h-3.5" />
-              <span>Without UdyamSaathi (The Maze)</span>
+              <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">Without UdyamSaathi</span>
             </button>
             <button
               onClick={() => setViewMode('with')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+              className={`w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
                 viewMode === 'with'
                   ? 'bg-emerald-600 text-white shadow-soft-sm'
                   : 'text-slate-500 hover:text-slate-800'
               }`}
             >
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>With UdyamSaathi (Guided Journey)</span>
+              <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">With UdyamSaathi</span>
             </button>
           </div>
         </div>

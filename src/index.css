@@ -3,17 +3,37 @@
 @tailwind utilities;
 
 @layer base {
+  *, ::before, ::after {
+    box-sizing: border-box;
+  }
+
   html {
     scroll-behavior: smooth;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
   }
 
   body {
     background-color: #FBFBFA;
     color: #0F172A;
     font-family: 'Plus Jakarta Sans', Inter, system-ui, sans-serif;
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
+    position: relative;
+    margin: 0;
+    padding: 0;
+  }
+
+  #root {
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
+    min-height: 100vh;
   }
 }
 
