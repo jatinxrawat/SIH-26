@@ -16,8 +16,17 @@ const RoadmapContext = createContext(null);
 export function RoadmapProvider({ children }) {
   const { profile: loggedInProfile } = useEntrepreneurProfile();
 
-  // Derive real user business profile from loggedInProfile
-  const userRealProfile = useMemo(() => {
+  // Clear legacy demo persona cache
+  useEffect(() => {
+    try {
+      localStorage.removeItem('udyamsathi_active_persona');
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  // Derive real user business profile directly from loggedInProfile
+  const activeProfile = useMemo(() => {
     const biz = loggedInProfile?.business || {};
     const personal = loggedInProfile?.personalInfo || {};
     const fin = loggedInProfile?.financialProfile || {};
@@ -29,7 +38,6 @@ export function RoadmapProvider({ children }) {
 
     return {
       id: 'myBusiness',
-      isRealUser: true,
       name: personal.fullName || 'Jatin Rawat',
       businessName: businessName,
       sector: sector,
@@ -43,7 +51,7 @@ export function RoadmapProvider({ children }) {
       schemeMatchScore: '96% Fit',
       schemeSubsidy: 'Up to 35% Capital Subsidy',
       targetCustomers: biz.targetCustomers || 'Students, Young Professionals & Urban Travelers',
-      productService: biz.productService || biz.description || `${businessName} Solutions`,
+      productService: biz.productService || biz.description || `${businessName} Platform`,
       initialCompletedTasks: [
         'idea-define',
         'idea-customer'
@@ -65,59 +73,41 @@ export function RoadmapProvider({ children }) {
     };
   }, [loggedInProfile]);
 
-  // Persona management: Default to 'myBusiness' (the user's real business project!)
-  const [activePersonaKey, setActivePersonaKey] = useState(() => {
-    const saved = localStorage.getItem('udyamsathi_active_persona');
-    if (!saved || saved === 'sita') {
-      return 'myBusiness';
-    }
-    return saved;
-  });
-
-  const activePersona = useMemo(() => {
-    if (activePersonaKey === 'myBusiness') {
-      return userRealProfile;
-    }
-    return DEMO_PERSONAS[activePersonaKey] || userRealProfile;
-  }, [activePersonaKey, userRealProfile]);
-
-  const activeProfile = activePersona;
-
-  // Persisted task completions
-  const storageCompletedKey = `udyamsathi_completed_tasks_${activePersonaKey}`;
+  // Persisted task completions for user's real business
+  const storageCompletedKey = 'udyamsathi_roadmap_completed_tasks';
   const [completedTaskIds, setCompletedTaskIds] = useState(() => {
     try {
       const saved = localStorage.getItem(storageCompletedKey);
-      return saved ? JSON.parse(saved) : (activePersona.initialCompletedTasks || []);
+      return saved ? JSON.parse(saved) : (activeProfile.initialCompletedTasks || []);
     } catch {
-      return activePersona.initialCompletedTasks || [];
+      return activeProfile.initialCompletedTasks || [];
     }
   });
 
   // Persisted document readiness
-  const storageDocsKey = `udyamsathi_docs_${activePersonaKey}`;
+  const storageDocsKey = 'udyamsathi_roadmap_docs';
   const [documentStatus, setDocumentStatus] = useState(() => {
     try {
       const saved = localStorage.getItem(storageDocsKey);
-      return saved ? JSON.parse(saved) : (activePersona.initialDocumentStatus || {});
+      return saved ? JSON.parse(saved) : (activeProfile.initialDocumentStatus || {});
     } catch {
-      return activePersona.initialDocumentStatus || {};
+      return activeProfile.initialDocumentStatus || {};
     }
   });
 
   // Persisted selected scheme
-  const storageSchemeKey = `udyamsathi_scheme_${activePersonaKey}`;
+  const storageSchemeKey = 'udyamsathi_roadmap_scheme';
   const [selectedSchemeId, setSelectedSchemeId] = useState(() => {
     try {
       const saved = localStorage.getItem(storageSchemeKey);
-      return saved !== null ? JSON.parse(saved) : activePersona.selectedSchemeId;
+      return saved !== null ? JSON.parse(saved) : activeProfile.selectedSchemeId;
     } catch {
-      return activePersona.selectedSchemeId;
+      return activeProfile.selectedSchemeId;
     }
   });
 
-  // Persisted task step checklists (sub-task completion map: { taskId: { [stepIdx]: true } })
-  const storageChecklistsKey = `udyamsathi_checklists_${activePersonaKey}`;
+  // Persisted task step checklists
+  const storageChecklistsKey = 'udyamsathi_roadmap_checklists';
   const [taskChecklists, setTaskChecklists] = useState(() => {
     try {
       const saved = localStorage.getItem(storageChecklistsKey);
@@ -128,7 +118,7 @@ export function RoadmapProvider({ children }) {
   });
 
   // Persisted AI custom tasks
-  const storageCustomTasksKey = `udyamsathi_custom_tasks_${activePersonaKey}`;
+  const storageCustomTasksKey = 'udyamsathi_roadmap_custom_tasks';
   const [customTasks, setCustomTasks] = useState(() => {
     try {
       const saved = localStorage.getItem(storageCustomTasksKey);
@@ -137,7 +127,6 @@ export function RoadmapProvider({ children }) {
       return [];
     }
   });
-
   // UI Interactive States
   const [activeDrawerTaskId, setActiveDrawerTaskId] = useState(null);
   const [expandedStageIds, setExpandedStageIds] = useState([]);
@@ -148,31 +137,10 @@ export function RoadmapProvider({ children }) {
   const [isAIMilestoneModalOpen, setIsAIMilestoneModalOpen] = useState(false);
   const [quickAIPlanTask, setQuickAIPlanTask] = useState(null);
 
-  // Sync state when switching persona
-  const switchPersona = useCallback((key) => {
-    const target = key === 'myBusiness' ? userRealProfile : (DEMO_PERSONAS[key] || userRealProfile);
-    setActivePersonaKey(key);
-    localStorage.setItem('udyamsathi_active_persona', key);
-
-    const savedTasks = localStorage.getItem(`udyamsathi_completed_tasks_${key}`);
-    setCompletedTaskIds(savedTasks ? JSON.parse(savedTasks) : (target.initialCompletedTasks || []));
-
-    const savedDocs = localStorage.getItem(`udyamsathi_docs_${key}`);
-    setDocumentStatus(savedDocs ? JSON.parse(savedDocs) : (target.initialDocumentStatus || {}));
-
-    const savedScheme = localStorage.getItem(`udyamsathi_scheme_${key}`);
-    setSelectedSchemeId(savedScheme !== null ? JSON.parse(savedScheme) : target.selectedSchemeId);
-
-    const savedChecklists = localStorage.getItem(`udyamsathi_checklists_${key}`);
-    setTaskChecklists(savedChecklists ? JSON.parse(savedChecklists) : {});
-
-    const savedCustom = localStorage.getItem(`udyamsathi_custom_tasks_${key}`);
-    setCustomTasks(savedCustom ? JSON.parse(savedCustom) : []);
-
-    setActiveDrawerTaskId(null);
-    hasInitializedStagesRef.current = false;
-    setExpandedStageIds([]);
-  }, [userRealProfile]);
+  // Backward compatible persona switcher (no-op now since real business is always active)
+  const switchPersona = useCallback(() => {
+    // Keep user's real business active
+  }, []);
 
   // Save changes to localStorage
   useEffect(() => {
@@ -398,19 +366,27 @@ export function RoadmapProvider({ children }) {
     return newTask;
   }, [showToast]);
 
-  // Action: Reset journey to demo baseline
+  // Action: Reset journey to project baseline
   const resetJourney = useCallback(() => {
-    const target = DEMO_PERSONAS[activePersonaKey] || DEMO_PERSONAS.sita;
-    setCompletedTaskIds(target.initialCompletedTasks || []);
-    setDocumentStatus(target.initialDocumentStatus || {});
-    setSelectedSchemeId(target.selectedSchemeId || null);
+    try {
+      localStorage.removeItem(storageCompletedKey);
+      localStorage.removeItem(storageDocsKey);
+      localStorage.removeItem(storageSchemeKey);
+      localStorage.removeItem(storageChecklistsKey);
+      localStorage.removeItem(storageCustomTasksKey);
+    } catch {
+      // ignore
+    }
+    setCompletedTaskIds(activeProfile.initialCompletedTasks || []);
+    setDocumentStatus(activeProfile.initialDocumentStatus || {});
+    setSelectedSchemeId(null);
     setTaskChecklists({});
     setCustomTasks([]);
     setActiveDrawerTaskId(null);
     setSearchQuery('');
     setActiveFilter('ALL');
-    showToast('Roadmap journey reset to demo baseline.', 'info');
-  }, [activePersonaKey, showToast]);
+    showToast('Roadmap journey reset to project baseline.', 'info');
+  }, [activeProfile, showToast, storageCompletedKey, storageDocsKey, storageSchemeKey, storageChecklistsKey, storageCustomTasksKey]);
 
   // Action: Print / Export Clean Roadmap Dossier
   const printRoadmapSummary = useCallback(() => {

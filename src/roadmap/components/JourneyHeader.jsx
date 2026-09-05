@@ -30,8 +30,6 @@ export default function JourneyHeader() {
     completedTaskIds,
     currentStageId,
     overallProgress,
-    activePersonaKey,
-    switchPersona,
     resetJourney,
     setExpandedStageId,
     setIsAIMilestoneModalOpen,
@@ -92,82 +90,33 @@ export default function JourneyHeader() {
         </div>
 
         {/* Right Action Bar */}
-        <div className="flex flex-wrap items-center gap-2 shrink-0 self-start lg:self-center">
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0 self-start lg:self-center">
           {/* AI Milestone Trigger */}
           <button
             type="button"
             onClick={() => setIsAIMilestoneModalOpen(true)}
-            className="px-3.5 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-soft-xs flex items-center gap-1.5 transition-all"
+            className="px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-soft-xs flex items-center gap-1.5 transition-all"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>AI Milestone</span>
           </button>
-
-          {/* Workspace / Business Mode Switcher */}
-          <div className="flex items-center bg-slate-100/90 p-1 rounded-2xl border border-slate-200 text-xs font-bold shadow-soft-xs">
-            {/* Real Business Profile Button */}
-            <button
-              type="button"
-              onClick={() => switchPersona('myBusiness')}
-              className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
-                activePersonaKey === 'myBusiness'
-                  ? 'bg-white text-emerald-900 shadow-soft-sm font-black ring-1 ring-slate-200/60'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Building2 className="w-3.5 h-3.5 text-emerald-600" />
-              <span>{profile?.businessName || 'My Business'}</span>
-              {activePersonaKey === 'myBusiness' && (
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
-              )}
-            </button>
-
-            <span className="text-slate-300 px-1 text-[11px] select-none">•</span>
-
-            {/* Sita Demo Button */}
-            <button
-              type="button"
-              onClick={() => switchPersona('sita')}
-              title="SIH Demo: Sita Sharma (Agro Foods)"
-              className={`px-2.5 py-1.5 rounded-xl transition-all flex items-center gap-1 ${
-                activePersonaKey === 'sita'
-                  ? 'bg-white text-emerald-900 shadow-soft-sm font-black ring-1 ring-slate-200/60'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              <span>Demo: Sita</span>
-            </button>
-
-            {/* Priya Demo Button */}
-            <button
-              type="button"
-              onClick={() => switchPersona('priya')}
-              title="Demo: Priya Sharma (Organics)"
-              className={`px-2.5 py-1.5 rounded-xl transition-all flex items-center gap-1 ${
-                activePersonaKey === 'priya'
-                  ? 'bg-white text-emerald-900 shadow-soft-sm font-black ring-1 ring-slate-200/60'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              <span>Priya</span>
-            </button>
-          </div>
 
           {/* Print / Export button */}
           <button
             type="button"
             onClick={printRoadmapSummary}
             title="Print / Save Roadmap Dossier"
-            className="p-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 transition-all"
+            className="p-2.5 px-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 transition-all flex items-center gap-1.5 text-xs font-bold"
           >
-            <Printer className="w-4 h-4" />
+            <Printer className="w-4 h-4 text-slate-500" />
+            <span className="hidden sm:inline">Export Dossier</span>
           </button>
 
           {/* Reset button */}
           <button
             type="button"
             onClick={resetJourney}
-            title="Reset to Demo Baseline"
+            title="Reset to Project Baseline"
             className="p-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 transition-all"
           >
             <RotateCcw className="w-4 h-4" />
