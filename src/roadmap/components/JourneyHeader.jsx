@@ -159,85 +159,116 @@ export default function JourneyHeader() {
         </div>
       </div>
 
-      {/* 8-Stage Horizontal Timeline Stepper (Matching Reference Design) */}
-      <div className="pt-2 pb-2">
-        <div className="overflow-x-auto pb-3 pt-2 scrollbar-none">
-          <div className="relative min-w-[780px] px-2 sm:px-6">
-            {/* Background Continuous Horizontal Connecting Line */}
-            <div className="absolute top-[22px] left-[6.25%] right-[6.25%] h-0.5 bg-slate-200 z-0" />
+      {/* Enterprise Lifecycle Pipeline (Photo 1 Card Frame + Photo 2 Stepper UI) */}
+      <div className="bg-slate-50/70 p-4 sm:p-6 rounded-3xl border border-slate-200/80 shadow-soft-xs space-y-4 relative overflow-hidden">
+        {/* Subtle decorative glow */}
+        <div className="pointer-events-none absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/5 rounded-full blur-2xl" />
 
-            {/* Filled Progress Line up to current active stage */}
-            <div
-              className="absolute top-[22px] left-[6.25%] h-0.5 bg-emerald-500 z-0 transition-all duration-500 ease-out"
-              style={{
-                width: `${(Math.max(0, stages.findIndex((s) => s.id === currentStageId)) / (stages.length - 1)) * 87.5}%`
-              }}
-            />
+        {/* Stepper Header Bar (from Photo 1) */}
+        <div className="flex items-center justify-between gap-3 relative z-10">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-xl bg-emerald-100/90 text-emerald-700 flex items-center justify-center font-bold shadow-soft-xs">
+              <Route className="w-4 h-4 text-emerald-700" />
+            </div>
+            <span className="text-xs font-black uppercase tracking-wider text-slate-800">
+              Enterprise Lifecycle Pipeline
+            </span>
+            <span className="hidden sm:inline-block text-[11px] text-slate-400 font-medium">
+              • Click any milestone to inspect or jump
+            </span>
+          </div>
 
-            {/* Stepper Node Columns */}
-            <div className="relative z-10 flex items-start justify-between">
-              {stages.map((stage) => {
-                const stageTasks = allTasks.filter((t) => t.stage === stage.id);
-                const stageEval = evaluateStageStatus(stage.id, stageTasks, completedTaskIds, currentStageId);
-                const isCurrent = stage.id === currentStageId;
-                const isCompleted = stageEval.status === 'COMPLETED';
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-800 shadow-soft-xs">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
+              </span>
+              <span>Stage {currentStageObj.number} of {stages.length}: {currentStageObj.shortName}</span>
+            </span>
+          </div>
+        </div>
 
-                return (
-                  <button
-                    key={stage.id}
-                    type="button"
-                    onClick={() => handleStageClick(stage.id)}
-                    className="group flex-1 flex flex-col items-center text-center cursor-pointer transition-transform hover:-translate-y-0.5 focus:outline-none select-none"
-                  >
-                    {/* Circle Node Badge */}
-                    <div
-                      className={`w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
-                        isCurrent
-                          ? 'bg-emerald-500 text-white ring-8 ring-emerald-100 shadow-sm'
-                          : isCompleted
-                          ? 'bg-emerald-600 text-white shadow-xs'
-                          : 'bg-white border-2 border-slate-200 text-slate-400 group-hover:border-slate-300 group-hover:text-slate-600 shadow-xs'
-                      }`}
+        {/* 8-Stage Horizontal Timeline Stepper (Photo 2 UI) */}
+        <div className="overflow-x-auto pb-2 pt-2 scrollbar-none relative z-10">
+          <div className="min-w-[780px] px-2 sm:px-6">
+            <div className="relative">
+              {/* Background Continuous Horizontal Connecting Line */}
+              <div className="absolute top-[21px] left-[6.25%] right-[6.25%] h-[2px] bg-slate-200 z-0" />
+
+              {/* Filled Progress Line up to current active stage */}
+              <div
+                className="absolute top-[21px] left-[6.25%] h-[2px] bg-emerald-500 z-0 transition-all duration-500 ease-out"
+                style={{
+                  width: `${(Math.max(0, stages.findIndex((s) => s.id === currentStageId)) / (stages.length - 1)) * 87.5}%`
+                }}
+              />
+
+              {/* Stepper Node Columns */}
+              <div className="relative z-10 flex items-start justify-between">
+                {stages.map((stage) => {
+                  const stageTasks = allTasks.filter((t) => t.stage === stage.id);
+                  const stageEval = evaluateStageStatus(stage.id, stageTasks, completedTaskIds, currentStageId);
+                  const isCurrent = stage.id === currentStageId;
+                  const isCompleted = stageEval.status === 'COMPLETED';
+
+                  return (
+                    <button
+                      key={stage.id}
+                      type="button"
+                      onClick={() => handleStageClick(stage.id)}
+                      className="group flex-1 flex flex-col items-center text-center cursor-pointer transition-transform hover:-translate-y-0.5 focus:outline-none select-none"
                     >
-                      {isCompleted ? (
-                        <Check className="w-5 h-5 stroke-[2.5]" />
-                      ) : (
-                        <span>0{stage.number}</span>
-                      )}
-                    </div>
+                      {/* Circle Node Badge */}
+                      <div
+                        className={`w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
+                          isCurrent
+                            ? 'bg-emerald-500 text-white ring-8 ring-emerald-100 shadow-sm'
+                            : isCompleted
+                            ? 'bg-emerald-600 text-white shadow-xs'
+                            : 'bg-white border-2 border-slate-200 text-slate-400 group-hover:border-slate-300 group-hover:text-slate-600 shadow-xs'
+                        }`}
+                      >
+                        {isCompleted ? (
+                          <Check className="w-5 h-5 stroke-[2.5]" />
+                        ) : (
+                          <span>0{stage.number}</span>
+                        )}
+                      </div>
 
-                    {/* Stage Title */}
-                    <span
-                      className={`text-xs sm:text-sm font-bold mt-3 transition-colors ${
-                        isCurrent
-                          ? 'text-emerald-800 font-extrabold'
-                          : isCompleted
-                          ? 'text-slate-800 font-bold'
-                          : 'text-slate-500 group-hover:text-slate-700'
-                      }`}
-                    >
-                      {stage.shortName}
-                    </span>
+                      {/* Stage Title */}
+                      <span
+                        className={`text-xs sm:text-sm font-bold mt-3 transition-colors ${
+                          isCurrent
+                            ? 'text-emerald-800 font-extrabold'
+                            : isCompleted
+                            ? 'text-slate-800 font-bold'
+                            : 'text-slate-500 group-hover:text-slate-700'
+                        }`}
+                      >
+                        {stage.shortName}
+                      </span>
 
-                    {/* Status Pill / Label */}
-                    <div className="mt-1 h-6 flex items-center justify-center">
-                      {isCurrent ? (
-                        <span className="px-2 py-0.5 rounded-md border border-emerald-300 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-wider">
-                          CURRENT
-                        </span>
-                      ) : isCompleted ? (
-                        <span className="text-[11px] font-semibold text-emerald-600">
-                          Complete
-                        </span>
-                      ) : (
-                        <span className="text-[11px] font-medium text-slate-400">
-                          Pending
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
+                      {/* Status Pill / Label */}
+                      <div className="mt-1 h-6 flex items-center justify-center">
+                        {isCurrent ? (
+                          <span className="px-2 py-0.5 rounded-md border border-emerald-300 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-wider">
+                            CURRENT
+                          </span>
+                        ) : isCompleted ? (
+                          <span className="text-[11px] font-semibold text-emerald-600">
+                            Complete
+                          </span>
+                        ) : (
+                          <span className="text-[11px] font-medium text-slate-400">
+                            Pending
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
