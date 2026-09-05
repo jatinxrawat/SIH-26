@@ -65,7 +65,7 @@ export default function Hero() {
             {/* CTAs with sleek tactile feel */}
             <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3.5 w-full sm:w-auto">
               <a
-                href="#solutions"
+                href="/signup"
                 className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 sm:py-4 text-sm sm:text-base font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] rounded-xl shadow-soft-md shadow-emerald-700/25 transition-all group focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
                 <span>Start Your Journey</span>

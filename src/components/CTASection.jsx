@@ -36,7 +36,7 @@ export default function CTASection() {
         {/* Primary CTA */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="#solutions"
+            href="/signup"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 text-base font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-2xl shadow-soft-lg hover:shadow-emerald-500/20 transition-all duration-200 group active:scale-[0.98]"
           >
             <span>Start Your Business Journey</span>

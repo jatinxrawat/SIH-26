@@ -1,55 +1,68 @@
 import React from 'react';
 
 /**
- * UdyamSaathi Brand Logo Component
- * Combines the rising enterprise glyph (Udyam) with the guiding compass star (Saathi).
+ * UdyamSaathi Standalone Emblem (LogoMark)
+ * 
+ * Standalone organic vector design without a constraining dark container box:
+ * 1. "Udyam" (Enterprise & Momentum): An ascending, fluid ribbon forming the foundational 'U'
+ *    that sweeps dynamically into upward business growth.
+ * 2. "Saathi" (Companion & Guidance): An energetic 45° saffron compass trajectory paired with
+ *    the luminous North Star (Dhruva Tara) representing trusted AI navigation and mentorship.
+ * 3. Color Harmony: Sovereign Indian entrepreneurial palette — Forest Emerald (#047857) to Electric Mint (#34D399)
+ *    paired with Sunrise Saffron & Gold (#F59E0B -> #EA580C).
  */
 export function LogoMark({ className = 'w-10 h-10', variant = 'dark', iconClassName = '' }) {
-  const isDark = variant === 'dark';
   const isLight = variant === 'light';
 
   return (
-    <div
-      className={`relative flex items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105 ${className} ${
-        isDark
-          ? 'bg-slate-900 text-white shadow-soft-sm border border-slate-800 group-hover:border-emerald-500/40 group-hover:bg-slate-800'
-          : isLight
-          ? 'bg-emerald-600 text-white shadow-soft-sm group-hover:bg-emerald-500'
-          : 'bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white shadow-soft-md'
-      }`}
+    <svg
+      viewBox="0 0 44 44"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={`shrink-0 transition-transform duration-300 group-hover:scale-105 select-none ${className} ${iconClassName}`}
+      aria-hidden="true"
     >
-      <svg
-        viewBox="0 0 36 36"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className={`w-3/5 h-3/5 transform transition-transform duration-500 group-hover:rotate-6 ${iconClassName}`}
-      >
-        {/* Guiding Companion Halo */}
-        <circle cx="18" cy="18" r="14" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" className="opacity-30" />
-        
-        {/* Rising Enterprise Wings / Udyam Chevron */}
-        <path
-          d="M7 23.5L18 8L29 23.5L18 19L7 23.5Z"
-          className="fill-emerald-400/90"
-        />
-        
-        {/* Core Guiding Compass Star (Saathi) */}
-        <path
-          d="M18 6L20.2 14.8L29 17L20.2 19.2L18 28L15.8 19.2L7 17L15.8 14.8L18 6Z"
-          className="fill-amber-400"
-          style={{ filter: 'drop-shadow(0 0 4px rgba(251, 191, 36, 0.4))' }}
-        />
-        
-        {/* Dynamic Inner Light */}
-        <circle cx="18" cy="17" r="2.5" className="fill-white" />
-      </svg>
+      <defs>
+        {/* Vibrant Emerald Gradient for Udyam Ascent */}
+        <linearGradient id="udyam-emerald-gradient" x1="6" y1="36" x2="34" y2="12" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#047857" />
+          <stop offset="50%" stopColor="#10B981" />
+          <stop offset="100%" stopColor="#34D399" />
+        </linearGradient>
 
-      {/* Online indicator / companion node */}
-      <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border-2 border-[#FBFBFA]" />
-      </span>
-    </div>
+        {/* Vibrant Saffron/Gold Gradient for Saathi Direction */}
+        <linearGradient id="saathi-saffron-gradient" x1="20" y1="26" x2="38" y2="8" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#F59E0B" />
+          <stop offset="60%" stopColor="#F97316" />
+          <stop offset="100%" stopColor="#EA580C" />
+        </linearGradient>
+
+        {/* Luminous Golden Star */}
+        <linearGradient id="saathi-star-gradient" x1="18" y1="6" x2="26" y2="22" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#FEF08A" />
+          <stop offset="100%" stopColor="#F59E0B" />
+        </linearGradient>
+      </defs>
+
+      {/* 1. Udyam: The Foundation & Ascending Enterprise Arc */}
+      <path
+        d="M8 14C8 24.5 14 34 23.5 34C28.5 34 32.8 31.2 35.5 27.2L30.5 23.8C28.8 26.5 26.2 28.2 23.5 28.2C17.5 28.2 13.8 21.8 13.8 14H8Z"
+        fill="url(#udyam-emerald-gradient)"
+      />
+
+      {/* 2. Growth Momentum: Dynamic 45° Forward Arrow */}
+      <path
+        d="M23 20L38 8L32 23L28.8 18.2L20.2 24.5L17.5 20.8L26.2 14.5L23 20Z"
+        fill="url(#saathi-saffron-gradient)"
+      />
+
+      {/* 3. Saathi: The Guiding Pole Star (Dhruva Tara) */}
+      <path
+        d="M22 6L23.8 12.2L30 14L23.8 15.8L22 22L20.2 15.8L14 14L20.2 12.2L22 6Z"
+        fill="url(#saathi-star-gradient)"
+      />
+      <circle cx="22" cy="14" r="1.8" fill="#FFFFFF" />
+    </svg>
   );
 }
 
@@ -57,13 +70,14 @@ export default function Logo({
   variant = 'dark', // 'dark' (for light backgrounds), 'light' (for dark backgrounds)
   size = 'md', // 'sm', 'md', 'lg'
   showTagline = true,
+  showHindi = true,
   className = '',
 }) {
   const isLightText = variant === 'light';
 
   const titleSizes = {
     sm: 'text-base tracking-tight',
-    md: 'text-lg tracking-tight',
+    md: 'text-lg sm:text-xl tracking-tight',
     lg: 'text-xl sm:text-2xl tracking-tight',
   };
 
@@ -75,24 +89,35 @@ export default function Logo({
 
   return (
     <div className={`flex items-center gap-3 group select-none ${className}`}>
-      <LogoMark className={markSizes[size]} variant={variant === 'light' ? 'light' : 'dark'} />
-      <div className="flex flex-col">
-        <div className="flex items-center gap-1.5">
+      <LogoMark className={markSizes[size]} variant={variant} />
+
+      <div className="flex flex-col text-left">
+        <div className="flex items-center gap-2">
           <span
-            className={`font-black uppercase ${titleSizes[size]} ${
+            className={`font-black tracking-tight leading-tight ${titleSizes[size]} ${
               isLightText ? 'text-white' : 'text-slate-900'
             }`}
           >
-            Udyam<span className="text-emerald-500">Saathi</span>
+            Udyam<span className="text-emerald-600 dark:text-emerald-400 font-black">Saathi</span>
           </span>
-          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 leading-none hidden sm:inline-block">
-            उद्यम साथी
-          </span>
+
+          {showHindi && (
+            <span
+              className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md leading-none hidden sm:inline-flex items-center ${
+                isLightText
+                  ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-700/50'
+                  : 'bg-emerald-50 text-emerald-800 border border-emerald-200/80'
+              }`}
+            >
+              उद्यम साथी
+            </span>
+          )}
         </div>
+
         {showTagline && (
           <span
-            className={`text-[10px] uppercase font-bold tracking-wider mt-0.5 ${
-              isLightText ? 'text-emerald-400' : 'text-emerald-700'
+            className={`text-[9.5px] uppercase font-bold tracking-wider mt-0.5 leading-none ${
+              isLightText ? 'text-emerald-400' : 'text-emerald-700/90'
             }`}
           >
             AI Digital Business Companion
