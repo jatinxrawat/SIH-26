@@ -138,33 +138,33 @@ export default function AIMilestoneModal() {
         {/* Scrollable Content */}
         <div className="p-6 sm:p-7 space-y-6 overflow-y-auto">
           {/* Engine Selector */}
-          <div className="flex items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/80 text-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200 text-xs">
             <div className="flex items-center gap-2">
-              <Bot className="w-4 h-4 text-emerald-600" />
-              <span className="font-bold text-slate-700">AI Intelligence Provider:</span>
+              <Bot className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span className="font-bold text-slate-700">Intelligence Engine:</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 self-start sm:self-auto">
               <button
                 type="button"
                 onClick={() => setProvider('gemini')}
-                className={`px-3 py-1 rounded-xl font-black text-xs transition-all ${
+                className={`px-3.5 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
                   provider === 'gemini'
                     ? 'bg-emerald-600 text-white shadow-soft-xs'
                     : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
                 }`}
               >
-                Gemini 3.5
+                Saathi Strategy Core
               </button>
               <button
                 type="button"
                 onClick={() => setProvider('grok')}
-                className={`px-3 py-1 rounded-xl font-black text-xs transition-all ${
+                className={`px-3.5 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
                   provider === 'grok'
-                    ? 'bg-slate-900 text-white shadow-soft-xs'
+                    ? 'bg-emerald-800 text-white shadow-soft-xs'
                     : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
                 }`}
               >
-                Groq (Ultra-Fast)
+                Saathi Tactical Core
               </button>
             </div>
           </div>

@@ -6,7 +6,7 @@
 
 export class GeminiProvider {
   constructor() {
-    this.name = 'Google Gemini 1.5 Pro';
+    this.name = 'Saathi Strategic Advisor';
     this.id = 'gemini';
     this.badge = 'Deep MSME Intelligence';
   }

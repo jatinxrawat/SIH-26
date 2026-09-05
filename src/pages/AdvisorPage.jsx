@@ -66,7 +66,7 @@ export default function AdvisorPage() {
 
   const [inputVal, setInputVal] = useState('');
   const [loading, setLoading] = useState(false);
-  const [activeProvider, setActiveProvider] = useState('Groq Ultra-Fast');
+  const [activeProvider, setActiveProvider] = useState('Saathi Strategic AI');
   const chatEndRef = useRef(null);
 
   // Sync messages when active business changes
@@ -123,7 +123,7 @@ export default function AdvisorPage() {
         id: `ai_${Date.now()}`,
         sender: 'ai',
         text: response.reply,
-        provider: response.provider || 'Groq Ultra-Fast Cloud',
+        provider: response.provider || 'Saathi Strategic AI',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
 

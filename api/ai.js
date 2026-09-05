@@ -105,7 +105,7 @@ Guidelines:
               return res.status(200).json({
                 success: true,
                 reply: reply.trim(),
-                provider: 'Google Gemini 3.5 Flash',
+                provider: 'Saathi Strategic Intelligence',
                 isLive: true
               });
             }
@@ -151,7 +151,7 @@ Provide a response in JSON format with exactly these keys:
           const rawText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
           if (rawText) {
             const structured = JSON.parse(rawText);
-            return res.status(200).json({ success: true, structured });
+            return res.status(200).json({ success: true, structured: { ...structured, provider: 'Saathi Strategic Intelligence', isLive: true } });
           }
         }
       } catch (e) {
@@ -200,7 +200,7 @@ Respond ONLY with valid JSON containing:
           const rawContent = groqData?.choices?.[0]?.message?.content;
           if (rawContent) {
             const structured = JSON.parse(rawContent);
-            return res.status(200).json({ success: true, structured });
+            return res.status(200).json({ success: true, structured: { ...structured, provider: 'Saathi Tactical Engine', isLive: true } });
           }
         }
       } catch (e) {
@@ -224,7 +224,7 @@ Respond ONLY with valid JSON containing:
         ? `Completing this unlocks: ${task.unlocks.join(', ')}`
         : 'Proceed to next milestone in roadmap.',
       warnings: 'Never pay intermediaries for free central government registrations (Udyam, FoSCoS).',
-      source: provider === 'gemini' ? 'Google Gemini Intelligence' : 'xAI Grok Execution Engine',
+      source: provider === 'gemini' ? 'Saathi Strategic Intelligence' : 'Saathi Tactical Action Engine',
       isLive: Boolean((provider === 'gemini' && geminiKey) || (provider === 'grok' && grokKey))
     };
 

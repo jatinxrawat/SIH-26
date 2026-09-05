@@ -6,7 +6,7 @@
 
 export class GrokProvider {
   constructor() {
-    this.name = 'xAI Grok 2';
+    this.name = 'Saathi Tactical Engine';
     this.id = 'grok';
     this.badge = 'Fast Action Execution';
   }

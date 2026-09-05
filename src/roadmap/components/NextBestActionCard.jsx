@@ -174,7 +174,7 @@ export default function NextBestActionCard() {
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
               <span className="text-xs font-black text-emerald-300 flex items-center gap-1.5">
                 <Bot className="w-4 h-4" />
-                <span>Live AI Blueprint ({quickAIContent?.provider || 'Groq Fast Engine'})</span>
+                <span>Live AI Blueprint ({quickAIContent?.provider || 'Saathi Tactical Engine'})</span>
               </span>
               <button
                 type="button"
