@@ -13,9 +13,28 @@ import {
   setDoc,
   serverTimestamp
 } from 'firebase/firestore';
-import { auth, googleProvider, db } from '../firebase/config';
+import { auth, googleProvider, db, isFirebaseConfigured } from '../firebase/config';
 
 const AuthContext = createContext(null);
+
+const DEMO_USER_STORAGE_KEY = 'udyamsathi_demo_user';
+const DEMO_PROFILE_STORAGE_KEY = 'udyamsathi_demo_profile';
+
+const DEFAULT_DEMO_USER = {
+  uid: 'demo-entrepreneur-sih',
+  displayName: 'Priya Sharma',
+  email: 'priya.sharma@udyamsathi.in',
+  photoURL: null,
+  isDemo: true
+};
+
+const DEFAULT_DEMO_PROFILE = {
+  id: 'demo-entrepreneur-sih',
+  name: 'Priya Sharma',
+  email: 'priya.sharma@udyamsathi.in',
+  onboardingCompleted: true,
+  isDemo: true
+};
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
@@ -24,6 +43,11 @@ export function AuthProvider({ children }) {
 
   // Sync user profile from Firestore
   const fetchUserProfile = async (uid) => {
+    if (!db) {
+      const stored = localStorage.getItem(DEMO_PROFILE_STORAGE_KEY);
+      return stored ? JSON.parse(stored) : null;
+    }
+
     try {
       const userDocRef = doc(db, 'users', uid);
       const userDocSnap = await getDoc(userDocRef);
@@ -42,6 +66,28 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
+    // Check for stored demo user first
+    const storedDemoUser = localStorage.getItem(DEMO_USER_STORAGE_KEY);
+    const storedDemoProfile = localStorage.getItem(DEMO_PROFILE_STORAGE_KEY);
+
+    if (storedDemoUser && storedDemoProfile) {
+      try {
+        setCurrentUser(JSON.parse(storedDemoUser));
+        setUserProfile(JSON.parse(storedDemoProfile));
+        setLoading(false);
+        return;
+      } catch (e) {
+        localStorage.removeItem(DEMO_USER_STORAGE_KEY);
+        localStorage.removeItem(DEMO_PROFILE_STORAGE_KEY);
+      }
+    }
+
+    if (!auth) {
+      // Firebase not configured; finish loading immediately
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user) {
@@ -55,8 +101,30 @@ export function AuthProvider({ children }) {
     return () => unsubscribe();
   }, []);
 
+  // Demo user login for fast review or when Firebase credentials are not set
+  const loginAsDemoUser = (completedOnboarding = true) => {
+    const demoUser = { ...DEFAULT_DEMO_USER };
+    const demoProfile = {
+      ...DEFAULT_DEMO_PROFILE,
+      onboardingCompleted: completedOnboarding
+    };
+
+    localStorage.setItem(DEMO_USER_STORAGE_KEY, JSON.stringify(demoUser));
+    localStorage.setItem(DEMO_PROFILE_STORAGE_KEY, JSON.stringify(demoProfile));
+
+    setCurrentUser(demoUser);
+    setUserProfile(demoProfile);
+    return { user: demoUser, profile: demoProfile };
+  };
+
   // Sign up with Email and Password
   const signupWithEmail = async (fullName, email, password) => {
+    if (!auth || !db) {
+      throw new Error(
+        'Firebase credentials are not configured in this deployment. Please configure VITE_FIREBASE_* environment variables or continue as Demo Entrepreneur.'
+      );
+    }
+
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
@@ -83,6 +151,12 @@ export function AuthProvider({ children }) {
 
   // Log in with Email and Password
   const loginWithEmail = async (email, password) => {
+    if (!auth) {
+      throw new Error(
+        'Firebase credentials are not configured in this deployment. Please configure VITE_FIREBASE_* environment variables or continue as Demo Entrepreneur.'
+      );
+    }
+
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const profile = await fetchUserProfile(userCredential.user.uid);
     return { user: userCredential.user, profile };
@@ -90,6 +164,12 @@ export function AuthProvider({ children }) {
 
   // Sign in with Google (Popup)
   const loginWithGoogle = async () => {
+    if (!auth || !googleProvider || !db) {
+      throw new Error(
+        'Firebase credentials are not configured in this deployment. Please configure VITE_FIREBASE_* environment variables or continue as Demo Entrepreneur.'
+      );
+    }
+
     const userCredential = await signInWithPopup(auth, googleProvider);
     const user = userCredential.user;
 
@@ -119,14 +199,32 @@ export function AuthProvider({ children }) {
 
   // Log out
   const logout = async () => {
-    await signOut(auth);
+    localStorage.removeItem(DEMO_USER_STORAGE_KEY);
+    localStorage.removeItem(DEMO_PROFILE_STORAGE_KEY);
+
+    if (auth) {
+      try {
+        await signOut(auth);
+      } catch (err) {
+        console.error('Error signing out of Firebase:', err);
+      }
+    }
+
     setCurrentUser(null);
     setUserProfile(null);
   };
 
   // Refresh profile state
   const refreshProfile = async () => {
-    if (auth.currentUser) {
+    if (currentUser?.isDemo) {
+      const stored = localStorage.getItem(DEMO_PROFILE_STORAGE_KEY);
+      if (stored) {
+        const p = JSON.parse(stored);
+        setUserProfile(p);
+        return p;
+      }
+    }
+    if (auth?.currentUser) {
       return await fetchUserProfile(auth.currentUser.uid);
     }
     return null;
@@ -136,6 +234,8 @@ export function AuthProvider({ children }) {
     currentUser,
     userProfile,
     loading,
+    isFirebaseConfigured,
+    loginAsDemoUser,
     signupWithEmail,
     loginWithEmail,
     loginWithGoogle,
@@ -165,3 +265,4 @@ export function useAuth() {
   }
   return context;
 }
+

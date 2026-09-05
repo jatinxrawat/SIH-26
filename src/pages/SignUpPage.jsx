@@ -14,8 +14,17 @@ export default function SignUpPage() {
   const [submitting, setSubmitting] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  const { signupWithEmail, loginWithGoogle } = useAuth();
+  const { signupWithEmail, loginWithGoogle, loginAsDemoUser, isFirebaseConfigured } = useAuth();
   const navigate = useNavigate();
+
+  const handleDemoLogin = (completed = false) => {
+    const { profile } = loginAsDemoUser(completed);
+    if (profile?.onboardingCompleted) {
+      navigate('/dashboard', { replace: true });
+    } else {
+      navigate('/onboarding', { replace: true });
+    }
+  };
 
   // Password strength calculations
   const calculateStrength = (pwd) => {
@@ -115,16 +124,51 @@ export default function SignUpPage() {
           Create your account
         </h2>
         <p className="mt-2 text-sm text-slate-600">
-          Begin your entrepreneurship journey with government schemes, funding & roadmap support.
+          Begin your guided entrepreneurial journey with personalized schemes & roadmap.
         </p>
       </div>
 
       <div className="mt-8 mx-auto w-full max-w-md">
         <div className="bg-white py-8 px-5 sm:px-10 rounded-2xl border border-slate-200 shadow-soft-xl">
+          {/* Unconfigured Firebase Notice Banner */}
+          {!isFirebaseConfigured && (
+            <div className="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs leading-relaxed space-y-2">
+              <div className="flex items-center gap-2 font-bold text-amber-800">
+                <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+                <span>Hosting Notice: Firebase Variables Missing</span>
+              </div>
+              <p>
+                The deployed site is missing <code className="bg-amber-100 px-1 py-0.5 rounded font-mono">VITE_FIREBASE_*</code> environment variables in your deployment dashboard.
+              </p>
+              <button
+                type="button"
+                onClick={() => handleDemoLogin(false)}
+                className="w-full mt-2 inline-flex items-center justify-center gap-2 py-2 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-xs transition-all shadow-sm"
+              >
+                <span>Test Onboarding as Demo Entrepreneur</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200/80 flex items-start gap-3 text-rose-800 text-sm animate-in fade-in duration-200">
               <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
               <div className="flex-1">{error}</div>
+            </div>
+          )}
+
+          {/* Quick Demo Access Button */}
+          {isFirebaseConfigured && (
+            <div className="mb-6">
+              <button
+                type="button"
+                onClick={() => handleDemoLogin(true)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold transition-all"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Instant Demo Preview (Skip Signup)</span>
+              </button>
             </div>
           )}
 
