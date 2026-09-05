@@ -15,20 +15,28 @@ export default async function handler(req, res) {
     const { provider, task, context, question } = req.body || {};
     const businessName = context?.businessName || 'Your Business';
     const sector = context?.sector || 'General';
+    const companyDescription = context?.businessDescription || context?.description || context?.productService || context?.domainTitle || '';
+    const targetCustomers = context?.targetCustomers || context?.targetAudience || '';
     const taskTitle = task?.title || 'this task';
 
     if (provider === 'gemini' && geminiKey) {
       try {
-        const prompt = `You are an AI Business Advisor for an Indian MSME entrepreneur.
-Business: ${businessName} (${sector}, ${context?.location || 'India'}).
+        const prompt = `You are an expert AI Business Advisor for an Indian micro-enterprise entrepreneur.
+Business Name: ${businessName}
+Location: ${context?.location || 'India'}
+What this business actually makes / provides: ${companyDescription || sector}
+Target Customers: ${targetCustomers || 'Local buyers'}
+Registered Sector: ${sector}
 Current Task: ${taskTitle}.
 Context: ${JSON.stringify(task || {})}.
 User Question: ${question || 'How do I complete this task efficiently?'}.
 
+Important instruction: Base your advice strictly on what this company actually makes and does (${companyDescription || sector}). Do NOT make generic assumptions or confuse their trade with unrelated sectors.
+
 Provide a response in JSON format with exactly these keys:
 {
-  "answer": "Clear, jargon-free summary answering the question",
-  "why": "Why this task is critical for this business",
+  "answer": "Clear, jargon-free summary answering the question tailored to what this company actually does",
+  "why": "Why this task is critical for this specific business",
   "whatToDo": ["Step 1", "Step 2", "Step 3", "Step 4"],
   "documents": "Mandatory documents or 'None required'",
   "nextStep": "What unlocking happens next",
@@ -65,15 +73,21 @@ Provide a response in JSON format with exactly these keys:
       const activeGroqKey = grokKey || process.env.GROQ_API_KEY;
       try {
         const prompt = `You are an expert Indian MSME & startup advisor.
-Business: ${businessName} (${sector}, ${context?.location || 'India'}).
-Task: ${taskTitle}.
+Business Name: ${businessName}
+Location: ${context?.location || 'India'}
+What this business actually makes / provides: ${companyDescription || sector}
+Target Customers: ${targetCustomers || 'Local buyers'}
+Registered Sector: ${sector}
+Current Task: ${taskTitle}.
 Context: ${JSON.stringify(task || {})}.
 Question: ${question || 'How do I execute this task step-by-step?'}.
 
+Important instruction: Base your advice strictly on what this company actually makes and does (${companyDescription || sector}). Do NOT make generic assumptions or confuse their trade with unrelated sectors.
+
 Respond ONLY with valid JSON containing:
 {
-  "answer": "Concise, actionable advice tailored to rural/semi-urban Indian entrepreneur",
-  "why": "Why this specific step is critical for bank credit or government compliance",
+  "answer": "Concise, actionable advice tailored to what this company actually makes and provides",
+  "why": "Why this specific step is critical for bank credit or government compliance for this exact business",
   "whatToDo": ["Step 1", "Step 2", "Step 3", "Step 4"],
   "documents": "Mandatory paperwork or 'None required'",
   "nextStep": "What will be unlocked next",

@@ -5,6 +5,7 @@ import {
   Building2,
   Landmark,
   Coins,
+  Compass,
   MapPin,
   Users2,
   Bot,
@@ -41,6 +42,7 @@ export default function Sidebar({ onCloseMobile }) {
         { name: 'My Business', path: '/business', icon: Building2 },
         { name: 'Government Schemes', path: '/schemes', icon: Landmark },
         { name: 'Funding', path: '/funding', icon: Coins },
+        { name: 'Business Strategy', path: '/strategy', icon: Compass },
         { name: 'Roadmap', path: '/roadmap', icon: MapPin },
         { name: 'Professionals', path: '/professionals', icon: Users2 },
         { name: 'AI Business Advisor', path: '/advisor', icon: Bot, isAi: true }
