@@ -2,11 +2,31 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Landmark, IndianRupee, MapPin, FileText, ArrowUpRight } from 'lucide-react';
 import { useEntrepreneurProfile } from '../../context/EntrepreneurProfileContext';
+import {
+  parseRupeeAmount,
+  formatRupees,
+  calculateFinancingStructure
+} from '../../services/financialCalculationService';
 
 export default function OverviewCards() {
   const { profile } = useEntrepreneurProfile();
 
-  const fundingVal = profile?.financialProfile?.fundingRequired || 'Not calculated yet';
+  const financials = profile?.financialProfile || {};
+  const margin = parseRupeeAmount(financials.availableMarginCapital || financials.availableCapital || 0);
+  const cost = parseRupeeAmount(financials.estimatedProjectCost || 0);
+
+  const hasFinancialData = margin > 0 || cost > 0;
+  const structure = hasFinancialData ? calculateFinancingStructure(margin, cost) : null;
+
+  const fundingVal = structure
+    ? formatRupees(structure.potentialLoan)
+    : 'Not calculated yet';
+
+  const tierBadge = structure?.product?.name === 'Micro Finance Scheme'
+    ? 'Micro Finance'
+    : structure?.product?.name === 'Term Loan Scheme'
+    ? 'Term Loan'
+    : 'Funding Plan';
 
   const cards = [
     {
@@ -19,13 +39,15 @@ export default function OverviewCards() {
       route: '/schemes'
     },
     {
-      title: 'Funding Required',
+      title: 'Your Funding Plan',
       value: fundingVal,
-      subtitle: profile?.financialProfile?.estimatedProjectCost
-        ? `Estimated Project: ${profile.financialProfile.estimatedProjectCost}`
-        : 'Based on capital estimate',
-      badge: 'Profile Data',
-      badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+      subtitle: structure
+        ? `Project: ${formatRupees(structure.effectiveProjectCost)} • Margin: ${formatRupees(structure.margin)}`
+        : 'Set up your financial structure',
+      badge: hasFinancialData ? tierBadge : 'Action Required',
+      badgeColor: hasFinancialData
+        ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+        : 'bg-amber-100 text-amber-800 border-amber-200',
       icon: IndianRupee,
       route: '/funding'
     },

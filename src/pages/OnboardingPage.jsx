@@ -50,6 +50,17 @@ const SUPPORT_OPTIONS = [
   'Other'
 ];
 
+const FUNDING_PURPOSE_OPTIONS = [
+  'Starting a new business',
+  'Purchasing equipment',
+  'Purchasing machinery',
+  'Working capital',
+  'Expanding existing business',
+  'Inventory/raw materials',
+  'Shop/business premises',
+  'Other'
+];
+
 const INITIAL_FORM = {
   // Step 1: Personal Info
   fullName: '',
@@ -88,14 +99,21 @@ const INITIAL_FORM = {
   licensesHeld: '',
 
   // Step 4: Financial Situation
-  availableCapital: '₹50,000 - ₹2 Lakhs',
-  estimatedProjectCost: '₹5 Lakhs - ₹10 Lakhs',
-  fundingRequired: '₹5 Lakhs',
+  availableMarginCapital: '₹1,00,000',
+  availableCapital: '₹1,00,000',
+  estimatedProjectCost: '₹10,00,000',
+  fundingRequired: '₹9,00,000',
+  fundingPurpose: ['Starting a new business', 'Purchasing equipment', 'Working capital'],
+  monthlyOperatingExpenses: '₹45,000',
   existingRevenue: '',
   existingExpenses: '',
   hasExistingLoans: 'No',
+  existingLoanAmount: '',
+  existingMonthlyObligation: '',
   existingEmi: '',
-  preferredFundingType: 'Government scheme',
+  expectedMonthlyRevenue: '₹1,20,000',
+  expectedMonthlyOperatingCost: '₹65,000',
+  preferredFundingType: 'Government scheme grant / credit guarantee',
 
   // Step 5: Goals & Support
   supportNeeded: ['Government schemes', 'Loans / funding'],
@@ -157,6 +175,16 @@ export default function OnboardingPage() {
     });
   };
 
+  const handlePurposeToggle = (option) => {
+    setFormData((prev) => {
+      const current = prev.fundingPurpose || [];
+      const updated = current.includes(option)
+        ? current.filter((item) => item !== option)
+        : [...current, option];
+      return { ...prev, fundingPurpose: updated };
+    });
+  };
+
   // Step Validations
   const validateStep = (step) => {
     const newErrors = {};
@@ -178,11 +206,15 @@ export default function OnboardingPage() {
         newErrors.description = 'Please provide a short description.';
       }
     } else if (step === 4) {
-      if (!formData.fundingRequired.trim()) {
-        newErrors.fundingRequired = 'Estimated funding required is needed.';
+      const margin = formData.availableMarginCapital || formData.availableCapital;
+      if (!margin || !margin.toString().trim()) {
+        newErrors.availableMarginCapital = 'Please enter how much of your own money you can invest.';
       }
-      if (formData.hasExistingLoans === 'Yes' && !formData.existingEmi.trim()) {
-        newErrors.existingEmi = 'Please specify approximate monthly EMI.';
+      if (formData.hasExistingLoans === 'Yes') {
+        const obligation = formData.existingMonthlyObligation || formData.existingEmi;
+        if (!obligation || !obligation.toString().trim()) {
+          newErrors.existingMonthlyObligation = 'Please specify approximate monthly EMI.';
+        }
       }
     } else if (step === 5) {
       if (!formData.supportNeeded || formData.supportNeeded.length === 0) {
@@ -258,13 +290,20 @@ export default function OnboardingPage() {
         },
 
         financialProfile: {
-          availableCapital: formData.availableCapital,
-          estimatedProjectCost: formData.estimatedProjectCost,
-          fundingRequired: formData.fundingRequired,
-          existingRevenue: formData.existingRevenue || 'N/A',
-          existingExpenses: formData.existingExpenses || 'N/A',
+          availableMarginCapital: formData.availableMarginCapital || formData.availableCapital,
+          availableCapital: formData.availableMarginCapital || formData.availableCapital,
+          estimatedProjectCost: formData.estimatedProjectCost || '',
+          fundingRequired: formData.fundingRequired || '',
+          fundingPurpose: formData.fundingPurpose || [],
+          monthlyOperatingExpenses: formData.monthlyOperatingExpenses || formData.existingExpenses || '',
+          existingRevenue: formData.existingRevenue || formData.monthlyRevenue || 'N/A',
+          existingExpenses: formData.monthlyOperatingExpenses || formData.existingExpenses || 'N/A',
           hasExistingLoans: formData.hasExistingLoans,
-          existingEmi: formData.existingEmi || '0',
+          existingLoanAmount: formData.existingLoanAmount || '0',
+          existingMonthlyObligation: formData.existingMonthlyObligation || formData.existingEmi || '0',
+          existingEmi: formData.existingMonthlyObligation || formData.existingEmi || '0',
+          expectedMonthlyRevenue: formData.expectedMonthlyRevenue || '',
+          expectedMonthlyOperatingCost: formData.expectedMonthlyOperatingCost || '',
           preferredFundingType: formData.preferredFundingType
         },
 
@@ -919,9 +958,9 @@ export default function OnboardingPage() {
           {currentStep === 4 && (
             <div className="space-y-6 animate-in fade-in duration-200">
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-900">💰 Financial Information</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900">💰 Financial Structuring & Capital</h2>
                 <p className="text-sm text-slate-500 mt-1">
-                  Estimate your capital needs to calculate scheme grant sizes and loan limits (e.g. Mudra Shishu/Kishore/Tarun).
+                  Tell us about your available savings and project budget. We use this to calculate your feasible project capacity and match eligible funding tiers.
                 </p>
               </div>
 
@@ -930,81 +969,117 @@ export default function OnboardingPage() {
                 <ShieldAlert className="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold">Security Notice: </span>
-                  We will <span className="underline">never</span> ask for sensitive financial credentials like bank passwords, UPI PINs, or card numbers. Only provide high-level capital estimates.
+                  We will <span className="underline">never</span> ask for sensitive financial credentials like bank passwords, UPI PINs, or account numbers. Only enter high-level capital estimates.
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
+                {/* 1. Margin Capital - Core PS Input */}
+                <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
-                    Available Personal / Business Capital
-                  </label>
-                  <select
-                    value={formData.availableCapital}
-                    onChange={(e) => handleChange('availableCapital', e.target.value)}
-                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
-                  >
-                    <option value="Below ₹50,000">Below ₹50,000</option>
-                    <option value="₹50,000 - ₹2 Lakhs">₹50,000 - ₹2 Lakhs</option>
-                    <option value="₹2 Lakhs - ₹5 Lakhs">₹2 Lakhs - ₹5 Lakhs</option>
-                    <option value="₹5 Lakhs - ₹15 Lakhs">₹5 Lakhs - ₹15 Lakhs</option>
-                    <option value="Above ₹15 Lakhs">Above ₹15 Lakhs</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
-                    Estimated Total Project / Startup Cost
-                  </label>
-                  <select
-                    value={formData.estimatedProjectCost}
-                    onChange={(e) => handleChange('estimatedProjectCost', e.target.value)}
-                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
-                  >
-                    <option value="Under ₹2 Lakhs">Under ₹2 Lakhs (Mudra Shishu bracket)</option>
-                    <option value="₹2 Lakhs - ₹5 Lakhs">₹2 Lakhs - ₹5 Lakhs (Mudra Kishore bracket)</option>
-                    <option value="₹5 Lakhs - ₹10 Lakhs">₹5 Lakhs - ₹10 Lakhs (Mudra Tarun bracket)</option>
-                    <option value="₹10 Lakhs - ₹25 Lakhs">₹10 Lakhs - ₹25 Lakhs (PMEGP bracket)</option>
-                    <option value="₹25 Lakhs - ₹1 Crore">₹25 Lakhs - ₹1 Crore</option>
-                    <option value="Above ₹1 Crore">Above ₹1 Crore</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
-                    Amount of Additional Funding Required <span className="text-rose-500">*</span>
+                    How much of your own money can you invest in this business? <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
-                    value={formData.fundingRequired}
-                    onChange={(e) => handleChange('fundingRequired', e.target.value)}
-                    placeholder="e.g. ₹5,00,000"
-                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
+                    value={formData.availableMarginCapital || formData.availableCapital}
+                    onChange={(e) => {
+                      handleChange('availableMarginCapital', e.target.value);
+                      handleChange('availableCapital', e.target.value);
+                    }}
+                    placeholder="e.g. ₹50,000 / ₹1,00,000 / ₹2,00,000"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
                   />
-                  {errors.fundingRequired && <p className="text-rose-500 text-xs mt-1">{errors.fundingRequired}</p>}
+                  <p className="text-xs text-slate-500 mt-1">
+                    💡 This helps us estimate how much project funding you may be able to structure (e.g. at 10% margin, ₹1 Lakh contribution supports a ₹10 Lakh project).
+                  </p>
+                  {errors.availableMarginCapital && <p className="text-rose-500 text-xs mt-1">{errors.availableMarginCapital}</p>}
                 </div>
 
-                <div>
+                {/* 2. Estimated Total Project Cost */}
+                <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
-                    Preferred Funding Channel
+                    How much do you estimate you will need to start or expand this business? <span className="text-slate-400 font-normal">(Optional)</span>
                   </label>
-                  <select
-                    value={formData.preferredFundingType}
-                    onChange={(e) => handleChange('preferredFundingType', e.target.value)}
-                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
-                  >
-                    <option value="Government scheme">Government scheme grant / credit guarantee</option>
-                    <option value="Subsidy">Capital subsidy (PMEGP / state scheme)</option>
-                    <option value="Bank loan">Bank loan (Collateral-free CGTMSE)</option>
-                    <option value="Microfinance">Microfinance institution (MFI)</option>
-                    <option value="Self-funded">Self-funded / Bootstrapped</option>
-                    <option value="Other">Other</option>
-                  </select>
+                  <input
+                    type="text"
+                    value={formData.estimatedProjectCost}
+                    onChange={(e) => handleChange('estimatedProjectCost', e.target.value)}
+                    placeholder="e.g. ₹10,00,000 (or leave blank to auto-calculate)"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">
+                    If left blank, Business Compass will automatically determine your feasible project size based on your available own contribution.
+                  </p>
                 </div>
 
-                <div>
+                {/* 3. Operational Financials - Tailored by Stage */}
+                {formData.entrepreneurStatus === 'OPERATING' ? (
+                  <>
+                    <div>
+                      <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
+                        Current Monthly Revenue
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.monthlyRevenue}
+                        onChange={(e) => handleChange('monthlyRevenue', e.target.value)}
+                        placeholder="e.g. ₹85,000 / month"
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
+                        Monthly Operating Expenses
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.monthlyOperatingExpenses || formData.existingExpenses}
+                        onChange={(e) => {
+                          handleChange('monthlyOperatingExpenses', e.target.value);
+                          handleChange('existingExpenses', e.target.value);
+                        }}
+                        placeholder="e.g. ₹45,000 (rent, wages, raw materials)"
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
+                        Expected Monthly Revenue (After Launch)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.expectedMonthlyRevenue}
+                        onChange={(e) => handleChange('expectedMonthlyRevenue', e.target.value)}
+                        placeholder="e.g. ₹1,20,000 / month"
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
+                      />
+                      <p className="text-[11px] text-slate-400 mt-0.5">Used to assess debt repayment comfort & coverage ratio.</p>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
+                        Expected Monthly Operating Cost
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.expectedMonthlyOperatingCost}
+                        onChange={(e) => handleChange('expectedMonthlyOperatingCost', e.target.value)}
+                        placeholder="e.g. ₹65,000 (wages, rent, electricity, transport)"
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
+                      />
+                      <p className="text-[11px] text-slate-400 mt-0.5">Helps calculate necessary working capital reserves.</p>
+                    </div>
+                  </>
+                )}
+
+                {/* 4. Existing Loans */}
+                <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
-                    Do you have any existing business or personal loans?
+                    Do you currently have any business or personal loans that affect your repayment capacity?
                   </label>
                   <div className="grid grid-cols-2 gap-2 mt-1">
                     {['No', 'Yes'].map((ans) => (
@@ -1025,20 +1100,83 @@ export default function OnboardingPage() {
                 </div>
 
                 {formData.hasExistingLoans === 'Yes' && (
-                  <div>
-                    <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
-                      Existing Monthly EMI Obligation <span className="text-rose-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.existingEmi}
-                      onChange={(e) => handleChange('existingEmi', e.target.value)}
-                      placeholder="e.g. ₹12,000 / month"
-                      className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
-                    />
-                    {errors.existingEmi && <p className="text-rose-500 text-xs mt-1">{errors.existingEmi}</p>}
-                  </div>
+                  <>
+                    <div>
+                      <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
+                        Total Outstanding Loan Amount
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.existingLoanAmount}
+                        onChange={(e) => handleChange('existingLoanAmount', e.target.value)}
+                        placeholder="e.g. ₹1,50,000"
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
+                        Approximate Monthly Repayment / EMI <span className="text-rose-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.existingMonthlyObligation || formData.existingEmi}
+                        onChange={(e) => {
+                          handleChange('existingMonthlyObligation', e.target.value);
+                          handleChange('existingEmi', e.target.value);
+                        }}
+                        placeholder="e.g. ₹12,000 / month"
+                        className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
+                      />
+                      {errors.existingMonthlyObligation && <p className="text-rose-500 text-xs mt-1">{errors.existingMonthlyObligation}</p>}
+                    </div>
+                  </>
                 )}
+
+                {/* 5. Funding Purpose (Multi-Select) */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold uppercase text-slate-700 mb-2">
+                    What will this funding be used for? (Select all that apply)
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {FUNDING_PURPOSE_OPTIONS.map((purpose) => {
+                      const isSelected = (formData.fundingPurpose || []).includes(purpose);
+                      return (
+                        <button
+                          key={purpose}
+                          type="button"
+                          onClick={() => handlePurposeToggle(purpose)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                            isSelected
+                              ? 'bg-emerald-600 text-white border-emerald-600 shadow-soft-xs'
+                              : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                          }`}
+                        >
+                          {isSelected ? '✓ ' : '+ '}{purpose}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 6. Preferred Funding Channel */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold uppercase text-slate-700 mb-1">
+                    Preferred Funding Channel
+                  </label>
+                  <select
+                    value={formData.preferredFundingType}
+                    onChange={(e) => handleChange('preferredFundingType', e.target.value)}
+                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
+                  >
+                    <option value="Government scheme grant / credit guarantee">Government scheme grant / credit guarantee (PMEGP, PMFME, CGTMSE)</option>
+                    <option value="Mudra loan">Mudra Shishu/Kishore/Tarun collateral-free credit</option>
+                    <option value="Bank term loan">Scheduled Commercial Bank Term Loan</option>
+                    <option value="Microfinance">Microfinance Institution (MFI)</option>
+                    <option value="Self-funded">Self-funded / Bootstrapped</option>
+                    <option value="Other">Other institutional financing</option>
+                  </select>
+                </div>
               </div>
             </div>
           )}
@@ -1242,10 +1380,10 @@ export default function OnboardingPage() {
                     </button>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-slate-600">
-                    <div><span className="text-slate-400 block">Funding Required</span><strong>{formData.fundingRequired}</strong></div>
-                    <div><span className="text-slate-400 block">Available Capital</span><strong>{formData.availableCapital}</strong></div>
-                    <div><span className="text-slate-400 block">Project Cost</span><strong>{formData.estimatedProjectCost}</strong></div>
-                    <div><span className="text-slate-400 block">Channel</span><strong>{formData.preferredFundingType}</strong></div>
+                    <div><span className="text-slate-400 block">Own Margin</span><strong>{formData.availableMarginCapital || formData.availableCapital}</strong></div>
+                    <div><span className="text-slate-400 block">Project Cost</span><strong>{formData.estimatedProjectCost || 'Auto-calculated (10% Margin)'}</strong></div>
+                    <div><span className="text-slate-400 block">Existing Loans</span><strong>{formData.hasExistingLoans === 'Yes' ? `${formData.existingMonthlyObligation || formData.existingEmi} EMI` : 'None'}</strong></div>
+                    <div><span className="text-slate-400 block">Preferred Channel</span><strong className="truncate block">{formData.preferredFundingType}</strong></div>
                   </div>
                 </div>
 
