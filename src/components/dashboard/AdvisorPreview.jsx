@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Bot, Sparkles, ArrowRight, Send, CheckCircle2, Zap } from 'lucide-react';
 import { useBusiness } from '../../context/BusinessContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function AdvisorPreview() {
   const navigate = useNavigate();
   const { activeBusiness } = useBusiness();
+  const { language, t } = useLanguage();
   const [quickQuestion, setQuickQuestion] = useState('');
 
   const sampleTopics = [
-    'Government schemes & subsidy matching',
-    'Bank loan eligibility and margin requirements',
-    'Mandatory licenses (Udyam, GST, FSSAI)',
-    '12-Month milestone execution plan'
+    t('dashboard.sampleTopic1', 'Government schemes & subsidy matching'),
+    t('dashboard.sampleTopic2', 'Bank loan eligibility and margin requirements'),
+    t('dashboard.sampleTopic3', 'Mandatory licenses (Udyam, GST, FSSAI)'),
+    t('dashboard.sampleTopic4', '12-Month milestone execution plan')
   ];
 
   const handleAskPrompt = (promptText) => {
@@ -37,22 +39,22 @@ export default function AdvisorPreview() {
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
-                  AI Companion
+                  {t('dashboard.aiCompanion', 'AI Companion')}
                 </span>
                 <span className="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
                   <Zap className="w-3 h-3 text-amber-500 fill-amber-500" />
-                  <span>Ultra-Fast</span>
+                  <span>{t('dashboard.ultraFast', 'Ultra-Fast')}</span>
                 </span>
               </div>
               <h3 className="text-lg font-bold text-slate-900 mt-1">
-                Your Business Advisor
+                {t('dashboard.businessAdvisorTitle', 'Your Business Advisor')}
               </h3>
             </div>
           </div>
         </div>
 
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-          Need tailored guidance for <strong>{activeBusiness?.name || 'your enterprise'}</strong>? Ask a direct question or select a topic:
+          {t('dashboard.advisorHelpDesc', 'Need tailored guidance for your enterprise? Ask a direct question or select a topic:')}
         </p>
 
         {/* Quick Input Bar right on Dashboard */}
@@ -61,7 +63,7 @@ export default function AdvisorPreview() {
             type="text"
             value={quickQuestion}
             onChange={(e) => setQuickQuestion(e.target.value)}
-            placeholder="Ask about subsidies, DPR, licenses..."
+            placeholder={t('dashboard.askQuestionPlaceholder', 'Ask about subsidies, DPR, licenses...')}
             className="w-full pl-3.5 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-soft-xs transition-all"
           />
           <button
@@ -99,7 +101,7 @@ export default function AdvisorPreview() {
           to="/advisor"
           className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-soft-sm group"
         >
-          <span>Open Full Advisor Studio</span>
+          <span>{t('dashboard.openFullAdvisor', 'Open Full AI Advisor')}</span>
           <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform text-emerald-400" />
         </Link>
       </div>

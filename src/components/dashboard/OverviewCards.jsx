@@ -5,11 +5,14 @@ import { useEntrepreneurProfile } from '../../context/EntrepreneurProfileContext
 import { useBusiness } from '../../context/BusinessContext';
 import { useRoadmap } from '../../roadmap/context/RoadmapContext';
 import { schemeApi } from '../../services/schemeApi';
+import { useLanguage } from '../../context/LanguageContext';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 
 export default function OverviewCards() {
   const { profile } = useEntrepreneurProfile();
   const { activeBusiness } = useBusiness();
   const { allTasks, completedTaskIds, overallProgress, documents, documentStatus } = useRoadmap();
+  const { language, t } = useLanguage();
 
   const business = activeBusiness || profile?.business || profile || {};
   const finances = business.financialProfile || profile?.financialProfile || {};
@@ -49,39 +52,41 @@ export default function OverviewCards() {
   const readyDocs = Object.values(documentStatus || {}).filter(Boolean).length;
   const docPercent = Math.round((readyDocs / totalDocs) * 100);
 
+  const localizedSector = localizeBusinessValue(business.sector || 'Services', language);
+
   const cards = [
     {
-      title: 'Scheme Matches',
-      value: schemeCount !== null ? `${schemeCount} Schemes` : 'Evaluating...',
-      subtitle: schemeCount !== null ? `Eligible for ${business.sector || 'your'} sector` : 'Matching government programs',
-      badge: schemeCount !== null ? 'Live Matches' : 'Analyzing',
+      title: t('dashboard.schemeMatches', 'Scheme Matches'),
+      value: schemeCount !== null ? `${schemeCount} ${t('dashboard.schemesUnit', 'Schemes')}` : t('dashboard.evaluating', 'Evaluating...'),
+      subtitle: schemeCount !== null ? `${t('dashboard.alignedSchemesFor', 'Eligible for')} ${localizedSector}` : t('dashboard.recommendedDesc', 'Matching government programs'),
+      badge: schemeCount !== null ? t('dashboard.liveMatches', 'Live Matches') : t('dashboard.evaluating', 'Analyzing'),
       badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
       icon: Landmark,
       route: '/schemes'
     },
     {
-      title: 'Funding Required',
+      title: t('dashboard.fundingRequired', 'Funding Required'),
       value: fundingVal,
-      subtitle: `Margin: ${availableCapital} • Total: ${projectCost}`,
-      badge: 'Capital Plan',
+      subtitle: `${t('business.selfMargin', 'Self Margin')}: ${availableCapital} • ${t('business.totalOutlay', 'Total Outlay')}: ${projectCost}`,
+      badge: t('dashboard.capitalPlan', 'Capital Plan'),
       badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
       icon: IndianRupee,
       route: '/funding'
     },
     {
-      title: 'Roadmap Progress',
-      value: `${completedTasks} / ${totalTasks} Tasks`,
-      subtitle: `${progressPercent}% overall journey completed`,
-      badge: progressPercent > 0 ? `${progressPercent}% Done` : 'In Progress',
+      title: t('dashboard.roadmapProgress', 'Roadmap Progress'),
+      value: `${completedTasks} / ${totalTasks} ${t('dashboard.tasks', 'Tasks')}`,
+      subtitle: `${progressPercent}% ${t('dashboard.overallJourneyCompleted', 'overall journey completed')}`,
+      badge: progressPercent > 0 ? `${progressPercent}% ${t('dashboard.done', 'Done')}` : t('common.inProgress', 'In Progress'),
       badgeColor: 'bg-sky-100 text-sky-800 border-sky-200',
       icon: MapPin,
       route: '/roadmap'
     },
     {
-      title: 'Documents Vault',
-      value: `${readyDocs} / ${totalDocs} Ready`,
-      subtitle: `${totalDocs - readyDocs} pending verification`,
-      badge: `${docPercent}% Verified`,
+      title: t('dashboard.documentsVault', 'Documents Vault'),
+      value: `${readyDocs} / ${totalDocs} ${t('dashboard.ready', 'Ready')}`,
+      subtitle: `${totalDocs - readyDocs} ${t('dashboard.pendingVerification', 'pending verification')}`,
+      badge: `${docPercent}% ${t('dashboard.verified', 'Verified')}`,
       badgeColor: readyDocs > 0 ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-slate-100 text-slate-700 border-slate-200',
       icon: FileText,
       route: '/documents'

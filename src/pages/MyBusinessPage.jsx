@@ -22,11 +22,14 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { useBusiness } from '../context/BusinessContext';
+import { useLanguage } from '../context/LanguageContext';
+import { localizeBusinessValue } from '../i18n/platformTranslations';
 import EditBusinessModal from '../components/business/EditBusinessModal';
 import AddBusinessModal from '../components/business/AddBusinessModal';
 
 export default function MyBusinessPage() {
   const { businesses, activeBusiness, activeBusinessId, setActiveBusiness, deleteBusiness } = useBusiness();
+  const { language, t } = useLanguage();
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -78,14 +81,14 @@ export default function MyBusinessPage() {
       isRegistered,
       hasFundingGap,
       registrationStatusText: isRegistered
-        ? 'Statutory entity registered (Eligible for Priority MSME schemes)'
-        : 'Unregistered (Udyam registration recommended for subsidies)',
+        ? t('business.registeredNotice', 'Statutory entity registered (Eligible for Priority MSME schemes)')
+        : t('business.unregisteredNotice', 'Unregistered (Udyam registration recommended for subsidies)'),
       fundingStatusText: hasFundingGap
-        ? `Funding gap identified (${finances.fundingRequired}) — Aligned for PMEGP/CGTMSE`
-        : 'Self-funded / Seed phase',
-      documentStatusText: isRegistered ? 'Core business KYC ready' : 'Basic identity verified'
+        ? `${t('business.fundingGap', 'Funding gap')}: ${finances.fundingRequired} — ${t('business.fundingGapNotice', 'Aligned for PMEGP/CGTMSE')}`
+        : t('business.selfFundedNotice', 'Self-funded / Seed phase'),
+      documentStatusText: isRegistered ? t('business.kycReady', 'Core business KYC ready') : t('business.identityVerified', 'Basic identity verified')
     };
-  }, [business, finances, goals]);
+  }, [business, finances, goals, t]);
 
   const handleDeleteBusiness = async () => {
     if (!business.id || businesses.length <= 1) return;
@@ -126,16 +129,16 @@ export default function MyBusinessPage() {
                   {business.name || 'RoomNext'}
                 </h1>
                 <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                  {business.stage ? business.stage.replace('_', ' ') : 'IDEA'}
+                  {localizeBusinessValue(business.stage ? business.stage.replace('_', ' ') : 'IDEA', language)}
                 </span>
                 <span className="text-xs text-slate-300 font-medium">•</span>
                 <span className="text-xs font-bold text-slate-600">
-                  {business.sector || 'Services'}
+                  {localizeBusinessValue(business.sector || 'Services', language)}
                 </span>
                 <span className="text-xs text-slate-300 font-medium">•</span>
                 <span className="inline-flex items-center gap-1 text-xs text-slate-500 font-medium">
                   <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                  <span>{business.location || 'Agra, Uttar Pradesh'}</span>
+                  <span>{localizeBusinessValue(business.location || 'Agra, Uttar Pradesh', language)}</span>
                 </span>
               </div>
 
@@ -154,7 +157,7 @@ export default function MyBusinessPage() {
               className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:text-emerald-800 bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-200 rounded-xl transition-all shadow-soft-xs"
             >
               <Plus className="w-3.5 h-3.5 text-emerald-600" />
-              <span>+ Add Business</span>
+              <span>{t('business.addBusiness', '+ Add Business')}</span>
             </button>
 
             {/* Edit Business Info Button */}
@@ -164,7 +167,7 @@ export default function MyBusinessPage() {
               className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-black text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl transition-all shadow-soft-xs"
             >
               <Edit3 className="w-3.5 h-3.5" />
-              <span>✎ Edit Business Info</span>
+              <span>{t('business.editBusinessInfo', '✎ Edit Business Info')}</span>
             </button>
           </div>
         </div>
@@ -174,7 +177,7 @@ export default function MyBusinessPage() {
           <div className="mt-6 pt-5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Switch Active Business:
+                {t('business.switchActive', 'Switch Active Business:')}
               </span>
               <div className="flex flex-wrap items-center gap-1.5">
                 {businesses.map((b) => (
@@ -195,7 +198,7 @@ export default function MyBusinessPage() {
             </div>
 
             <div className="text-xs text-slate-400 font-medium">
-              Managing {businesses.length} enterprises
+              {t('business.managingEnterprises', `Managing ${businesses.length} enterprises`).replace('{count}', businesses.length)}
             </div>
           </div>
         )}
@@ -213,36 +216,36 @@ export default function MyBusinessPage() {
                   <Building2 className="w-4 h-4" />
                 </div>
                 <h2 className="text-xs font-black uppercase tracking-wider text-slate-800">
-                  Entity Structure
+                  {t('business.entityStructure', 'Entity Structure')}
                 </h2>
               </div>
               <span className="text-[10px] font-bold text-slate-400 uppercase">
-                Legal Setup
+                {t('business.legalSetup', 'Legal Setup')}
               </span>
             </div>
 
             <div className="space-y-3 text-xs sm:text-sm">
               <div className="flex justify-between py-1.5 border-b border-slate-50">
-                <span className="text-slate-500 font-medium">Business Structure:</span>
-                <strong className="text-slate-900">{business.type || 'Proprietorship'}</strong>
+                <span className="text-slate-500 font-medium">{t('business.businessStructure', 'Business Structure:')}</span>
+                <strong className="text-slate-900">{localizeBusinessValue(business.type || 'Proprietorship', language)}</strong>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-50">
-                <span className="text-slate-500 font-medium">Industry Sector:</span>
-                <strong className="text-slate-900">{business.sector || 'Services'}</strong>
+                <span className="text-slate-500 font-medium">{t('business.industrySector', 'Industry Sector:')}</span>
+                <strong className="text-slate-900">{localizeBusinessValue(business.sector || 'Services', language)}</strong>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-50">
-                <span className="text-slate-500 font-medium">Operating Status:</span>
+                <span className="text-slate-500 font-medium">{t('business.operatingStatus', 'Operating Status:')}</span>
                 <strong className="text-slate-900">
-                  {business.operatingStatus || 'Planning to Launch'}
+                  {localizeBusinessValue(business.operatingStatus || 'Planning to Launch', language)}
                 </strong>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-50">
-                <span className="text-slate-500 font-medium">Registered Location:</span>
-                <strong className="text-slate-900">{business.location || 'Agra, Uttar Pradesh'}</strong>
+                <span className="text-slate-500 font-medium">{t('business.registeredLocation', 'Registered Location:')}</span>
+                <strong className="text-slate-900">{localizeBusinessValue(business.location || 'Agra, Uttar Pradesh', language)}</strong>
               </div>
               <div className="flex justify-between py-1.5">
-                <span className="text-slate-500 font-medium">Area Classification:</span>
-                <strong className="text-slate-900">{business.areaClassification || 'Urban'}</strong>
+                <span className="text-slate-500 font-medium">{t('business.areaClassification', 'Area Classification:')}</span>
+                <strong className="text-slate-900">{localizeBusinessValue(business.areaClassification || 'Urban', language)}</strong>
               </div>
             </div>
           </div>
@@ -255,40 +258,40 @@ export default function MyBusinessPage() {
                   <ShieldCheck className="w-4 h-4" />
                 </div>
                 <h2 className="text-xs font-black uppercase tracking-wider text-slate-800">
-                  Operations & Compliance
+                  {t('business.operationsCompliance', 'Operations & Compliance')}
                 </h2>
               </div>
               <span className="text-[10px] font-bold text-slate-400 uppercase">
-                Regulatory
+                {t('business.regulatory', 'Regulatory')}
               </span>
             </div>
 
             <div className="space-y-3 text-xs sm:text-sm">
               <div className="flex justify-between py-1.5 border-b border-slate-50">
-                <span className="text-slate-500 font-medium">Registration Status:</span>
+                <span className="text-slate-500 font-medium">{t('business.registrationStatus', 'Registration Status:')}</span>
                 <span className={`font-bold px-2 py-0.5 rounded-lg text-xs ${
                   readiness.isRegistered
                     ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                     : 'bg-slate-100 text-slate-700'
                 }`}>
-                  {business.registrationStatus || 'Unregistered'}
+                  {localizeBusinessValue(business.registrationStatus || 'Unregistered', language)}
                 </span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-50">
-                <span className="text-slate-500 font-medium">Licenses Held:</span>
-                <strong className="text-slate-900">{business.licensesHeld || 'None'}</strong>
+                <span className="text-slate-500 font-medium">{t('business.licensesHeld', 'Licenses Held:')}</span>
+                <strong className="text-slate-900">{localizeBusinessValue(business.licensesHeld || 'None', language)}</strong>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-50">
-                <span className="text-slate-500 font-medium">Team Size:</span>
-                <strong className="text-slate-900">{business.employeesCount || '0'} Team Members</strong>
+                <span className="text-slate-500 font-medium">{t('business.teamSize', 'Team Size:')}</span>
+                <strong className="text-slate-900">{business.employeesCount || '0'} {t('business.teamMembers', 'Team Members')}</strong>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-50">
-                <span className="text-slate-500 font-medium">Monthly Revenue:</span>
-                <strong className="text-slate-900">{business.monthlyRevenue || 'N/A'}</strong>
+                <span className="text-slate-500 font-medium">{t('business.monthlyRevenue', 'Monthly Revenue:')}</span>
+                <strong className="text-slate-900">{localizeBusinessValue(business.monthlyRevenue || 'N/A', language)}</strong>
               </div>
               <div className="flex justify-between py-1.5">
-                <span className="text-slate-500 font-medium">Annual Revenue Bracket:</span>
-                <strong className="text-slate-900">{business.annualRevenue || 'N/A'}</strong>
+                <span className="text-slate-500 font-medium">{t('business.annualRevenue', 'Annual Revenue Bracket:')}</span>
+                <strong className="text-slate-900">{localizeBusinessValue(business.annualRevenue || 'N/A', language)}</strong>
               </div>
             </div>
           </div>
@@ -302,17 +305,17 @@ export default function MyBusinessPage() {
                 <Briefcase className="w-4 h-4" />
               </div>
               <h2 className="text-xs font-black uppercase tracking-wider text-slate-800">
-                Concept & Target Market
+                {t('business.conceptTargetMarket', 'Concept & Target Market')}
               </h2>
             </div>
             <span className="text-[10px] font-bold text-slate-400 uppercase">
-              Value Proposition
+              {t('business.valueProposition', 'Value Proposition')}
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm">
             <div>
-              <span className="text-slate-500 font-bold block mb-1.5">Business Concept Description:</span>
+              <span className="text-slate-500 font-bold block mb-1.5">{t('business.conceptDescription', 'Business Concept Description:')}</span>
               <p className="text-slate-800 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 min-h-[90px]">
                 {business.description || 'No business description provided.'}
               </p>
@@ -320,15 +323,15 @@ export default function MyBusinessPage() {
 
             <div className="space-y-3.5">
               <div>
-                <span className="text-slate-500 font-bold block mb-1">Product / Service Provided:</span>
+                <span className="text-slate-500 font-bold block mb-1">{t('business.productService', 'Product / Service Provided:')}</span>
                 <p className="text-slate-800 font-semibold bg-slate-50 p-3 rounded-xl border border-slate-100">
-                  {business.productService || 'General Products/Services'}
+                  {localizeBusinessValue(business.productService || 'General Products/Services', language)}
                 </p>
               </div>
               <div>
-                <span className="text-slate-500 font-bold block mb-1">Target Customers:</span>
+                <span className="text-slate-500 font-bold block mb-1">{t('business.targetCustomers', 'Target Customers:')}</span>
                 <p className="text-slate-800 font-semibold bg-slate-50 p-3 rounded-xl border border-slate-100">
-                  {business.targetCustomers || 'Local consumers & retail'}
+                  {localizeBusinessValue(business.targetCustomers || 'Local consumers & retail', language)}
                 </p>
               </div>
             </div>
@@ -345,11 +348,11 @@ export default function MyBusinessPage() {
                   <IndianRupee className="w-4 h-4" />
                 </div>
                 <h2 className="text-xs font-black uppercase tracking-wider text-slate-800">
-                  Financial Snapshot
+                  {t('business.financialSnapshot', 'Financial Snapshot')}
                 </h2>
               </div>
               <span className="text-[10px] font-bold text-slate-400 uppercase">
-                Capital Stack
+                {t('business.capitalStack', 'Capital Stack')}
               </span>
             </div>
 
@@ -357,46 +360,46 @@ export default function MyBusinessPage() {
             <div className="grid grid-cols-3 gap-3">
               <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-center">
                 <span className="text-[10px] uppercase font-bold text-slate-400 block">
-                  Project Cost
+                  {t('business.projectCost', 'Project Cost')}
                 </span>
                 <strong className="text-sm sm:text-base font-black text-slate-900 block mt-0.5">
                   {finances.estimatedProjectCost || '₹3,00,000'}
                 </strong>
-                <span className="text-[9px] text-slate-400 font-medium">Total Outlay</span>
+                <span className="text-[9px] text-slate-400 font-medium">{t('business.totalOutlay', 'Total Outlay')}</span>
               </div>
 
               <div className="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-100 text-center">
                 <span className="text-[10px] uppercase font-bold text-emerald-700 block">
-                  Own Capital
+                  {t('business.ownCapital', 'Own Capital')}
                 </span>
                 <strong className="text-sm sm:text-base font-black text-emerald-900 block mt-0.5">
                   {finances.availableCapital || '₹75,000'}
                 </strong>
-                <span className="text-[9px] text-emerald-600 font-medium">Self Margin</span>
+                <span className="text-[9px] text-emerald-600 font-medium">{t('business.selfMargin', 'Self Margin')}</span>
               </div>
 
               <div className="p-3.5 rounded-2xl bg-amber-50/60 border border-amber-100 text-center">
                 <span className="text-[10px] uppercase font-bold text-amber-700 block">
-                  Funding Gap
+                  {t('business.fundingGap', 'Funding Gap')}
                 </span>
                 <strong className="text-sm sm:text-base font-black text-amber-900 block mt-0.5">
                   {finances.fundingRequired || '₹2,25,000'}
                 </strong>
-                <span className="text-[9px] text-amber-600 font-medium">Credit / Grant</span>
+                <span className="text-[9px] text-amber-600 font-medium">{t('business.creditGrant', 'Credit / Grant')}</span>
               </div>
             </div>
 
             <div className="space-y-2.5 text-xs">
               <div className="flex justify-between py-1 border-b border-slate-50">
-                <span className="text-slate-500 font-medium">Preferred Channel:</span>
+                <span className="text-slate-500 font-medium">{t('business.preferredChannel', 'Preferred Channel:')}</span>
                 <strong className="text-slate-900 truncate max-w-[220px]">
-                  {finances.preferredFundingType || 'Government scheme / credit guarantee'}
+                  {localizeBusinessValue(finances.preferredFundingType || 'Government scheme / credit guarantee', language)}
                 </strong>
               </div>
               <div className="flex justify-between py-1">
-                <span className="text-slate-500 font-medium">Existing Debt:</span>
+                <span className="text-slate-500 font-medium">{t('business.existingDebt', 'Existing Debt:')}</span>
                 <strong className="text-slate-900">
-                  {finances.hasExistingLoans === 'Yes' ? 'Active Loans' : 'Debt Free'}
+                  {localizeBusinessValue(finances.hasExistingLoans === 'Yes' ? 'Active Loans' : 'Debt Free', language)}
                 </strong>
               </div>
             </div>
@@ -410,18 +413,18 @@ export default function MyBusinessPage() {
                   <TrendingUp className="w-4 h-4" />
                 </div>
                 <h2 className="text-xs font-black uppercase tracking-wider text-slate-800">
-                  Business Readiness & Health
+                  {t('business.businessReadinessHealth', 'Business Readiness & Health')}
                 </h2>
               </div>
               <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 font-black">
-                {readiness.completenessPercent}% Complete
+                {readiness.completenessPercent}% {t('common.completed', 'Complete')}
               </span>
             </div>
 
             {/* Visual Progress Bar */}
             <div className="space-y-1.5">
               <div className="flex justify-between text-xs font-bold text-slate-600">
-                <span>Profile Readiness Score</span>
+                <span>{t('business.profileReadinessScore', 'Profile Readiness Score')}</span>
                 <span className="text-emerald-800">{readiness.completenessPercent}%</span>
               </div>
               <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
@@ -437,7 +440,7 @@ export default function MyBusinessPage() {
               <div className="flex items-start gap-2 p-2 rounded-xl bg-slate-50 border border-slate-100">
                 <ShieldCheck className={`w-4 h-4 mt-0.5 shrink-0 ${readiness.isRegistered ? 'text-emerald-600' : 'text-amber-500'}`} />
                 <div>
-                  <strong className="text-slate-900 block">Registration Compliance</strong>
+                  <strong className="text-slate-900 block">{t('business.registrationCompliance', 'Registration Compliance')}</strong>
                   <span className="text-slate-500 text-[11px]">{readiness.registrationStatusText}</span>
                 </div>
               </div>
@@ -445,7 +448,7 @@ export default function MyBusinessPage() {
               <div className="flex items-start gap-2 p-2 rounded-xl bg-slate-50 border border-slate-100">
                 <IndianRupee className="w-4 h-4 mt-0.5 shrink-0 text-emerald-600" />
                 <div>
-                  <strong className="text-slate-900 block">Funding & DPR Readiness</strong>
+                  <strong className="text-slate-900 block">{t('business.fundingDprReadiness', 'Funding & DPR Readiness')}</strong>
                   <span className="text-slate-500 text-[11px]">{readiness.fundingStatusText}</span>
                 </div>
               </div>
@@ -467,7 +470,7 @@ export default function MyBusinessPage() {
               className="px-3 py-1.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold flex items-center gap-1.5 transition-colors"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              <span>Delete This Business</span>
+              <span>{t('business.deleteBusiness', 'Delete This Business')}</span>
             </button>
           </div>
         )}

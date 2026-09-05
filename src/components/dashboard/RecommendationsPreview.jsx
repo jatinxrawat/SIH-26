@@ -5,14 +5,17 @@ import { useEntrepreneurProfile } from '../../context/EntrepreneurProfileContext
 import { useBusiness } from '../../context/BusinessContext';
 import { useRoadmap } from '../../roadmap/context/RoadmapContext';
 import { schemeApi } from '../../services/schemeApi';
+import { useLanguage } from '../../context/LanguageContext';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 
 export default function RecommendationsPreview() {
   const { profile } = useEntrepreneurProfile();
   const { activeBusiness } = useBusiness();
   const { selectedSchemeId, selectScheme } = useRoadmap();
+  const { language, t } = useLanguage();
 
   const business = activeBusiness || profile?.business || profile || {};
-  const sector = business.sector || 'General';
+  const sector = localizeBusinessValue(business.sector || 'General', language);
 
   const [allRecommended, setAllRecommended] = useState([]);
   const [activeFilter, setActiveFilter] = useState('ALL');
@@ -80,13 +83,13 @@ export default function RecommendationsPreview() {
           <div>
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold uppercase tracking-wider mb-1">
               <Landmark className="w-3 h-3 text-emerald-600" />
-              <span>Government Support Opportunities</span>
+              <span>{t('dashboard.governmentOpportunities', 'Government Support Opportunities')}</span>
             </div>
             <h3 className="text-lg font-black text-slate-900">
-              {allRecommended.length > 0 ? `${allRecommended.length} Aligned Schemes for ${business.name || 'Your Business'}` : 'Matching Government Programs'}
+              {allRecommended.length > 0 ? `${allRecommended.length} ${t('dashboard.alignedSchemesFor', 'Aligned Schemes for')} ${business.name || 'Your Business'}` : t('dashboard.recommendedPrograms', 'Matching Government Programs')}
             </h3>
             <p className="text-xs text-slate-500">
-              Deterministic evaluation against your {sector} profile in {business.location || 'India'}.
+              {t('dashboard.recommendedDesc', 'Ranked automatically based on your sector, stage, and capital need.')}
             </p>
           </div>
 
@@ -101,7 +104,7 @@ export default function RecommendationsPreview() {
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Top Matches
+                {t('dashboard.allTypes', 'All Types')}
               </button>
               <button
                 onClick={() => setActiveFilter('SUBSIDY')}
@@ -111,7 +114,7 @@ export default function RecommendationsPreview() {
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Subsidies
+                {t('dashboard.subsidies', 'Subsidies')}
               </button>
               <button
                 onClick={() => setActiveFilter('CREDIT')}
@@ -121,7 +124,7 @@ export default function RecommendationsPreview() {
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Bank Credit
+                {t('dashboard.loans', 'Bank Credit')}
               </button>
             </div>
 
@@ -129,7 +132,7 @@ export default function RecommendationsPreview() {
               to="/schemes"
               className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all shadow-soft-xs shrink-0"
             >
-              <span>View All</span>
+              <span>{t('dashboard.viewAllSchemes', 'View All Schemes')}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

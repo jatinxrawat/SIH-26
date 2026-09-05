@@ -1546,10 +1546,15 @@ export const TRANSLATIONS = {
 };
 
 import { SCHEMES_TRANSLATIONS } from './schemesTranslations';
+import { PLATFORM_TRANSLATIONS } from './platformTranslations';
 
-// Merge schemes translations into each language
+// Merge schemes and platform translations into each language
 Object.keys(TRANSLATIONS).forEach((lang) => {
   TRANSLATIONS[lang].schemes = SCHEMES_TRANSLATIONS[lang] || SCHEMES_TRANSLATIONS.en;
+  
+  const platform = PLATFORM_TRANSLATIONS[lang] || PLATFORM_TRANSLATIONS.en;
+  TRANSLATIONS[lang].dashboard = platform.dashboard;
+  TRANSLATIONS[lang].business = platform.business;
   
   // Also provide common entity stage translations
   if (!TRANSLATIONS[lang].nav.entityStage) {

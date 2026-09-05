@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Target, ArrowRight, Sparkles, ShieldCheck, Zap, Landmark, Coins, Bot } from 'lucide-react';
+import { Target, ArrowRight, Sparkles, Landmark, Coins, Bot } from 'lucide-react';
 import { useRoadmap } from '../../roadmap/context/RoadmapContext';
+import { useLanguage } from '../../context/LanguageContext';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 
 export default function NextActionCard({
   title,
@@ -14,14 +16,15 @@ export default function NextActionCard({
 }) {
   const navigate = useNavigate();
   const { nextBestAction, openTaskDrawer, setExpandedStageId } = useRoadmap();
+  const { language, t } = useLanguage();
 
   // Dynamically resolve values if not explicitly overridden
   const hasDynamicAction = Boolean(nextBestAction);
-  const activeTitle = title || (hasDynamicAction ? nextBestAction.title : 'Explore government support programs');
-  const activeDesc = description || (hasDynamicAction ? nextBestAction.reason : 'Identify schemes, subsidies, and credit guarantee programs relevant to your enterprise.');
-  const activePriority = priority || (hasDynamicAction ? `${nextBestAction.priority || 'High'} Priority` : 'Step 1 Recommendation');
-  const activeBadge = badge || (hasDynamicAction ? (nextBestAction.impact || 'Next Milestone') : 'Roadmap Driver');
-  const activeActionLabel = actionLabel || (hasDynamicAction ? 'Execute Milestone' : 'Explore Schemes');
+  const activeTitle = title ? localizeBusinessValue(title, language) : (hasDynamicAction ? localizeBusinessValue(nextBestAction.title, language) : t('dashboard.exploreSchemes', 'Explore government support programs'));
+  const activeDesc = description ? localizeBusinessValue(description, language) : (hasDynamicAction ? localizeBusinessValue(nextBestAction.reason, language) : t('dashboard.commandCenterDesc', 'Identify schemes, subsidies, and credit guarantee programs relevant to your enterprise.'));
+  const activePriority = priority || (hasDynamicAction ? `${t('dashboard.highPriority', 'HIGH Priority')}` : t('dashboard.highPriority', 'HIGH Priority'));
+  const activeBadge = badge ? localizeBusinessValue(badge, language) : (hasDynamicAction ? localizeBusinessValue(nextBestAction.impact || t('dashboard.nextMilestone', 'Next Milestone'), language) : t('dashboard.nextMilestone', 'Next Milestone'));
+  const activeActionLabel = actionLabel ? localizeBusinessValue(actionLabel, language) : (hasDynamicAction ? t('dashboard.executeMilestone', 'Execute Milestone') : t('dashboard.exploreSchemes', 'Explore Schemes'));
 
   const handleActionClick = (e) => {
     if (route) {
@@ -60,7 +63,7 @@ export default function NextActionCard({
             </span>
             {hasDynamicAction && nextBestAction.estimatedTime && (
               <span className="text-[11px] font-medium text-slate-400">
-                • Est. time: {nextBestAction.estimatedTime}
+                • {t('dashboard.estTime', 'Est. time:')} {nextBestAction.estimatedTime}
               </span>
             )}
           </div>
@@ -82,28 +85,28 @@ export default function NextActionCard({
           {/* Quick Action Pills */}
           <div className="pt-2 flex flex-wrap items-center gap-2 text-xs">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">
-              Shortcuts:
+              {t('dashboard.shortcuts', 'Shortcuts:')}
             </span>
             <Link
               to="/schemes"
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-emerald-300 transition-colors font-semibold"
             >
               <Landmark className="w-3 h-3" />
-              <span>Government Schemes</span>
+              <span>{t('nav.schemes', 'Government Schemes')}</span>
             </Link>
             <Link
               to="/funding"
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-emerald-300 transition-colors font-semibold"
             >
               <Coins className="w-3 h-3" />
-              <span>Loan & DPR Calculator</span>
+              <span>{t('dashboard.loanDprCalc', 'Loan & DPR Calculator')}</span>
             </Link>
             <Link
               to="/advisor"
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-emerald-300 transition-colors font-semibold"
             >
               <Bot className="w-3 h-3" />
-              <span>AI Advisor</span>
+              <span>{t('nav.advisor', 'AI Advisor')}</span>
             </Link>
           </div>
         </div>

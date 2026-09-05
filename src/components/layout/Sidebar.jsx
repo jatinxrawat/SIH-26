@@ -24,12 +24,13 @@ import { useAuth } from '../../context/AuthContext';
 import { useBusiness } from '../../context/BusinessContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { localizeStage } from '../../i18n/schemesTranslations';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 import AddBusinessModal from '../business/AddBusinessModal';
 
 export default function Sidebar({ onCloseMobile }) {
   const { logout, currentUser, userProfile } = useAuth();
   const { businesses, activeBusiness, activeBusinessId, setActiveBusiness } = useBusiness();
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const navigate = useNavigate();
 
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
@@ -141,7 +142,7 @@ export default function Sidebar({ onCloseMobile }) {
                 {businessName}
               </p>
               <p className="text-[10px] text-slate-500 truncate mt-0.5">
-                {sector} • {location}
+                {localizeBusinessValue(sector, language)} • {localizeBusinessValue(location, language)}
               </p>
             </div>
           </button>

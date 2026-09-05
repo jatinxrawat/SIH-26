@@ -3,11 +3,14 @@ import { Link } from 'react-router-dom';
 import { Building2, ArrowRight, Edit3, CheckCircle2, ShieldCheck, MapPin } from 'lucide-react';
 import { useEntrepreneurProfile } from '../../context/EntrepreneurProfileContext';
 import { useBusiness } from '../../context/BusinessContext';
+import { useLanguage } from '../../context/LanguageContext';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 import EditBusinessModal from '../business/EditBusinessModal';
 
 export default function BusinessSnapshot() {
   const { profile } = useEntrepreneurProfile();
   const { activeBusiness } = useBusiness();
+  const { language, t } = useLanguage();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const business = activeBusiness || profile?.business || profile || {};
@@ -15,24 +18,24 @@ export default function BusinessSnapshot() {
   const finances = business.financialProfile || profile?.financialProfile || {};
 
   const details = [
-    { label: 'Business Name', value: business.name || 'Not provided', highlight: true },
-    { label: 'Industry Sector', value: business.sector || 'Not provided' },
+    { label: t('business.businessName', 'Business Name'), value: business.name || 'Not provided', highlight: true },
+    { label: t('business.industrySector', 'Industry Sector'), value: localizeBusinessValue(business.sector || 'Services', language) },
     {
-      label: 'Location',
-      value: business.location || (personal.district
+      label: t('business.location', 'Location'),
+      value: localizeBusinessValue(business.location || (personal.district
         ? `${personal.district}, ${personal.state || ''}`
-        : 'Not provided')
+        : 'Agra, Uttar Pradesh'), language)
     },
     {
-      label: 'Business Stage',
-      value: business.stage ? business.stage.replace('_', ' ') : 'Not provided'
+      label: t('business.businessStage', 'Business Stage'),
+      value: localizeBusinessValue(business.stage ? business.stage.replace('_', ' ') : 'IDEA', language)
     },
-    { label: 'Available Margin', value: finances.availableCapital || 'Not provided' },
-    { label: 'Estimated Project Cost', value: finances.estimatedProjectCost || 'Not provided' },
-    { label: 'Funding Gap', value: finances.fundingRequired || 'Not provided' },
-    { label: 'Entity Status', value: business.operatingStatus || (business.status === 'OPERATING' ? 'Active Enterprise' : 'Planning to Launch') },
-    { label: 'Entity Structure', value: business.type || 'Not provided' },
-    { label: 'Area Type', value: business.areaClassification || personal.ruralUrban || 'Urban' }
+    { label: t('business.ownCapital', 'Available Margin'), value: finances.availableCapital || '₹75,000' },
+    { label: t('business.projectCost', 'Estimated Project Cost'), value: finances.estimatedProjectCost || '₹3,00,000' },
+    { label: t('business.fundingGap', 'Funding Gap'), value: finances.fundingRequired || '₹2,25,000' },
+    { label: t('business.entityStatus', 'Entity Status'), value: localizeBusinessValue(business.operatingStatus || (business.status === 'OPERATING' ? 'Operating' : 'Planning to Launch'), language) },
+    { label: t('business.entityStructure', 'Entity Structure'), value: localizeBusinessValue(business.type || 'Proprietorship', language) },
+    { label: t('business.areaClassification', 'Area Type'), value: localizeBusinessValue(business.areaClassification || personal.ruralUrban || 'Urban', language) }
   ];
 
   return (
@@ -46,14 +49,14 @@ export default function BusinessSnapshot() {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-lg sm:text-xl font-bold text-slate-900">
-                  Business Snapshot
+                  {t('dashboard.businessSnapshot', 'Business Snapshot')}
                 </h2>
                 <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                  {business.stage || 'IDEA'}
+                  {localizeBusinessValue(business.stage || 'IDEA', language)}
                 </span>
               </div>
               <p className="text-xs text-slate-500">
-                Core enterprise parameters evaluated across subsidies and bank credit.
+                {t('dashboard.coreParametersDesc', 'Core enterprise parameters evaluated across subsidies and bank credit.')}
               </p>
             </div>
           </div>
@@ -64,14 +67,14 @@ export default function BusinessSnapshot() {
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-all cursor-pointer"
             >
               <Edit3 className="w-3.5 h-3.5 text-slate-600" />
-              <span>Edit Details</span>
+              <span>{t('dashboard.editDetails', 'Edit Details')}</span>
             </button>
 
             <Link
               to="/business"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl transition-colors border border-emerald-200"
             >
-              <span>Manage Profile</span>
+              <span>{t('dashboard.manageProfile', 'Manage Profile')}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

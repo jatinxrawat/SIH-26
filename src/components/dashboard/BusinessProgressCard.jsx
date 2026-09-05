@@ -1,15 +1,17 @@
 import React from 'react';
-import { Check, Compass, ArrowRight, Sparkles, ChevronRight } from 'lucide-react';
+import { Check, Compass, ArrowRight, ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRoadmap } from '../../roadmap/context/RoadmapContext';
 import { useEntrepreneurProfile } from '../../context/EntrepreneurProfileContext';
 import { useBusiness } from '../../context/BusinessContext';
-import { evaluateStageStatus } from '../../roadmap/engine/dependencyEngine';
+import { useLanguage } from '../../context/LanguageContext';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 
 export default function BusinessProgressCard() {
   const navigate = useNavigate();
   const { profile } = useEntrepreneurProfile();
   const { activeBusiness } = useBusiness();
+  const { language, t } = useLanguage();
   const {
     stages,
     allTasks,
@@ -49,17 +51,17 @@ export default function BusinessProgressCard() {
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60 flex items-center gap-1.5">
               <Compass className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Interactive Roadmap Tracker</span>
+              <span>{t('dashboard.interactiveRoadmap', 'Interactive Roadmap Tracker')}</span>
             </span>
             <span className="text-xs text-slate-400 font-medium hidden sm:inline-block">
-              • Click any milestone to jump directly into execution
+              {t('dashboard.clickMilestoneHint', '• Click any milestone to jump directly into execution')}
             </span>
           </div>
           <h2 className="text-lg sm:text-xl font-bold text-slate-900 mt-2">
-            Your Enterprise Journey
+            {t('dashboard.enterpriseJourney', 'Your Enterprise Journey')}
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Progress through verified government support, DPR preparation, legal compliance, and scale milestones.
+            {t('dashboard.enterpriseJourneyDesc', 'Progress through verified government support, DPR preparation, legal compliance, and scale milestones.')}
           </p>
         </div>
 
@@ -67,7 +69,7 @@ export default function BusinessProgressCard() {
           to="/roadmap"
           className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-colors shrink-0"
         >
-          <span>View Full Roadmap</span>
+          <span>{t('dashboard.viewFullRoadmap', 'View Full Roadmap')}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
@@ -126,23 +128,23 @@ export default function BusinessProgressCard() {
                         : 'text-slate-400'
                     }`}
                   >
-                    {stg.shortName || stg.title}
+                    {localizeBusinessValue(stg.shortName || stg.title, language)}
                   </span>
 
                   {/* Indicator status pill */}
                   {isCurrent && (
                     <span className="mt-1 text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">
-                      CURRENT
+                      {t('dashboard.current', 'CURRENT')}
                     </span>
                   )}
                   {isPast && (
                     <span className="mt-1 text-[9px] font-semibold text-emerald-600">
-                      Done
+                      {t('dashboard.done', 'Done')}
                     </span>
                   )}
                   {!isPast && !isCurrent && (
                     <span className="mt-1 text-[9px] text-slate-400">
-                      Pending
+                      {t('dashboard.pending', 'Pending')}
                     </span>
                   )}
 
@@ -166,14 +168,14 @@ export default function BusinessProgressCard() {
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-slate-900">
-                Current Focus: {activeStageObj.title}
+                {t('dashboard.currentFocus', 'Current Focus:')} {localizeBusinessValue(activeStageObj.title, language)}
               </span>
               <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                Stage {activeStageObj.number || safeIndex + 1} of {effectiveStages.length}
+                {t('dashboard.stageOf', 'Stage')} {activeStageObj.number || safeIndex + 1} {t('dashboard.of', 'of')} {effectiveStages.length}
               </span>
             </div>
             <p className="text-[11px] text-slate-500 mt-0.5">
-              {activeStageObj.tagline || activeStageObj.objective || 'Complete key milestones in this stage to advance.'}
+              {localizeBusinessValue(activeStageObj.tagline || activeStageObj.objective || 'Complete key milestones in this stage to advance.', language)}
             </p>
           </div>
         </div>
@@ -182,7 +184,7 @@ export default function BusinessProgressCard() {
           onClick={() => handleStageSelect(activeStageObj.id)}
           className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-all shadow-soft-xs self-start sm:self-center"
         >
-          <span>Open Stage Milestones</span>
+          <span>{t('dashboard.openStageMilestones', 'Open Stage Milestones')}</span>
           <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
