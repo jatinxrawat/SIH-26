@@ -11,8 +11,11 @@ import { ROADMAP_STAGES, MASTER_TASKS } from '../data/roadmapDefinitions';
  */
 export function generatePersonalizedRoadmap(profile = {}) {
   const sector = (profile?.business?.sector || profile?.sector || 'GENERAL').toUpperCase();
+  const businessType = (profile?.business?.type || profile?.type || '').toUpperCase();
+  const businessName = profile?.businessName || profile?.business?.name || 'Enterprise';
   const isFoodProcessing = sector.includes('FOOD') || sector.includes('AGRI');
   const isTextile = sector.includes('HANDLOOM') || sector.includes('TEXTILE');
+  const isTechOrServices = sector.includes('TECH') || sector.includes('SERVICE') || sector.includes('HOSPITALITY') || sector.includes('COMMERCE') || businessType.includes('SERVICE');
 
   return MASTER_TASKS.map((task) => {
     // Clone task
@@ -33,13 +36,31 @@ export function generatePersonalizedRoadmap(profile = {}) {
         personalized.title = 'Obtain Handloom Mark / Silk Mark & Weaver ID';
         personalized.shortTitle = 'Handloom Mark & Permits';
         personalized.description = 'Enroll with Weaver Service Centre for authentic Handloom Mark certification and yarn subsidy.';
+      } else if (isTechOrServices) {
+        personalized.title = 'Obtain Shop & Commercial Establishment License & Trade NOC';
+        personalized.shortTitle = 'Shop Act & Permits';
+        personalized.description = `Register ${businessName} under state Shops & Commercial Establishments Act and local municipal trade license.`;
+        personalized.whatToDo = [
+          'Visit State Labor Department / Municipal Corporation portal.',
+          'Submit business PAN, Aadhaar, and premises lease or utility bill.',
+          'Obtain statutory Shop & Establishment certificate for bank current account.'
+        ];
       }
     }
 
-    // Tailor machinery procurement
+    // Tailor machinery and infrastructure procurement
     if (task.id === 'setup-procurement') {
       if (isFoodProcessing) {
         personalized.description = 'Procure food-grade machinery (heavy-duty pulverizer, pouch sealer, stainless steel sorting tables).';
+      } else if (isTechOrServices) {
+        personalized.title = 'Procure Core Hardware, Cloud Infrastructure & Premises Utilities';
+        personalized.shortTitle = 'Tech & Office Setup';
+        personalized.description = `Procure workstations, cloud servers, networking equipment, and operational premises tooling for ${businessName}.`;
+        personalized.whatToDo = [
+          'Finalize vendor quotes for hardware, broadband, and premises furnishings.',
+          'Configure cloud infrastructure, domain, SSL, and payment gateway.',
+          'Establish premises safety, high-speed broadband, and operations stations.'
+        ];
       }
     }
 

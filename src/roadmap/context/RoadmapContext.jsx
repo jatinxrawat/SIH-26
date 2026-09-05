@@ -16,31 +16,72 @@ const RoadmapContext = createContext(null);
 export function RoadmapProvider({ children }) {
   const { profile: loggedInProfile } = useEntrepreneurProfile();
 
-  // Persona management: Default to 'sita' (SIH demo benchmark) or 'priya'
+  // Derive real user business profile from loggedInProfile
+  const userRealProfile = useMemo(() => {
+    const biz = loggedInProfile?.business || {};
+    const personal = loggedInProfile?.personalInfo || {};
+    const fin = loggedInProfile?.financialProfile || {};
+
+    const businessName = biz.name || personal.businessName || 'RoomNext';
+    const sector = biz.sector || 'SERVICES_AND_TECH';
+    const industry = biz.type || biz.description || 'Enterprise Platform';
+    const location = biz.location || (personal.locality ? `${personal.locality}, ${personal.state || 'India'}` : (personal.state || 'India'));
+
+    return {
+      id: 'myBusiness',
+      isRealUser: true,
+      name: personal.fullName || 'Jatin Rawat',
+      businessName: businessName,
+      sector: sector,
+      industry: industry,
+      location: location,
+      stage: biz.stage || biz.status || 'IDEA',
+      availableCapital: fin.availableCapital || '₹2,50,000',
+      estimatedProjectCost: fin.estimatedProjectCost || '₹10,00,000',
+      fundingRequired: fin.fundingRequired || '₹7,50,000',
+      recommendedScheme: 'PMEGP / Stand-Up India',
+      schemeMatchScore: '96% Fit',
+      schemeSubsidy: 'Up to 35% Capital Subsidy',
+      targetCustomers: biz.targetCustomers || 'Students, Young Professionals & Urban Travelers',
+      productService: biz.productService || biz.description || `${businessName} Solutions`,
+      initialCompletedTasks: [
+        'idea-define',
+        'idea-customer'
+      ],
+      initialDocumentStatus: {
+        'doc-aadhaar': true,
+        'doc-pan': true,
+        'doc-caste-cert': false,
+        'doc-rent-agreement': false,
+        'doc-electricity-bill': false,
+        'doc-bank-statement': true,
+        'doc-cancelled-cheque': false,
+        'doc-quotations': false,
+        'doc-dpr': false,
+        'doc-udyam': (biz.registrationStatus || '').toUpperCase().includes('UDYAM'),
+        'doc-fssai': (biz.licensesHeld || '').toUpperCase().includes('FSSAI')
+      },
+      selectedSchemeId: null
+    };
+  }, [loggedInProfile]);
+
+  // Persona management: Default to 'myBusiness' (the user's real business project!)
   const [activePersonaKey, setActivePersonaKey] = useState(() => {
-    return localStorage.getItem('udyamsathi_active_persona') || 'sita';
+    const saved = localStorage.getItem('udyamsathi_active_persona');
+    if (!saved || saved === 'sita') {
+      return 'myBusiness';
+    }
+    return saved;
   });
 
-  const activePersona = DEMO_PERSONAS[activePersonaKey] || DEMO_PERSONAS.sita;
-
-  // Blended profile context
-  const activeProfile = useMemo(() => {
-    if (activePersonaKey === 'priya' && loggedInProfile?.personalInfo?.fullName) {
-      return {
-        ...activePersona,
-        name: loggedInProfile.personalInfo.fullName,
-        businessName: loggedInProfile.business?.name || activePersona.businessName,
-        industry: loggedInProfile.business?.sector || activePersona.industry,
-        location: loggedInProfile.personalInfo.locality
-          ? `${loggedInProfile.personalInfo.locality}, ${loggedInProfile.personalInfo.state}`
-          : activePersona.location,
-        availableCapital: loggedInProfile.financialProfile?.availableCapital || activePersona.availableCapital,
-        estimatedProjectCost: loggedInProfile.financialProfile?.estimatedProjectCost || activePersona.estimatedProjectCost,
-        fundingRequired: loggedInProfile.financialProfile?.fundingRequired || activePersona.fundingRequired
-      };
+  const activePersona = useMemo(() => {
+    if (activePersonaKey === 'myBusiness') {
+      return userRealProfile;
     }
-    return activePersona;
-  }, [activePersonaKey, activePersona, loggedInProfile]);
+    return DEMO_PERSONAS[activePersonaKey] || userRealProfile;
+  }, [activePersonaKey, userRealProfile]);
+
+  const activeProfile = activePersona;
 
   // Persisted task completions
   const storageCompletedKey = `udyamsathi_completed_tasks_${activePersonaKey}`;
@@ -109,7 +150,7 @@ export function RoadmapProvider({ children }) {
 
   // Sync state when switching persona
   const switchPersona = useCallback((key) => {
-    const target = DEMO_PERSONAS[key] || DEMO_PERSONAS.sita;
+    const target = key === 'myBusiness' ? userRealProfile : (DEMO_PERSONAS[key] || userRealProfile);
     setActivePersonaKey(key);
     localStorage.setItem('udyamsathi_active_persona', key);
 
@@ -131,7 +172,7 @@ export function RoadmapProvider({ children }) {
     setActiveDrawerTaskId(null);
     hasInitializedStagesRef.current = false;
     setExpandedStageIds([]);
-  }, []);
+  }, [userRealProfile]);
 
   // Save changes to localStorage
   useEffect(() => {

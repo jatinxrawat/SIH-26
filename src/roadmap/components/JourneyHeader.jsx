@@ -103,28 +103,50 @@ export default function JourneyHeader() {
             <span>AI Milestone</span>
           </button>
 
-          {/* Persona Switcher */}
-          <div className="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs font-bold">
+          {/* Workspace / Business Mode Switcher */}
+          <div className="flex items-center bg-slate-100/90 p-1 rounded-2xl border border-slate-200 text-xs font-bold shadow-soft-xs">
+            {/* Real Business Profile Button */}
             <button
               type="button"
-              onClick={() => switchPersona('sita')}
+              onClick={() => switchPersona('myBusiness')}
               className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
-                activePersonaKey === 'sita'
-                  ? 'bg-white text-emerald-800 shadow-soft-sm font-black'
+                activePersonaKey === 'myBusiness'
+                  ? 'bg-white text-emerald-900 shadow-soft-sm font-black ring-1 ring-slate-200/60'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <UserCheck className="w-3.5 h-3.5" />
-              <span>Sita (Demo)</span>
+              <Building2 className="w-3.5 h-3.5 text-emerald-600" />
+              <span>{profile?.businessName || 'My Business'}</span>
+              {activePersonaKey === 'myBusiness' && (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+              )}
             </button>
 
+            <span className="text-slate-300 px-1 text-[11px] select-none">•</span>
+
+            {/* Sita Demo Button */}
+            <button
+              type="button"
+              onClick={() => switchPersona('sita')}
+              title="SIH Demo: Sita Sharma (Agro Foods)"
+              className={`px-2.5 py-1.5 rounded-xl transition-all flex items-center gap-1 ${
+                activePersonaKey === 'sita'
+                  ? 'bg-white text-emerald-900 shadow-soft-sm font-black ring-1 ring-slate-200/60'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <span>Demo: Sita</span>
+            </button>
+
+            {/* Priya Demo Button */}
             <button
               type="button"
               onClick={() => switchPersona('priya')}
-              className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+              title="Demo: Priya Sharma (Organics)"
+              className={`px-2.5 py-1.5 rounded-xl transition-all flex items-center gap-1 ${
                 activePersonaKey === 'priya'
-                  ? 'bg-white text-emerald-800 shadow-soft-sm font-black'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-emerald-900 shadow-soft-sm font-black ring-1 ring-slate-200/60'
+                  : 'text-slate-500 hover:text-slate-800'
               }`}
             >
               <span>Priya</span>
