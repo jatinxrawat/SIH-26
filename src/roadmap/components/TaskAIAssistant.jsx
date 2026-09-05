@@ -139,12 +139,12 @@ export default function TaskAIAssistant({ task, businessContext }) {
           <div>
             <div className="flex items-center gap-2">
               <h4 className="text-sm font-black text-white tracking-tight">Saathi AI Advisor</h4>
-              <span className="text-[9px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5 shadow-sm">
+              <span className="text-[9px] font-bold tracking-wide px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 shadow-sm shrink-0">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
                 </span>
-                Live Grounded
+                Live
               </span>
             </div>
             <p className="text-[11px] text-slate-400 font-medium">
@@ -153,32 +153,32 @@ export default function TaskAIAssistant({ task, businessContext }) {
           </div>
         </div>
 
-        {/* Platform Branded Engine Selector (Segmented Slider) */}
-        <div className="flex items-center bg-slate-800/90 p-1 rounded-2xl border border-slate-700/70 text-xs self-start sm:self-auto shadow-inner">
+        {/* Platform Branded Engine Selector (Compact Segmented Slider) */}
+        <div className="flex items-center bg-slate-800/90 p-0.5 rounded-xl border border-slate-700/70 text-[11px] self-start sm:self-auto shadow-inner">
           <button
             type="button"
             onClick={() => handleSwitchProvider('gemini')}
             title="Strategic MSME analysis with DPR and scheme linkages"
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer ${
               provider === 'gemini'
-                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-950 font-black'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-sm shadow-emerald-950'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/40'
             }`}
           >
-            <BrainCircuit className="w-3.5 h-3.5 text-emerald-200" />
+            <BrainCircuit className="w-3 h-3 text-emerald-200" />
             <span>Strategy Core</span>
           </button>
           <button
             type="button"
             onClick={() => handleSwitchProvider('grok')}
             title="High-speed execution blueprints and actionable checklists"
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer ${
               provider === 'grok'
-                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-950 font-black'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-sm shadow-emerald-950'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/40'
             }`}
           >
-            <Zap className="w-3.5 h-3.5 text-amber-300" />
+            <Zap className="w-3 h-3 text-amber-300" />
             <span>Tactical Core</span>
           </button>
         </div>
