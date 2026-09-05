@@ -3,6 +3,8 @@
  * Supporting 22 Official Scheduled Indian Languages + English
  */
 
+import { SCHEME_NAMES_MAP, SCHEME_BENEFITS_MAP, MINISTRY_MAP } from './schemesDictionary';
+
 export const SCHEMES_TRANSLATIONS = {
   en: {
     pageBadge: 'Government Scheme Matcher',
@@ -811,10 +813,15 @@ export function getSchemesText(lang, path, fallback = '') {
 }
 
 /**
- * Localize Ministry Names
+ * Localize Ministry & Department Names
  */
 export function localizeMinistry(ministry, lang) {
   if (!ministry || lang === 'en') return ministry;
+
+  // Direct hit from master dictionary
+  if (MINISTRY_MAP?.[lang]?.[ministry]) {
+    return MINISTRY_MAP[lang][ministry];
+  }
 
   const map = {
     bn: {
@@ -826,15 +833,22 @@ export function localizeMinistry(ministry, lang) {
       'Department of Financial Services': 'আর্থিক সেবা বিভাগ (DFS)',
       'Ministry of Commerce and Industry': 'বাণিজ্য ও শিল্প মন্ত্রণালয়',
       'Ministry of Food Processing': 'খাদ্য প্রক্রিয়াকরণ মন্ত্রণালয়',
-      'Ministry of Housing and Urban Affairs': 'নগর উন্নয়ন মন্ত্রণালয়',
+      'Ministry of Housing and Urban Affairs': 'আবাসন ও নগর বিষয়ক মন্ত্রণালয় (MoHUA)',
+      'Ministry of Housing and Urban Affairs (MoHUA)': 'আবাসন ও নগর বিষয়ক মন্ত্রণালয় (MoHUA)',
+      'Urban Livelihoods Division': 'শহুরে জীবিকা বিভাগ',
+      'DPIIT': 'শিল্প ও অভ্যন্তরীণ বাণিজ্য প্রচার দপ্তর (DPIIT)',
+      'DA&FW': 'কৃষি ও কৃষক কল্যাণ দপ্তর (DA&FW)',
+      'DAHD': 'পশুপালন ও দুগ্ধ দপ্তর (DAHD)',
       'Ministry of Skill Development': 'দক্ষতা উন্নয়ন মন্ত্রণালয়',
       'Ministry of Rural Development': 'পল্লী উন্নয়ন মন্ত্রণালয়',
       'Ministry of Electronics and IT': 'তথ্যপ্রযুক্তি মন্ত্রণালয়',
       'Ministry of Agriculture': 'কৃষি মন্ত্রণালয়',
+      'Ministry of Agriculture and Farmers Welfare': 'কৃষি ও কৃষক কল্যাণ মন্ত্রণালয়',
+      'Farmers Welfare': 'কৃষক কল্যাণ',
       'Ministry of Textiles': 'বস্ত্র মন্ত্রণালয়',
       'Ministry of Finance': 'অর্থ মন্ত্রণালয়',
       'Ministry of MSME': 'এমএসএমই মন্ত্রণালয়',
-      'Skill Development Joint Cell': 'দক্ষতা উন্নয়ন সেল',
+      'Skill Development Joint Cell': 'দক্ষতা উন্নয়ন যৌথ সেল',
       'SIDBI': 'সিডবি (SIDBI)',
       'NABARD': 'নাবার্ড (NABARD)'
     },
@@ -847,17 +861,24 @@ export function localizeMinistry(ministry, lang) {
       'Department of Financial Services': 'वित्तीय सेवाएं विभाग (DFS)',
       'Ministry of Commerce and Industry': 'वाणिज्य एवं उद्योग मंत्रालय',
       'Ministry of Food Processing': 'खाद्य प्रसंस्करण मंत्रालय',
-      'Ministry of Housing and Urban Affairs': 'आवासन एवं शहरी कार्य मंत्रालय',
+      'Ministry of Housing and Urban Affairs': 'आवासन एवं शहरी कार्य मंत्रालय (MoHUA)',
+      'Ministry of Housing and Urban Affairs (MoHUA)': 'आवासन एवं शहरी कार्य मंत्रालय (MoHUA)',
+      'Urban Livelihoods Division': 'शहरी आजीविका प्रभाग',
+      'DPIIT': 'उद्योग संवर्धन एवं आंतरिक व्यापार विभाग (DPIIT)',
+      'DA&FW': 'कृषि एवं किसान कल्याण विभाग (DA&FW)',
+      'DAHD': 'पशुपालन एवं डेयरी विभाग (DAHD)',
       'Ministry of Skill Development': 'कौशल विकास मंत्रालय',
       'Ministry of Rural Development': 'ग्रामीण विकास मंत्रालय',
       'Ministry of Electronics and IT': 'इलेक्ट्रॉनिक्स एवं आईटी मंत्रालय',
       'Ministry of Agriculture': 'कृषि मंत्रालय',
+      'Ministry of Agriculture and Farmers Welfare': 'कृषि एवं किसान कल्याण मंत्रालय',
+      'Farmers Welfare': 'किसान कल्याण',
       'Ministry of Textiles': 'कपड़ा मंत्रालय',
       'Ministry of Finance': 'वित्त मंत्रालय',
       'Ministry of MSME': 'एमएसएमई मंत्रालय',
       'Skill Development Joint Cell': 'कौशल विकास संयुक्त प्रकोष्ठ',
       'SIDBI': 'सिडबी (सिडबी)',
-      'NABARD': 'नाबार्ड (NABARD)'
+      'NABARD': 'नाबार्ड (नाबार्ड)'
     },
     mr: {
       'Ministry of Food Processing Industries (MoFPI)': 'अन्न प्रक्रिया उद्योग मंत्रालय (MoFPI)',
@@ -886,17 +907,56 @@ export function localizeMinistry(ministry, lang) {
     }
   };
 
-  if (map[lang]) {
-    let res = ministry;
-    // Sort keys by length descending to replace specific phrases first
-    const sortedKeys = Object.keys(map[lang]).sort((a, b) => b.length - a.length);
-    for (const enKey of sortedKeys) {
-      const localized = map[lang][enKey];
+  const combinedMap = {
+    ...(map[lang] || {}),
+    ...(MINISTRY_MAP?.[lang] || {})
+  };
+
+  let res = ministry;
+  // Sort keys by length descending to replace specific phrases first
+  const sortedKeys = Object.keys(combinedMap).sort((a, b) => b.length - a.length);
+  for (const enKey of sortedKeys) {
+    if (res.includes(enKey)) {
+      const localized = combinedMap[enKey];
       res = res.replace(new RegExp(enKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), localized);
     }
-    return res;
   }
-  return ministry;
+
+  if (lang === 'hi') {
+    res = res.replace(/\s+&\s+/g, ' एवं ');
+    res = res.replace(/\s+and\s+/gi, ' एवं ');
+    res = res.replace(/\bTrusts\b/gi, 'ट्रस्ट्स');
+    res = res.replace(/\bTrust\b/gi, 'ट्रस्ट');
+    res = res.replace(/\bDivision\b/gi, 'प्रभाग');
+    res = res.replace(/\bDepartment\b/gi, 'विभाग');
+    res = res.replace(/\bMinistry\b/gi, 'मंत्रालय');
+  } else if (lang === 'bn') {
+    res = res.replace(/\s+&\s+/g, ' ও ');
+    res = res.replace(/\s+and\s+/gi, ' ও ');
+    res = res.replace(/\bTrusts\b/gi, 'ট্রাস্ট');
+    res = res.replace(/\bTrust\b/gi, 'ট্রাস্ট');
+    res = res.replace(/\bDivision\b/gi, 'বিভাগ');
+    res = res.replace(/\bDepartment\b/gi, 'দপ্তর');
+    res = res.replace(/\bMinistry\b/gi, 'মন্ত্রণালয়');
+  }
+
+  return res;
+}
+
+/**
+ * Localize Scheme Official Name
+ */
+export function localizeSchemeName(name, lang = 'en') {
+  if (!name || lang === 'en') return name;
+  return SCHEME_NAMES_MAP?.[lang]?.[name] || SCHEME_NAMES_MAP?.[lang]?.[name.replace(/’/g, "'").trim()] || name;
+}
+
+/**
+ * Localize Scheme Benefit Description
+ */
+export function localizeSchemeBenefit(benefit, lang = 'en') {
+  if (!benefit || lang === 'en') return benefit;
+  return SCHEME_BENEFITS_MAP?.[lang]?.[benefit] || SCHEME_BENEFITS_MAP?.[lang]?.[benefit.replace(/’/g, "'").trim()] || benefit;
 }
 
 /**

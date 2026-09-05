@@ -7,6 +7,7 @@ import { useRoadmap } from '../../roadmap/context/RoadmapContext';
 import { schemeApi } from '../../services/schemeApi';
 import { useLanguage } from '../../context/LanguageContext';
 import { localizeBusinessValue } from '../../i18n/platformTranslations';
+import { localizeMinistry } from '../../i18n/schemesTranslations';
 
 export default function RecommendationsPreview() {
   const { profile } = useEntrepreneurProfile();
@@ -163,20 +164,20 @@ export default function RecommendationsPreview() {
                       <span className="text-base">{medalEmoji}</span>
                       <span className="text-xs font-black px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
                         <Sparkles className="w-3 h-3" />
-                        <span>{scheme.matchScore || '95%'} Match</span>
+                        <span>{scheme.matchScore || '95%'} {t('schemes.matchScore', 'Match')}</span>
                       </span>
                     </div>
 
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-200/70 text-slate-700 uppercase tracking-wider block mb-1 truncate">
-                      {scheme.ministry}
+                      {localizeMinistry(scheme.ministry, language)}
                     </span>
 
                     <h4 className="text-sm font-bold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-2 leading-snug">
-                      {scheme.name}
+                      {localizeBusinessValue(scheme.name, language)}
                     </h4>
 
                     <p className="text-xs font-extrabold text-emerald-700 mt-2">
-                      {scheme.financialBenefits?.subsidyPercentage || `Up to ₹${(scheme.financialBenefits?.maximumFunding || 0).toLocaleString('en-IN')}`}
+                      {localizeBusinessValue(scheme.financialBenefits?.subsidyPercentage, language) || `${t('schemes.upTo', 'Up to')} ₹${(scheme.financialBenefits?.maximumFunding || 0).toLocaleString('en-IN')}`}
                     </p>
                   </div>
 
@@ -188,17 +189,17 @@ export default function RecommendationsPreview() {
                           ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                           : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
                       }`}
-                      title={isSelected ? 'Remove from Roadmap' : 'Add to Roadmap'}
+                      title={isSelected ? t('schemes.removeFromRoadmap', 'Remove from Roadmap') : t('schemes.addRoadmap', 'Add to Roadmap')}
                     >
                       {isSelected ? (
                         <>
                           <BookmarkCheck className="w-3 h-3 text-emerald-700" />
-                          <span>In Roadmap</span>
+                          <span>{t('schemes.inRoadmap', 'In Roadmap')}</span>
                         </>
                       ) : (
                         <>
                           <PlusCircle className="w-3 h-3 text-slate-500" />
-                          <span>Add to Roadmap</span>
+                          <span>{t('schemes.addRoadmap', 'Add to Roadmap')}</span>
                         </>
                       )}
                     </button>
@@ -207,7 +208,7 @@ export default function RecommendationsPreview() {
                       to={`/schemes/${scheme.id}`}
                       className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-colors"
                     >
-                      <span>Details</span>
+                      <span>{t('schemes.viewDetails', 'Details')}</span>
                       <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </div>

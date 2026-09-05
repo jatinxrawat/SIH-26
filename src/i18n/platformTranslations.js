@@ -3,6 +3,8 @@
  * Supporting 22 Official Scheduled Indian Languages + English
  */
 
+import { SCHEME_NAMES_MAP, SCHEME_BENEFITS_MAP } from './schemesDictionary';
+
 export const PLATFORM_TRANSLATIONS = {
   en: {
     dashboard: {
@@ -1203,9 +1205,34 @@ export function localizeBusinessValue(value, lang = 'en') {
   if (!value || typeof value !== 'string') return value || '—';
   if (lang === 'en') return value;
 
+  const trimmed = value.trim();
+
+  // 1. Master Scheme Names Map check
+  if (SCHEME_NAMES_MAP?.[lang]?.[trimmed]) {
+    return SCHEME_NAMES_MAP[lang][trimmed];
+  }
+
+  // 2. Master Scheme Benefits Map check
+  if (SCHEME_BENEFITS_MAP?.[lang]?.[trimmed]) {
+    return SCHEME_BENEFITS_MAP[lang][trimmed];
+  }
+
+  // 3. Direct business value map check
   const langMap = BUSINESS_VALUE_MAP[lang];
-  if (langMap && langMap[value]) {
-    return langMap[value];
+  if (langMap && langMap[trimmed]) {
+    return langMap[trimmed];
+  }
+
+  // 4. Normalized check for apostrophes (straight vs curly)
+  const normVal = trimmed.replace(/’/g, "'");
+  if (SCHEME_NAMES_MAP?.[lang]?.[normVal]) {
+    return SCHEME_NAMES_MAP[lang][normVal];
+  }
+  if (SCHEME_BENEFITS_MAP?.[lang]?.[normVal]) {
+    return SCHEME_BENEFITS_MAP[lang][normVal];
+  }
+  if (langMap && langMap[normVal]) {
+    return langMap[normVal];
   }
 
   // Dynamic regex for blocker reasons: Required to complete "..."
