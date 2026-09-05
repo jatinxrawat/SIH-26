@@ -23,16 +23,18 @@ import AdvisorPage from './pages/AdvisorPage';
 import DocumentsPage from './pages/DocumentsPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
+import { LanguageProvider } from './context/LanguageContext';
 import { RoadmapProvider } from './roadmap/context/RoadmapContext';
 
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <BusinessProvider>
-          <EntrepreneurProfileProvider>
-            <RoadmapProvider>
-              <Routes>
+      <LanguageProvider>
+        <AuthProvider>
+          <BusinessProvider>
+            <EntrepreneurProfileProvider>
+              <RoadmapProvider>
+                <Routes>
                 {/* Public Landing Page */}
                 <Route path="/" element={<LandingPage />} />
 
@@ -78,6 +80,7 @@ export default function App() {
           </EntrepreneurProfileProvider>
         </BusinessProvider>
       </AuthProvider>
-    </BrowserRouter>
-  );
+    </LanguageProvider>
+  </BrowserRouter>
+);
 }

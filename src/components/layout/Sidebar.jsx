@@ -22,11 +22,13 @@ import {
 import Logo from '../common/Logo';
 import { useAuth } from '../../context/AuthContext';
 import { useBusiness } from '../../context/BusinessContext';
+import { useLanguage } from '../../context/LanguageContext';
 import AddBusinessModal from '../business/AddBusinessModal';
 
 export default function Sidebar({ onCloseMobile }) {
   const { logout, currentUser, userProfile } = useAuth();
   const { businesses, activeBusiness, activeBusinessId, setActiveBusiness } = useBusiness();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
@@ -59,28 +61,28 @@ export default function Sidebar({ onCloseMobile }) {
 
   const navSections = [
     {
-      label: 'MAIN',
+      label: t('nav.main', 'MAIN'),
       items: [
-        { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-        { name: 'My Business', path: '/business', icon: Building2 },
-        { name: 'Government Schemes', path: '/schemes', icon: Landmark },
-        { name: 'Funding', path: '/funding', icon: Coins },
-        { name: 'Roadmap', path: '/roadmap', icon: MapPin },
-        { name: 'Professionals', path: '/professionals', icon: Users2 },
-        { name: 'AI Business Advisor', path: '/advisor', icon: Bot, isAi: true }
+        { name: t('nav.dashboard', 'Dashboard'), path: '/dashboard', icon: LayoutDashboard },
+        { name: t('nav.business', 'My Business'), path: '/business', icon: Building2 },
+        { name: t('nav.schemes', 'Government Schemes'), path: '/schemes', icon: Landmark },
+        { name: t('nav.funding', 'Funding'), path: '/funding', icon: Coins },
+        { name: t('nav.roadmap', 'Roadmap'), path: '/roadmap', icon: MapPin },
+        { name: t('nav.professionals', 'Professionals'), path: '/professionals', icon: Users2 },
+        { name: t('nav.advisor', 'AI Business Advisor'), path: '/advisor', icon: Bot, isAi: true }
       ]
     },
     {
-      label: 'TOOLS',
+      label: t('nav.workspace', 'WORKSPACE'),
       items: [
-        { name: 'Documents', path: '/documents', icon: FileText }
+        { name: t('nav.documents', 'Documents'), path: '/documents', icon: FileText }
       ]
     },
     {
-      label: 'ACCOUNT',
+      label: t('nav.account', 'ACCOUNT'),
       items: [
-        { name: 'Profile', path: '/profile', icon: User },
-        { name: 'Settings', path: '/settings', icon: Settings }
+        { name: t('nav.profile', 'Profile'), path: '/profile', icon: User },
+        { name: t('nav.settings', 'Settings'), path: '/settings', icon: Settings }
       ]
     }
   ];
@@ -287,8 +289,8 @@ export default function Sidebar({ onCloseMobile }) {
           </div>
           <button
             onClick={handleLogout}
-            title="Log Out"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors shrink-0"
+            title={t('nav.logout', 'Log Out')}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors shrink-0 cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
           </button>

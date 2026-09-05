@@ -18,7 +18,8 @@ export async function sendAdvisorMessage({ message, history = [], profile = {} }
     registrationStatus: profile.registrationStatus || profile.business?.registrationStatus || 'Unregistered',
     licensesHeld: profile.licensesHeld || profile.business?.licensesHeld || 'None',
     twelveMonthGoal: profile.goals?.twelveMonthGoal || 'Launch operations',
-    primaryChallenge: profile.goals?.primaryChallenge || 'Navigating government schemes & paperwork'
+    primaryChallenge: profile.goals?.primaryChallenge || 'Navigating government schemes & paperwork',
+    preferredLanguage: typeof localStorage !== 'undefined' ? (localStorage.getItem('udyam_language') || 'en') : 'en'
   };
 
   const formattedMessages = history.map((h) => ({

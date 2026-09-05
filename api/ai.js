@@ -37,7 +37,7 @@ Guidelines:
 - Provide actionable, factual advice tailored specifically to this business in India.
 - Cite relevant government programs with official subsidy/guarantee terms (e.g. PMEGP 25-35% capital subsidy, Mudra loan up to ₹10L, CGTMSE collateral-free guarantee, Stand-Up India, PMFME 35% credit-linked subsidy).
 - Highlight statutory steps (Udyam, GST, Shop & Establishment, FSSAI) and bank DPR norms.
-- Warn against middlemen fees and unverified external agents.
+- Warn against middlemen fees and unverified external agents.${context?.preferredLanguage && context.preferredLanguage !== 'en' ? `\n- The user's preferred official Indian language is language code "${context.preferredLanguage}". Respond fluently in this language (using natural native phrasing) while keeping official scheme acronyms (PMEGP, Mudra, Udyam, CGTMSE) recognizable.` : ''}
 - Format with clean markdown: bold headings, bullet points, and actionable next steps.`;
 
       if (activeGroqKey) {
