@@ -4,7 +4,7 @@
  * interactive step-checklists, custom AI milestones, search/filter, and document vault.
  */
 
-import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { ROADMAP_STAGES, MASTER_DOCUMENTS, DEMO_PERSONAS } from '../data/roadmapDefinitions';
 import { generatePersonalizedRoadmap, determineActiveStage } from '../engine/roadmapEngine';
 import { calculateOverallProgress, calculateBusinessReadiness, calculateBlockers } from '../engine/progressEngine';
@@ -99,7 +99,8 @@ export function RoadmapProvider({ children }) {
 
   // UI Interactive States
   const [activeDrawerTaskId, setActiveDrawerTaskId] = useState(null);
-  const [expandedStageId, setExpandedStageId] = useState(null);
+  const [expandedStageIds, setExpandedStageIds] = useState([]);
+  const hasInitializedStagesRef = useRef(false);
   const [toast, setToast] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('ALL'); // 'ALL' | 'AVAILABLE' | 'COMPLETED' | 'BLOCKED'
@@ -128,6 +129,8 @@ export function RoadmapProvider({ children }) {
     setCustomTasks(savedCustom ? JSON.parse(savedCustom) : []);
 
     setActiveDrawerTaskId(null);
+    hasInitializedStagesRef.current = false;
+    setExpandedStageIds([]);
   }, []);
 
   // Save changes to localStorage
@@ -182,8 +185,44 @@ export function RoadmapProvider({ children }) {
     return determineActiveStage(allTasks, completedTaskIds);
   }, [allTasks, completedTaskIds]);
 
-  // Derived expanded stage (defaults to current active stage)
-  const effectiveExpandedStageId = expandedStageId !== null ? expandedStageId : currentStageId;
+  // Auto-expand active stage initially (or on persona switch)
+  useEffect(() => {
+    if (!hasInitializedStagesRef.current && currentStageId) {
+      setExpandedStageIds([currentStageId]);
+      hasInitializedStagesRef.current = true;
+    }
+  }, [currentStageId]);
+
+  // Stage expansion helpers
+  const toggleStage = useCallback((stageId) => {
+    setExpandedStageIds((prev) =>
+      prev.includes(stageId) ? prev.filter((id) => id !== stageId) : [...prev, stageId]
+    );
+  }, []);
+
+  const expandStage = useCallback((stageId) => {
+    setExpandedStageIds((prev) => (prev.includes(stageId) ? prev : [...prev, stageId]));
+  }, []);
+
+  const collapseStage = useCallback((stageId) => {
+    setExpandedStageIds((prev) => prev.filter((id) => id !== stageId));
+  }, []);
+
+  const expandAllStages = useCallback(() => {
+    setExpandedStageIds(ROADMAP_STAGES.map((s) => s.id));
+  }, []);
+
+  const collapseAllStages = useCallback(() => {
+    setExpandedStageIds([]);
+  }, []);
+
+  const setExpandedStageId = useCallback((id) => {
+    if (id === null || id === undefined) {
+      setExpandedStageIds([]);
+    } else {
+      setExpandedStageIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    }
+  }, []);
 
   // Overall progress %
   const overallProgress = useMemo(() => {
@@ -351,7 +390,14 @@ export function RoadmapProvider({ children }) {
     taskChecklists,
     customTasks,
     currentStageId,
-    expandedStageId: effectiveExpandedStageId,
+    expandedStageIds,
+    setExpandedStageIds,
+    toggleStage,
+    expandStage,
+    collapseStage,
+    expandAllStages,
+    collapseAllStages,
+    expandedStageId: expandedStageIds[0] || null,
     setExpandedStageId,
     activeDrawerTaskId,
     toast,

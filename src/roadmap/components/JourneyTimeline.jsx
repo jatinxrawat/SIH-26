@@ -30,8 +30,10 @@ export default function JourneyTimeline() {
     completedTaskIds,
     documentStatus,
     currentStageId,
-    expandedStageId,
-    setExpandedStageId,
+    expandedStageIds,
+    toggleStage,
+    expandAllStages,
+    collapseAllStages,
     openTaskDrawer,
     toggleTaskCompletion,
     toggleTaskStep,
@@ -169,6 +171,14 @@ export default function JourneyTimeline() {
 
           <button
             type="button"
+            onClick={expandedStageIds.length === stages.length ? collapseAllStages : expandAllStages}
+            className="px-3 py-2 rounded-2xl border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50 font-bold text-xs transition-all shrink-0"
+          >
+            {expandedStageIds.length === stages.length ? 'Collapse All' : 'Expand All'}
+          </button>
+
+          <button
+            type="button"
             onClick={() => setIsAIMilestoneModalOpen(true)}
             className="px-3.5 py-2 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-bold text-xs transition-all flex items-center gap-1.5 shrink-0"
           >
@@ -184,7 +194,7 @@ export default function JourneyTimeline() {
           const rawStageTasks = allTasks.filter((t) => t.stage === stage.id);
           const visibleStageTasks = rawStageTasks.filter(filterTask);
           const stageEval = evaluateStageStatus(stage.id, rawStageTasks, completedTaskIds, currentStageId);
-          const isExpanded = expandedStageId === stage.id;
+          const isExpanded = (expandedStageIds || []).includes(stage.id);
           const isCurrent = stage.id === currentStageId;
 
           // If search active and no matching tasks in this stage, skip rendering stage
@@ -240,8 +250,8 @@ export default function JourneyTimeline() {
             >
               {/* Stage Header Accordion Toggle */}
               <div
-                onClick={() => setExpandedStageId(isExpanded ? null : stage.id)}
-                className="p-5 sm:p-6 cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 select-none"
+                onClick={() => toggleStage(stage.id)}
+                className="p-5 sm:p-6 cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4 select-none hover:bg-slate-50/50 transition-colors rounded-t-3xl"
               >
                 <div className="flex items-start sm:items-center gap-4">
                   <div
