@@ -62,8 +62,7 @@ export default function Navbar() {
             className="focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-lg p-0.5 shrink-0"
             aria-label="UdyamSaathi Home"
           >
-            <Logo variant="dark" size="sm" showTagline={false} className="sm:hidden" />
-            <Logo variant="dark" size="md" className="hidden sm:flex" />
+            <Logo variant="dark" size="md" />
           </Link>
 
           {/* Desktop Navigation */}
