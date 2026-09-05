@@ -7,9 +7,12 @@
 import React from 'react';
 import { Activity, ShieldCheck } from 'lucide-react';
 import { useRoadmap } from '../context/RoadmapContext';
+import { useLanguage } from '../../context/LanguageContext';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 
 export default function BusinessReadinessCard() {
   const { businessReadiness } = useRoadmap();
+  const { t, language } = useLanguage();
 
   return (
     <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-soft-sm space-y-5">
@@ -20,16 +23,16 @@ export default function BusinessReadinessCard() {
           </div>
           <div>
             <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-              Business Readiness Index
+              {t('roadmap.readinessIndexTitle', 'Business Readiness Index')}
             </h3>
             <p className="text-[11px] text-slate-400">
-              Mathematically derived from verified task & document state
+              {t('roadmap.readinessSubtitle', 'Mathematically derived from verified task & document state')}
             </p>
           </div>
         </div>
 
         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
-          Deterministic
+          {t('roadmap.deterministic', 'Deterministic')}
         </span>
       </div>
 
@@ -41,9 +44,13 @@ export default function BusinessReadinessCard() {
           return (
             <div key={item.label} className="space-y-1.5">
               <div className="flex justify-between items-center text-xs">
-                <span className="font-bold text-slate-800">{item.label}</span>
+                <span className="font-bold text-slate-800">
+                  {localizeBusinessValue(item.label, language)}
+                </span>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-slate-400">{item.weight}</span>
+                  <span className="text-[10px] text-slate-400">
+                    {localizeBusinessValue(item.weight, language)}
+                  </span>
                   <span
                     className={`font-black ${
                       isHigh ? 'text-emerald-700' : isMedium ? 'text-amber-600' : 'text-slate-500'
@@ -69,8 +76,9 @@ export default function BusinessReadinessCard() {
 
       <div className="pt-2 border-t border-slate-100 flex items-center gap-2 text-[11px] text-slate-400">
         <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-        <span>Readiness updates dynamically as you complete checkpoints.</span>
+        <span>{t('roadmap.readinessFooter', 'Readiness updates dynamically as you complete checkpoints.')}</span>
       </div>
     </div>
   );
 }
+

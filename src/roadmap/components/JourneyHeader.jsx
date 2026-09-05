@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import { useRoadmap } from '../context/RoadmapContext';
 import { evaluateStageStatus } from '../engine/dependencyEngine';
+import { useLanguage } from '../../context/LanguageContext';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 
 export default function JourneyHeader() {
   const {
@@ -36,6 +38,7 @@ export default function JourneyHeader() {
     setIsAIMilestoneModalOpen,
     printRoadmapSummary
   } = useRoadmap();
+  const { t, language } = useLanguage();
 
   const currentStageObj = stages.find((s) => s.id === currentStageId) || stages[0];
 
@@ -63,7 +66,7 @@ export default function JourneyHeader() {
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
               <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Business Journey Engine</span>
+              <span>{t('roadmap.journeyBadge', 'Business Journey Engine')}</span>
             </span>
 
             <span className="text-xs text-slate-300 font-medium">•</span>
@@ -77,16 +80,16 @@ export default function JourneyHeader() {
 
             <span className="inline-flex items-center gap-1 text-xs text-slate-500">
               <MapPin className="w-3.5 h-3.5 text-slate-400" />
-              <span>{profile.location}</span>
+              <span>{localizeBusinessValue(profile.location, language)}</span>
             </span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            Personalized Business Roadmap
+            {t('roadmap.roadmapTitle', 'Personalized Business Roadmap')}
           </h1>
 
           <p className="text-xs sm:text-sm text-slate-500 max-w-2xl leading-relaxed">
-            {getJourneyStatus(overallProgress)}
+            {localizeBusinessValue(getJourneyStatus(overallProgress), language)}
           </p>
         </div>
 
@@ -99,7 +102,7 @@ export default function JourneyHeader() {
             className="px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black shadow-soft-xs flex items-center gap-1.5 transition-all"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>AI Milestone</span>
+            <span>{t('roadmap.aiMilestone', 'AI Milestone')}</span>
           </button>
 
           {/* Print / Export button */}
@@ -110,7 +113,7 @@ export default function JourneyHeader() {
             className="p-2.5 px-3 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 transition-all flex items-center gap-1.5 text-xs font-bold"
           >
             <Printer className="w-4 h-4 text-slate-500" />
-            <span className="hidden sm:inline">Export Dossier</span>
+            <span className="hidden sm:inline">{t('roadmap.exportDossier', 'Export Dossier')}</span>
           </button>
 
           {/* Reset button */}
@@ -133,13 +136,13 @@ export default function JourneyHeader() {
           </div>
           <div>
             <span className="text-[10px] uppercase font-black tracking-wider text-emerald-700 block">
-              Active Milestone Stage
+              {t('roadmap.activeStage', 'Active Milestone Stage')}
             </span>
             <div className="text-sm sm:text-base font-black text-slate-900">
-              {currentStageObj.title}
+              {localizeBusinessValue(currentStageObj.title, language)}
             </div>
             <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
-              {currentStageObj.tagline}
+              {localizeBusinessValue(currentStageObj.tagline, language)}
             </p>
           </div>
         </div>
@@ -147,7 +150,7 @@ export default function JourneyHeader() {
         {/* Calculated Progress Bar */}
         <div className="sm:w-72 space-y-1.5 shrink-0">
           <div className="flex justify-between items-center text-xs">
-            <span className="text-slate-500 font-bold">Overall Progress</span>
+            <span className="text-slate-500 font-bold">{t('roadmap.overallProgress', 'Overall Progress')}</span>
             <span className="text-emerald-800 font-black text-sm">{overallProgress}%</span>
           </div>
           <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden shadow-inner">
@@ -171,10 +174,10 @@ export default function JourneyHeader() {
               <Route className="w-4 h-4 text-emerald-700" />
             </div>
             <span className="text-xs font-black uppercase tracking-wider text-slate-800">
-              Enterprise Lifecycle Pipeline
+              {t('roadmap.pipelineTitle', 'Enterprise Lifecycle Pipeline')}
             </span>
             <span className="hidden sm:inline-block text-[11px] text-slate-400 font-medium">
-              • Click any milestone to inspect or jump
+              • {t('roadmap.pipelineHint', 'Click any milestone to inspect or jump')}
             </span>
           </div>
 
@@ -184,7 +187,7 @@ export default function JourneyHeader() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
               </span>
-              <span>Stage {currentStageObj.number} of {stages.length}: {currentStageObj.shortName}</span>
+              <span>{t('roadmap.stageLabel', 'Stage')} {currentStageObj.number} {t('schemes.of', 'of')} {stages.length}: {localizeBusinessValue(currentStageObj.shortName, language)}</span>
             </span>
           </div>
         </div>
@@ -246,22 +249,22 @@ export default function JourneyHeader() {
                             : 'text-slate-500 group-hover:text-slate-700'
                         }`}
                       >
-                        {stage.shortName}
+                        {localizeBusinessValue(stage.shortName, language)}
                       </span>
 
                       {/* Status Pill / Label */}
                       <div className="mt-1 h-6 flex items-center justify-center">
                         {isCurrent ? (
                           <span className="px-2 py-0.5 rounded-md border border-emerald-300 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-wider">
-                            CURRENT
+                            {t('roadmap.statusCurrent', 'CURRENT')}
                           </span>
                         ) : isCompleted ? (
                           <span className="text-[11px] font-semibold text-emerald-600">
-                            Complete
+                            {t('roadmap.statusComplete', 'Complete')}
                           </span>
                         ) : (
                           <span className="text-[11px] font-medium text-slate-400">
-                            Pending
+                            {t('roadmap.statusPending', 'Pending')}
                           </span>
                         )}
                       </div>

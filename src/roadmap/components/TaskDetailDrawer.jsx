@@ -31,6 +31,8 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useRoadmap } from '../context/RoadmapContext';
+import { useLanguage } from '../../context/LanguageContext';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 import { evaluateTaskStatus, getUnlockedTasks } from '../engine/dependencyEngine';
 import TaskAIAssistant from './TaskAIAssistant';
 
@@ -53,6 +55,7 @@ export default function TaskDetailDrawer() {
     selectScheme
   } = useRoadmap();
 
+  const { t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'docs' | 'ai'
 
   if (!activeDrawerTaskId) return null;
@@ -93,16 +96,16 @@ export default function TaskDetailDrawer() {
           {/* Top Badges */}
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-xs font-bold shadow-soft-xs">
-              0{stage.number} {stage.title}
+              0{stage.number} {localizeBusinessValue(stage.title, language)}
             </span>
 
             <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-extrabold text-[10px] uppercase tracking-wider">
-              Priority: {task.priority}
+              {t('roadmap.priority', 'Priority')}: {localizeBusinessValue(task.priority, language)}
             </span>
 
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-600 font-semibold text-xs">
               <Clock className="w-3.5 h-3.5 text-slate-500" />
-              <span>{task.estimatedTime}</span>
+              <span>{localizeBusinessValue(task.estimatedTime, language)}</span>
             </span>
           </div>
 
@@ -110,10 +113,10 @@ export default function TaskDetailDrawer() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
-                {task.title}
+                {localizeBusinessValue(task.title, language)}
               </h2>
               <p className="text-xs text-slate-500 mt-1 font-medium">
-                Milestone Execution Workspace • Stage {stage.number} of {stages.length}
+                {t('roadmap.journeyBadge', 'Milestone Execution Workspace')} • {t('roadmap.stageLabel', 'Stage')} {stage.number} {t('dashboard.of', 'of')} {stages.length}
               </p>
             </div>
 
@@ -138,7 +141,7 @@ export default function TaskDetailDrawer() {
                   : 'border-transparent text-slate-500 hover:text-slate-900'
               }`}
             >
-              <span>Overview & Steps</span>
+              <span>{t('advisor.executiveSummary', 'Overview & Steps')}</span>
               <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
                 activeTab === 'overview'
                   ? 'bg-emerald-100 text-emerald-800'
@@ -159,7 +162,7 @@ export default function TaskDetailDrawer() {
                 }`}
               >
                 <FolderCheck className="w-3.5 h-3.5" />
-                <span>Documents Vault</span>
+                <span>{t('dashboard.documentsVault', 'Documents Vault')}</span>
                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
                   completedDocsCount === taskRequiredDocs.length
                     ? 'bg-emerald-100 text-emerald-800'
@@ -180,9 +183,9 @@ export default function TaskDetailDrawer() {
               }`}
             >
               <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-              <span>AI Advisor</span>
+              <span>{t('advisor.title', 'AI Advisor')}</span>
               <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
-                Live
+                {t('common.live', 'Live')}
               </span>
             </button>
           </div>
@@ -195,11 +198,11 @@ export default function TaskDetailDrawer() {
             <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200/90 text-xs text-amber-900 flex items-start gap-3 shadow-soft-xs">
               <Lock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <div>
-                <strong className="font-bold block">Prerequisites Required</strong>
+                <strong className="font-bold block">{t('roadmap.statusLocked', 'Prerequisites Required')}</strong>
                 <span>
-                  Complete earlier checkpoints before working on this task:{' '}
+                  {t('roadmap.statusPending', 'Complete earlier checkpoints before working on this task')}:{' '}
                   {missingPrerequisites
-                    .map((id) => allTasks.find((t) => t.id === id)?.shortTitle || id)
+                    .map((id) => localizeBusinessValue(allTasks.find((t) => t.id === id)?.title, language) || id)
                     .join(', ')}
                 </span>
               </div>
@@ -208,10 +211,10 @@ export default function TaskDetailDrawer() {
             <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-center justify-between gap-3 shadow-soft-xs">
               <div className="flex items-center gap-2.5">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                <span className="font-bold">This milestone has been verified & completed!</span>
+                <span className="font-bold">{t('common.completed', 'This milestone has been verified & completed!')}</span>
               </div>
               <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 uppercase">
-                Ready
+                {t('dashboard.ready', 'Ready')}
               </span>
             </div>
           ) : null}
@@ -224,10 +227,10 @@ export default function TaskDetailDrawer() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl -mr-12 -mt-12 pointer-events-none" />
                 <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 mb-2">
                   <Info className="w-4 h-4 text-emerald-700" />
-                  <span className="uppercase tracking-wider">Why This Matters</span>
+                  <span className="uppercase tracking-wider">{t('advisor.whyItMatters', 'Why This Matters')}</span>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                  {task.whyThisMatters || 'Validating real demand before purchasing machinery or leasing land saves your personal capital from high-risk ventures.'}
+                  {localizeBusinessValue(task.whyThisMatters, language) || 'Validating real demand before purchasing machinery or leasing land saves your personal capital from high-risk ventures.'}
                 </p>
               </div>
 
@@ -236,14 +239,14 @@ export default function TaskDetailDrawer() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <h3 className="text-sm font-black text-slate-900 tracking-tight">
-                      Execution Steps
+                      {t('advisor.actionChecklist', 'Execution Steps')}
                     </h3>
                     <span className="text-[11px] font-semibold text-slate-400">
-                      • Click to mark completed
+                      • {t('roadmap.pipelineHint', 'Click to mark completed')}
                     </span>
                   </div>
                   <span className="text-xs text-emerald-700 font-extrabold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                    {completedStepsCount} of {taskSteps.length} complete
+                    {completedStepsCount} {t('dashboard.of', 'of')} {taskSteps.length} {t('common.completed', 'complete')}
                   </span>
                 </div>
 
@@ -289,7 +292,7 @@ export default function TaskDetailDrawer() {
                           <p className={`text-xs sm:text-sm leading-relaxed ${
                             isStepDone ? 'text-emerald-950 font-semibold' : 'text-slate-800 font-medium'
                           }`}>
-                            {step}
+                            {localizeBusinessValue(step, language)}
                           </p>
                         </div>
                       </div>
@@ -303,7 +306,7 @@ export default function TaskDetailDrawer() {
                 <div className="space-y-2.5 pt-2">
                   <h3 className="text-xs font-black uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
                     <FileText className="w-3.5 h-3.5 text-slate-500" />
-                    <span>Required Deliverables & Inputs</span>
+                    <span>{t('advisor.requiredDocs', 'Required Deliverables & Inputs')}</span>
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {task.requiredInputs.map((input, idx) => (
@@ -312,7 +315,7 @@ export default function TaskDetailDrawer() {
                         className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 text-slate-700 text-xs font-semibold shadow-soft-xs hover:border-emerald-300 transition-colors"
                       >
                         <BarChart3 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>{input}</span>
+                        <span>{localizeBusinessValue(input, language)}</span>
                       </span>
                     ))}
                   </div>
@@ -324,7 +327,7 @@ export default function TaskDetailDrawer() {
                 <div className="space-y-2.5 pt-2">
                   <h3 className="text-xs font-black uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
                     <LockOpen className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>What Completion Unlocks</span>
+                    <span>{t('advisor.nextUnlock', 'What Completion Unlocks')}</span>
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {unlockedTasks.map((uTask) => (
@@ -336,10 +339,10 @@ export default function TaskDetailDrawer() {
                           <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
                             <Rocket className="w-3.5 h-3.5" />
                           </div>
-                          <span className="font-bold truncate">{uTask.title}</span>
+                          <span className="font-bold truncate">{localizeBusinessValue(uTask.title, language)}</span>
                         </div>
                         <span className="text-[10px] font-semibold text-slate-400 shrink-0 ml-1">
-                          {uTask.estimatedTime}
+                          {localizeBusinessValue(uTask.estimatedTime, language)}
                         </span>
                       </div>
                     ))}
@@ -353,7 +356,7 @@ export default function TaskDetailDrawer() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Landmark className="w-4 h-4 text-emerald-700" />
-                      <strong className="font-bold">Government Scheme Linkage</strong>
+                      <strong className="font-bold">{t('schemes.potentialBenefitsTitle', 'Government Scheme Linkage')}</strong>
                     </div>
                     <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-200 text-emerald-900">
                       {profile.schemeMatchScore || '94% Match'}
@@ -361,8 +364,7 @@ export default function TaskDetailDrawer() {
                   </div>
 
                   <p className="text-emerald-800 text-xs leading-relaxed">
-                    Eligible under <strong>{profile.recommendedScheme || 'PMFME'}</strong> with up to{' '}
-                    <strong>{profile.schemeSubsidy || '35% capital subsidy'}</strong> for your sector.
+                    {t('schemes.eligible', 'Eligible')} <strong>{profile.recommendedScheme || 'PMFME'}</strong>
                   </p>
 
                   <div className="flex items-center gap-2 pt-1">
@@ -372,7 +374,7 @@ export default function TaskDetailDrawer() {
                         onClick={() => selectScheme('PMFME')}
                         className="px-3.5 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-soft-xs cursor-pointer"
                       >
-                        Select PMFME Scheme
+                        {t('common.details', 'Select PMFME Scheme')}
                       </button>
                     ) : null}
 
@@ -380,7 +382,7 @@ export default function TaskDetailDrawer() {
                       to="/schemes"
                       className="inline-flex items-center gap-1 text-emerald-800 font-bold hover:underline"
                     >
-                      <span>Explore in Scheme Matcher</span>
+                      <span>{t('dashboard.exploreSchemes', 'Explore in Scheme Matcher')}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
@@ -393,25 +395,25 @@ export default function TaskDetailDrawer() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Coins className="w-4 h-4 text-sky-700" />
-                      <strong className="font-bold">Capital Stack Structure</strong>
+                      <strong className="font-bold">{t('funding.capitalStackBadge', 'Capital Stack Structure')}</strong>
                     </div>
                     <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-sky-200 text-sky-900">
-                      Live Formula
+                      {t('common.live', 'Live')}
                     </span>
                   </div>
 
                   <div className="grid grid-cols-3 gap-2.5 text-center">
                     <div className="bg-white p-3 rounded-xl border border-sky-200 shadow-soft-xs">
-                      <span className="text-slate-400 block text-[9px] uppercase font-bold">Project Cost</span>
-                      <strong className="text-slate-900 text-xs">{profile.estimatedProjectCost}</strong>
+                      <span className="text-slate-400 block text-[9px] uppercase font-bold">{t('funding.estimatedProjectCost', 'Project Cost')}</span>
+                      <strong className="text-slate-900 text-xs">{localizeBusinessValue(profile.estimatedProjectCost, language)}</strong>
                     </div>
                     <div className="bg-white p-3 rounded-xl border border-sky-200 shadow-soft-xs">
-                      <span className="text-slate-400 block text-[9px] uppercase font-bold">Own Margin</span>
-                      <strong className="text-amber-700 text-xs">{profile.availableCapital}</strong>
+                      <span className="text-slate-400 block text-[9px] uppercase font-bold">{t('funding.availableMargin', 'Own Margin')}</span>
+                      <strong className="text-amber-700 text-xs">{localizeBusinessValue(profile.availableCapital, language)}</strong>
                     </div>
                     <div className="bg-white p-3 rounded-xl border border-sky-200 shadow-soft-xs">
-                      <span className="text-slate-400 block text-[9px] uppercase font-bold">Funding Gap</span>
-                      <strong className="text-sky-700 text-xs">{profile.fundingRequired}</strong>
+                      <span className="text-slate-400 block text-[9px] uppercase font-bold">{t('funding.fundingRequired', 'Funding Gap')}</span>
+                      <strong className="text-sky-700 text-xs">{localizeBusinessValue(profile.fundingRequired, language)}</strong>
                     </div>
                   </div>
 
@@ -420,7 +422,7 @@ export default function TaskDetailDrawer() {
                       to="/funding"
                       className="inline-flex items-center gap-1 text-sky-800 font-bold hover:underline"
                     >
-                      <span>View Full Funding Architecture</span>
+                      <span>{t('funding.fundingTitle', 'View Full Funding Architecture')}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
@@ -433,10 +435,10 @@ export default function TaskDetailDrawer() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Users2 className="w-4 h-4 text-emerald-600" />
-                      <strong className="font-bold text-slate-900">Verified Professional Network</strong>
+                      <strong className="font-bold text-slate-900">{t('nav.professionals', 'Verified Professional Network')}</strong>
                     </div>
                     <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
-                      {task.recommendedProfessionalCategory}
+                      {localizeBusinessValue(task.recommendedProfessionalCategory, language)}
                     </span>
                   </div>
                   <p className="text-[11px] text-slate-500">
@@ -447,7 +449,7 @@ export default function TaskDetailDrawer() {
                       to="/professionals"
                       className="inline-flex items-center gap-1 text-emerald-700 font-bold hover:underline"
                     >
-                      <span>Find Verified Expert</span>
+                      <span>{t('nav.professionals', 'Find Verified Expert')}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
@@ -462,10 +464,10 @@ export default function TaskDetailDrawer() {
               <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-950 flex items-center justify-between shadow-soft-xs">
                 <div className="flex items-center gap-2">
                   <FolderCheck className="w-4 h-4 text-emerald-700" />
-                  <strong className="font-bold">Required Regulatory Documents</strong>
+                  <strong className="font-bold">{t('advisor.requiredDocs', 'Required Regulatory Documents')}</strong>
                 </div>
                 <span className="text-xs font-black text-emerald-800">
-                  {completedDocsCount} / {taskRequiredDocs.length} Verified
+                  {completedDocsCount} / {taskRequiredDocs.length} {t('common.verified', 'Verified')}
                 </span>
               </div>
 
@@ -493,15 +495,15 @@ export default function TaskDetailDrawer() {
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-slate-900">{doc.name}</span>
+                            <span className="text-xs font-bold text-slate-900">{localizeBusinessValue(doc.name, language)}</span>
                             <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded ${
                               isVerified ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-50 text-rose-700'
                             }`}>
-                              {isVerified ? 'Verified' : 'Required'}
+                              {isVerified ? t('common.verified', 'Verified') : t('schemes.mandatory', 'Required')}
                             </span>
                           </div>
                           <span className="text-[11px] text-slate-500 mt-0.5 block">
-                            Category: {doc.category}
+                            {localizeBusinessValue(doc.category, language)}
                           </span>
                         </div>
                       </div>
@@ -512,7 +514,7 @@ export default function TaskDetailDrawer() {
                           onClick={() => toggleDocumentStatus(doc.id)}
                           className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer"
                         >
-                          {isVerified ? 'Mark Pending' : 'Mark Ready'}
+                          {isVerified ? t('common.pending', 'Mark Pending') : t('dashboard.ready', 'Mark Ready')}
                         </button>
 
                         <button
@@ -521,7 +523,7 @@ export default function TaskDetailDrawer() {
                           className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-soft-xs cursor-pointer"
                         >
                           <Upload className="w-3.5 h-3.5" />
-                          <span>{isVerified ? 'Replace' : 'Upload'}</span>
+                          <span>{isVerified ? t('common.edit', 'Replace') : t('roadmap.uploadAndVerify', 'Upload')}</span>
                         </button>
                       </div>
                     </div>
@@ -542,7 +544,7 @@ export default function TaskDetailDrawer() {
         {/* Sticky Action Footer (Stitch Premium Bottom Bar) */}
         <div className="px-6 py-4 border-t border-slate-200/80 bg-white/95 backdrop-blur-md flex items-center justify-between gap-4 shrink-0 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] z-20">
           <span className="text-xs font-bold text-slate-500">
-            Stage {stage.number} of {stages.length}
+            {t('roadmap.stageLabel', 'Stage')} {stage.number} {t('dashboard.of', 'of')} {stages.length}
           </span>
 
           <div className="flex items-center gap-3">
@@ -551,7 +553,7 @@ export default function TaskDetailDrawer() {
               onClick={closeTaskDrawer}
               className="px-4 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-all cursor-pointer"
             >
-              Close
+              {t('common.close', 'Close')}
             </button>
 
             <button
@@ -570,11 +572,11 @@ export default function TaskDetailDrawer() {
               }`}
             >
               {isCompleted ? (
-                <span>Mark as Incomplete</span>
+                <span>{t('common.pending', 'Mark as Incomplete')}</span>
               ) : (
                 <>
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Mark Milestone Complete</span>
+                  <span>{t('roadmap.executeMilestone', 'Mark Milestone Complete')}</span>
                 </>
               )}
             </button>

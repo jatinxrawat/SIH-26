@@ -23,6 +23,7 @@ import {
   ArrowUpRight,
   HelpCircle
 } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 import { aiService } from '../services/aiService';
 
 // Strict model name sanitizer so no external AI model names ever leak to the user
@@ -35,6 +36,7 @@ const formatEngineName = (name, fallback = 'Saathi Strategic Advisor') => {
 };
 
 export default function TaskAIAssistant({ task, businessContext }) {
+  const { t } = useLanguage();
   const [provider, setProvider] = useState('gemini'); // 'gemini' = Strategy Core, 'grok' = Tactical Core
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
@@ -61,24 +63,38 @@ export default function TaskAIAssistant({ task, businessContext }) {
 
     setLoading(true);
     setPlanAccepted(false);
+    setCopied(false);
+    setCompletedSteps({});
+
     try {
-      const result = await aiService.askAI({
+      const response = await aiService.askAI({
         provider: targetProvider,
-        task: task || {},
+        task: {
+          id: task?.id,
+          title: task?.title,
+          shortTitle: task?.shortTitle,
+          description: task?.description,
+          stage: task?.stage,
+          whyThisMatters: task?.whyThisMatters,
+          whatToDo: task?.whatToDo,
+          requiredDocuments: task?.requiredDocuments,
+          requiredInputs: task?.requiredInputs,
+          estimatedTime: task?.estimatedTime
+        },
         context: {
-          ...biz,
           businessName: bizName,
           sector: bizSector,
-          location: bizLocation
+          location: bizLocation,
+          currentStage: task?.stage,
+          activeEntity: biz.entityType,
+          financialScale: biz.financialScale
         },
-        question: textToSend
+        prompt: textToSend
       });
-      if (result) {
-        setAiResponse(result);
-        setCompletedSteps({});
-      }
+
+      setAiResponse(response);
     } catch (err) {
-      console.error('Advisor inference error:', err);
+      console.error('Task AI query failed:', err);
     } finally {
       setLoading(false);
     }
@@ -94,7 +110,9 @@ export default function TaskAIAssistant({ task, businessContext }) {
   const handleSwitchProvider = (newProvider) => {
     if (newProvider === provider) return;
     setProvider(newProvider);
-    handleAsk(null, newProvider);
+    if (aiResponse) {
+      handleAsk(question || null, newProvider);
+    }
   };
 
   const toggleStepCompleted = (idx) => {
@@ -104,47 +122,41 @@ export default function TaskAIAssistant({ task, businessContext }) {
     }));
   };
 
-  const handleCopyAdvice = () => {
+  const handleCopyAdvice = async () => {
     if (!aiResponse) return;
-    const text = `[UdyamSaathi AI Advisor - ${task?.title}]\n\nStrategy: ${aiResponse.answer}\n\nWhy it matters: ${aiResponse.why}\n\nSteps:\n` +
-      (Array.isArray(aiResponse.whatToDo) ? aiResponse.whatToDo.map((s, i) => `${i + 1}. ${s}`).join('\n') : aiResponse.whatToDo) +
-      `\n\nRequired Documents: ${aiResponse.documents}\nNext Step: ${aiResponse.nextStep}\nCompliance Warning: ${aiResponse.warnings}`;
-
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    const fullText = `*${task?.title} - Strategic Guidance*\n\n${aiResponse.answer}\n\n*Why This Matters:*\n${aiResponse.why}\n\n*Action Checklist:*\n${(aiResponse.steps || []).map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\n*Required Documents:*\n${aiResponse.documents || 'None'}\n\n*Next Unlock:*\n${aiResponse.nextStep || 'Next milestone'}`;
+    try {
+      await navigator.clipboard.writeText(fullText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      console.warn('Clipboard write failed:', e);
+    }
   };
 
-  const stepsList = Array.isArray(aiResponse?.whatToDo)
-    ? aiResponse.whatToDo
-    : aiResponse?.whatToDo
-    ? [aiResponse.whatToDo]
-    : [];
-
-  const completedCount = Object.keys(completedSteps).filter((k) => completedSteps[k]).length;
+  const stepsList = aiResponse?.steps || [];
+  const completedCount = Object.values(completedSteps).filter(Boolean).length;
   const progressPercent = stepsList.length > 0 ? Math.round((completedCount / stepsList.length) * 100) : 0;
 
   return (
-    <div className="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white rounded-3xl p-5 sm:p-6 space-y-5 border border-slate-800/90 shadow-2xl relative overflow-hidden">
-      {/* Ambient background glows */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl -mr-24 -mt-24 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-60 h-60 bg-teal-500/5 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none" />
+    <div className="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white rounded-3xl p-5 sm:p-6 shadow-soft-lg border border-slate-800 space-y-5 relative overflow-hidden">
+      {/* Decorative ambient background blur */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
 
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-4 relative z-10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative z-10 border-b border-slate-800/80 pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 text-emerald-400 border border-emerald-400/30 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.15)] shrink-0">
-            <Bot className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 flex items-center justify-center shadow-md shadow-emerald-500/20 font-black">
+            <Sparkles className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h4 className="text-sm font-black text-white tracking-tight">Saathi AI Advisor</h4>
-              <span className="text-[9px] font-bold tracking-wide px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 shadow-sm shrink-0">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
-                </span>
-                Live
+              <h3 className="text-base font-black tracking-tight text-white">
+                {t('advisor.title', 'Saathi AI Advisor')}
+              </h3>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[9px] font-black uppercase tracking-wider">
+                {t('common.live', 'Live')}
               </span>
             </div>
             <p className="text-[11px] text-slate-400 font-medium">
@@ -166,7 +178,7 @@ export default function TaskAIAssistant({ task, businessContext }) {
             }`}
           >
             <BrainCircuit className="w-3 h-3 text-emerald-200" />
-            <span>Strategy Core</span>
+            <span>{t('advisor.strategyCore', 'Strategy Core')}</span>
           </button>
           <button
             type="button"
@@ -179,7 +191,7 @@ export default function TaskAIAssistant({ task, businessContext }) {
             }`}
           >
             <Zap className="w-3 h-3 text-amber-300" />
-            <span>Tactical Core</span>
+            <span>{t('advisor.tacticalCore', 'Tactical Core')}</span>
           </button>
         </div>
       </div>
@@ -189,7 +201,7 @@ export default function TaskAIAssistant({ task, businessContext }) {
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
             <Compass className="w-3 h-3 text-emerald-400" />
-            <span>Recommended Inquiries</span>
+            <span>{t('advisor.suggestedInquiries', 'Recommended Inquiries')}</span>
           </span>
           <span className="text-[10px] text-slate-500 font-medium">Click to execute query</span>
         </div>
@@ -248,7 +260,7 @@ export default function TaskAIAssistant({ task, businessContext }) {
           ) : (
             <>
               <Send className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Ask Advisor</span>
+              <span className="hidden sm:inline">{t('advisor.askAdvisor', 'Ask Advisor')}</span>
             </>
           )}
         </button>
@@ -278,14 +290,15 @@ export default function TaskAIAssistant({ task, businessContext }) {
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-black text-emerald-400 flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                <span>{formatEngineName(aiResponse.provider, provider === 'gemini' ? 'Saathi Strategy Advisor' : 'Saathi Tactical Engine')}</span>
+                <span>{formatEngineName(aiResponse.engine)}</span>
               </span>
-              <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30">
-                Verified MSME Logic
+              <span className="text-[10px] text-slate-500">•</span>
+              <span className="text-[10px] text-slate-400 font-semibold">
+                {aiResponse.latencyMs}ms latency
               </span>
             </div>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={handleCopyAdvice}
@@ -293,7 +306,7 @@ export default function TaskAIAssistant({ task, businessContext }) {
                 className="p-1.5 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer flex items-center gap-1 text-[10px]"
               >
                 {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                <span className="hidden sm:inline">{copied ? 'Copied' : 'Copy'}</span>
+                <span className="hidden sm:inline">{copied ? 'Copied' : t('advisor.copyPlan', 'Copy')}</span>
               </button>
 
               <button
@@ -311,7 +324,7 @@ export default function TaskAIAssistant({ task, businessContext }) {
           {/* 1. EXECUTIVE SUMMARY & STRATEGY */}
           <div>
             <span className="text-[10px] uppercase font-black tracking-wider text-slate-400 block mb-1">
-              Executive Strategy & Direct Answer
+              {t('advisor.executiveSummary', 'Executive Strategy & Direct Answer')}
             </span>
             <p className="text-white text-xs sm:text-[13px] leading-relaxed font-medium">
               {aiResponse.answer}
@@ -321,7 +334,7 @@ export default function TaskAIAssistant({ task, businessContext }) {
           {/* 2. WHY THIS IS CRITICAL */}
           <div className="bg-slate-900/70 p-3.5 rounded-xl border border-slate-700/60">
             <span className="text-[10px] uppercase font-black tracking-wider text-emerald-400 block mb-1">
-              Why This Step Matters For Your Business
+              {t('advisor.whyItMatters', 'Why This Step Matters For Your Business')}
             </span>
             <p className="text-slate-300 text-[11px] sm:text-xs leading-relaxed">
               {aiResponse.why}
@@ -333,10 +346,10 @@ export default function TaskAIAssistant({ task, businessContext }) {
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] uppercase font-black tracking-wider text-slate-400 block">
-                  Action Checklist ({completedCount}/{stepsList.length} done)
+                  {t('advisor.actionChecklist', 'Action Checklist')} ({completedCount}/{stepsList.length} done)
                 </span>
                 <span className="text-[10px] font-semibold text-emerald-400">
-                  {progressPercent}% Complete
+                  {progressPercent}% {t('common.completed', 'Complete')}
                 </span>
               </div>
 
@@ -384,7 +397,7 @@ export default function TaskAIAssistant({ task, businessContext }) {
             <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-700/60 space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
                 <FileCheck className="w-3.5 h-3.5" />
-                <span>Required Documentation</span>
+                <span>{t('advisor.requiredDocs', 'Required Documentation')}</span>
               </span>
               <p className="text-slate-300 text-xs leading-relaxed">{aiResponse.documents || 'No statutory filings required'}</p>
             </div>
@@ -392,7 +405,7 @@ export default function TaskAIAssistant({ task, businessContext }) {
             <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-700/60 space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
                 <RocketIcon className="w-3.5 h-3.5" />
-                <span>Subsequent Unlock</span>
+                <span>{t('advisor.nextUnlock', 'Subsequent Unlock')}</span>
               </span>
               <p className="text-slate-300 text-xs leading-relaxed">{aiResponse.nextStep || 'Proceeds to following milestone'}</p>
             </div>
@@ -404,7 +417,7 @@ export default function TaskAIAssistant({ task, businessContext }) {
               <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
               <div>
                 <strong className="text-rose-300 block font-black text-[10px] uppercase tracking-wide">
-                  Compliance Risk & Middleman Warning
+                  {t('advisor.complianceWarning', 'Compliance Risk & Middleman Warning')}
                 </strong>
                 <span className="text-[11px] sm:text-xs text-rose-200 leading-snug">{aiResponse.warnings}</span>
               </div>
@@ -429,12 +442,12 @@ export default function TaskAIAssistant({ task, businessContext }) {
               {planAccepted ? (
                 <>
                   <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Plan Integrated</span>
+                  <span>{t('advisor.planIntegrated', 'Plan Integrated')}</span>
                 </>
               ) : (
                 <>
                   <ArrowRight className="w-3.5 h-3.5" />
-                  <span>Adopt This Plan</span>
+                  <span>{t('advisor.adoptPlan', 'Adopt This Plan')}</span>
                 </>
               )}
             </button>

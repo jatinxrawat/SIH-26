@@ -21,6 +21,8 @@ import {
   Check
 } from 'lucide-react';
 import { useRoadmap } from '../context/RoadmapContext';
+import { useLanguage } from '../../context/LanguageContext';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 import { evaluateTaskStatus, evaluateStageStatus } from '../engine/dependencyEngine';
 
 export default function JourneyTimeline() {
@@ -45,13 +47,15 @@ export default function JourneyTimeline() {
     setIsAIMilestoneModalOpen
   } = useRoadmap();
 
+  const { t, language } = useLanguage();
+
   // Filter tasks based on search query and active filter
   const filterTask = (task) => {
     // 1. Search filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      const matchTitle = task.title.toLowerCase().includes(q);
-      const matchDesc = task.description.toLowerCase().includes(q);
+      const matchTitle = task.title.toLowerCase().includes(q) || (localizeBusinessValue(task.title, language) || '').toLowerCase().includes(q);
+      const matchDesc = task.description.toLowerCase().includes(q) || (localizeBusinessValue(task.description, language) || '').toLowerCase().includes(q);
       const matchDocs = (task.requiredDocuments || []).some((d) => d.toLowerCase().includes(q));
       if (!matchTitle && !matchDesc && !matchDocs) return false;
     }
@@ -103,7 +107,7 @@ export default function JourneyTimeline() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search milestones, documents (e.g. FSSAI, DPR, Udyam)..."
+            placeholder={t('roadmap.searchPlaceholder', 'Search milestones, documents (e.g. FSSAI, DPR, Udyam)...')}
             className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-10 pr-9 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
           />
           {searchQuery && (
@@ -129,7 +133,7 @@ export default function JourneyTimeline() {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              All ({totalTasksCount})
+              {t('roadmap.filterAll', 'All')} ({totalTasksCount})
             </button>
 
             <button
@@ -141,7 +145,7 @@ export default function JourneyTimeline() {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Available ({availableTasksCount})
+              {t('roadmap.filterAvailable', 'Available')} ({availableTasksCount})
             </button>
 
             <button
@@ -153,7 +157,7 @@ export default function JourneyTimeline() {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Done ({completedTasksCount})
+              {t('roadmap.filterDone', 'Done')} ({completedTasksCount})
             </button>
 
             <button
@@ -165,7 +169,7 @@ export default function JourneyTimeline() {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Needs Docs ({blockedTasksCount})
+              {t('roadmap.filterNeedsDocs', 'Needs Docs')} ({blockedTasksCount})
             </button>
           </div>
 
@@ -174,7 +178,7 @@ export default function JourneyTimeline() {
             onClick={expandedStageIds.length === stages.length ? collapseAllStages : expandAllStages}
             className="px-3 py-2 rounded-2xl border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50 font-bold text-xs transition-all shrink-0"
           >
-            {expandedStageIds.length === stages.length ? 'Collapse All' : 'Expand All'}
+            {expandedStageIds.length === stages.length ? t('roadmap.collapseAll', 'Collapse All') : t('roadmap.expandAll', 'Expand All')}
           </button>
 
           <button
@@ -183,7 +187,7 @@ export default function JourneyTimeline() {
             className="px-3.5 py-2 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-bold text-xs transition-all flex items-center gap-1.5 shrink-0"
           >
             <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Add Custom AI Goal</span>
+            <span>{t('roadmap.addCustomGoal', 'Add Custom AI Goal')}</span>
           </button>
         </div>
       </div>
@@ -207,7 +211,7 @@ export default function JourneyTimeline() {
               return (
                 <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
                   <CheckCircle2 className="w-3 h-3" />
-                  <span>Complete</span>
+                  <span>{t('roadmap.statusComplete', 'Complete')}</span>
                 </span>
               );
             }
@@ -215,21 +219,21 @@ export default function JourneyTimeline() {
               return (
                 <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-500 text-white shadow-soft-xs animate-pulse">
                   <CircleDot className="w-3 h-3" />
-                  <span>In Progress</span>
+                  <span>{t('roadmap.statusInProgress', 'In Progress')}</span>
                 </span>
               );
             }
             if (stageEval.status === 'AVAILABLE') {
               return (
                 <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-800 border border-sky-200">
-                  <span>Available</span>
+                  <span>{t('roadmap.statusAvailable', 'Available')}</span>
                 </span>
               );
             }
             return (
               <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
                 <Lock className="w-2.5 h-2.5" />
-                <span>Locked</span>
+                <span>{t('roadmap.statusLocked', 'Locked')}</span>
               </span>
             );
           };
@@ -275,12 +279,12 @@ export default function JourneyTimeline() {
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="text-base sm:text-lg font-black text-slate-900">
-                        {stage.title}
+                        {localizeBusinessValue(stage.title, language)}
                       </h3>
                       {getStatusBadge()}
                     </div>
                     <p className="text-xs text-slate-500 mt-0.5 max-w-xl">
-                      {stage.tagline}
+                      {localizeBusinessValue(stage.tagline, language)}
                     </p>
                   </div>
                 </div>
@@ -289,7 +293,7 @@ export default function JourneyTimeline() {
                 <div className="flex items-center justify-between sm:justify-end gap-5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                   <div className="text-right space-y-1">
                     <div className="text-xs font-black text-slate-800">
-                      {stageEval.completedCount} / {stageEval.totalCount} Tasks
+                      {stageEval.completedCount} / {stageEval.totalCount} {t('roadmap.tasksUnit', 'Tasks')}
                     </div>
                     <div className="w-24 sm:w-32 bg-slate-100 h-1.5 rounded-full overflow-hidden">
                       <div
@@ -314,8 +318,8 @@ export default function JourneyTimeline() {
                   <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs text-slate-600 flex items-start gap-2.5">
                     <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                     <div>
-                      <strong className="text-slate-900 font-bold block">Stage Objective:</strong>
-                      <span>{stage.objective}</span>
+                      <strong className="text-slate-900 font-bold block">{t('roadmap.stageObjective', 'Stage Objective:')}</strong>
+                      <span>{localizeBusinessValue(stage.objective, language)}</span>
                     </div>
                   </div>
 
@@ -362,7 +366,7 @@ export default function JourneyTimeline() {
                                     ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
                                     : 'border-2 border-slate-300 hover:border-emerald-500'
                                 }`}
-                                title={isLocked ? 'Prerequisites pending' : isCompleted ? 'Mark incomplete' : 'Mark complete'}
+                                title={isLocked ? t('roadmap.statusLocked', 'Locked') : isCompleted ? t('common.completed', 'Completed') : t('roadmap.startTask', 'Start Task')}
                               >
                                 {isCompleted && <CheckCircle2 className="w-4 h-4" />}
                                 {isLocked && <Lock className="w-3 h-3" />}
@@ -375,24 +379,24 @@ export default function JourneyTimeline() {
                                       isCompleted ? 'text-slate-600 line-through' : isLocked ? 'text-slate-500' : 'text-slate-900'
                                     }`}
                                   >
-                                    {task.title}
+                                    {localizeBusinessValue(task.title, language)}
                                   </span>
 
                                   {task.isCustom && (
                                     <span className="px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-black uppercase">
-                                      AI Custom
+                                      {t('roadmap.aiCustom', 'AI Custom')}
                                     </span>
                                   )}
 
                                   {task.priority === 'HIGH' && !isCompleted && !isLocked && (
                                     <span className="px-1.5 py-0.2 rounded bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-black uppercase">
-                                      High
+                                      {t('roadmap.highPriority', 'High')}
                                     </span>
                                   )}
                                 </div>
 
                                 <p className="text-xs text-slate-600 line-clamp-2">
-                                  {task.description}
+                                  {localizeBusinessValue(task.description, language)}
                                 </p>
                               </div>
                             </div>
@@ -401,12 +405,12 @@ export default function JourneyTimeline() {
                             <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
                               <div className="flex items-center gap-2 text-[11px] text-slate-400">
                                 <Clock className="w-3.5 h-3.5" />
-                                <span>{task.estimatedTime}</span>
+                                <span>{localizeBusinessValue(task.estimatedTime, language)}</span>
 
                                 {task.requiredDocuments?.length > 0 && (
                                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-bold">
                                     <FileText className="w-3 h-3" />
-                                    <span>{task.requiredDocuments.length} docs</span>
+                                    <span>{task.requiredDocuments.length} {t('roadmap.docsUnit', 'docs')}</span>
                                   </span>
                                 )}
                               </div>
@@ -422,7 +426,7 @@ export default function JourneyTimeline() {
                                     : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200'
                                 }`}
                               >
-                                <span>Details</span>
+                                <span>{t('roadmap.details', 'Details')}</span>
                                 <ArrowRight className="w-3.5 h-3.5" />
                               </button>
                             </div>
@@ -432,9 +436,9 @@ export default function JourneyTimeline() {
                           {taskSteps.length > 0 && !isLocked && (
                             <div className="mt-3 pt-3 border-t border-slate-100/80 space-y-1.5">
                               <div className="flex items-center justify-between text-[11px] text-slate-500 font-semibold mb-1">
-                                <span>Execution Checkpoints:</span>
+                                <span>{t('roadmap.checkpoints', 'Execution Checkpoints:')}</span>
                                 <span className="text-emerald-700 font-bold">
-                                  {completedStepsCount} / {taskSteps.length} complete
+                                  {completedStepsCount} / {taskSteps.length} {t('common.completed', 'complete')}
                                 </span>
                               </div>
 
@@ -458,7 +462,9 @@ export default function JourneyTimeline() {
                                       >
                                         {isStepDone && <Check className="w-3 h-3" />}
                                       </div>
-                                      <span className="text-[11px] leading-tight line-clamp-1">{stepText}</span>
+                                      <span className="text-[11px] leading-tight line-clamp-1">
+                                        {localizeBusinessValue(stepText, language)}
+                                      </span>
                                     </div>
                                   );
                                 })}
@@ -478,3 +484,4 @@ export default function JourneyTimeline() {
     </div>
   );
 }
+

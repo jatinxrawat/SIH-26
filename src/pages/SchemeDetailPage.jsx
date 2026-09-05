@@ -22,6 +22,7 @@ import {
   localizeFacilityType,
   localizeCategoryLabel
 } from '../i18n/schemesTranslations';
+import { localizeBusinessValue } from '../i18n/platformTranslations';
 import { schemeApi } from '../services/schemeApi';
 import SchemeAdvisorChat from '../components/schemes/SchemeAdvisorChat';
 
@@ -156,11 +157,11 @@ export default function SchemeDetailPage() {
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
-              {name}
+              {localizeBusinessValue(name, language)}
             </h1>
 
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-              {shortDescription}
+              {localizeBusinessValue(shortDescription, language)}
             </p>
 
             {/* Highlights Pills */}
@@ -172,7 +173,7 @@ export default function SchemeDetailPage() {
                     className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold"
                   >
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>{hl}</span>
+                    <span>{localizeBusinessValue(hl, language)}</span>
                   </span>
                 ))}
               </div>
@@ -192,7 +193,7 @@ export default function SchemeDetailPage() {
                 {t('schemes.matchScore', 'Match Score')}
               </span>
               <p className="text-[10px] text-slate-400 mt-1">
-                Reflects alignment with your declared profile.
+                {t('schemes.profileReflects', 'Reflects alignment with your declared profile.')}
               </p>
             </div>
 
@@ -250,7 +251,7 @@ export default function SchemeDetailPage() {
         {showRoadmapSuccess && (
           <div className="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs font-semibold text-emerald-800 flex items-center gap-2 animate-in fade-in duration-200">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>Successfully added to your business roadmap! You can track this scheme's preparation steps.</span>
+            <span>{t('schemes.roadmapSuccess', "Successfully added to your business roadmap! You can track this scheme's preparation steps.")}</span>
           </div>
         )}
       </div>
@@ -294,7 +295,7 @@ export default function SchemeDetailPage() {
                 {warnings.map((w, idx) => (
                   <div key={idx} className="flex items-start gap-2.5 text-xs text-amber-800 font-medium">
                     <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                    <span>{w}</span>
+                    <span>{localizeBusinessValue(w, language)}</span>
                   </div>
                 ))}
               </div>
@@ -308,7 +309,7 @@ export default function SchemeDetailPage() {
                 {disqualifications.map((d, idx) => (
                   <div key={idx} className="flex items-start gap-2.5 text-xs text-rose-800 font-medium">
                     <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-                    <span>{d}</span>
+                    <span>{localizeBusinessValue(d, language)}</span>
                   </div>
                 ))}
               </div>
@@ -317,7 +318,7 @@ export default function SchemeDetailPage() {
 
           <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-[11px] text-slate-500 font-medium">
             <p className="font-semibold text-slate-700 mb-1">{t('schemes.officialDisclaimer', 'Official Disclaimer:')}</p>
-            {eligibility?.disclaimer}
+            {localizeBusinessValue(eligibility?.disclaimer, language)}
           </div>
         </div>
 
@@ -329,7 +330,7 @@ export default function SchemeDetailPage() {
               <span>{t('schemes.potentialBenefitsTitle', 'Potential Benefits & Financing Structure')}</span>
             </h2>
             <span className="text-xs font-black text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200">
-              ₹{(financialBenefits?.maximumFunding || 0).toLocaleString('en-IN')} Max
+              ₹{(financialBenefits?.maximumFunding || 0).toLocaleString('en-IN')} {t('schemes.upTo', 'Max')}
             </span>
           </div>
 
@@ -342,37 +343,37 @@ export default function SchemeDetailPage() {
             </div>
 
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">Subsidy Scale</span>
+              <span className="text-slate-400 block text-[10px] uppercase font-bold">{t('schemes.subsidyScale', 'Subsidy Scale')}</span>
               <strong className="text-emerald-700 text-xs sm:text-sm mt-0.5 block">
-                {financialBenefits?.subsidyPercentage || 'Direct Credit Guarantee'}
+                {localizeBusinessValue(financialBenefits?.subsidyPercentage || 'Direct Credit Guarantee', language)}
               </strong>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 sm:col-span-2">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">Subsidy Details</span>
+              <span className="text-slate-400 block text-[10px] uppercase font-bold">{t('schemes.subsidyDetails', 'Subsidy Details')}</span>
               <p className="text-slate-700 text-xs font-medium mt-1 leading-relaxed">
-                {financialBenefits?.subsidyDetails || 'N/A'}
+                {localizeBusinessValue(financialBenefits?.subsidyDetails || 'N/A', language)}
               </p>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 sm:col-span-2">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">Margin Money (Promoter Equity)</span>
+              <span className="text-slate-400 block text-[10px] uppercase font-bold">{t('schemes.marginMoney', 'Margin Money (Promoter Equity)')}</span>
               <p className="text-slate-700 text-xs font-medium mt-1 leading-relaxed">
-                {financialBenefits?.marginMoneyDetails || 'Standard margin applicable'}
+                {localizeBusinessValue(financialBenefits?.marginMoneyDetails || 'Standard margin applicable', language)}
               </p>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 sm:col-span-2">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">Collateral & Guarantee</span>
+              <span className="text-slate-400 block text-[10px] uppercase font-bold">{t('schemes.collateralGuarantee', 'Collateral & Guarantee')}</span>
               <p className="text-slate-700 text-xs font-medium mt-1 leading-relaxed">
-                {financialBenefits?.collateralRequirement || 'No collateral required up to limit'}
+                {localizeBusinessValue(financialBenefits?.collateralRequirement || 'No collateral required up to limit', language)}
               </p>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 sm:col-span-2">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">Loan & Repayment Terms</span>
+              <span className="text-slate-400 block text-[10px] uppercase font-bold">{t('schemes.repaymentTerms', 'Loan & Repayment Terms')}</span>
               <p className="text-slate-700 text-xs font-medium mt-1 leading-relaxed">
-                {financialBenefits?.repaymentDetails} {financialBenefits?.interestDetails ? `· ${financialBenefits.interestDetails}` : ''}
+                {localizeBusinessValue(financialBenefits?.repaymentDetails, language)} {financialBenefits?.interestDetails ? `· ${localizeBusinessValue(financialBenefits.interestDetails, language)}` : ''}
               </p>
             </div>
           </div>
@@ -388,12 +389,12 @@ export default function SchemeDetailPage() {
               <span>{t('schemes.docChecklistTitle', 'Document Checklist & Profile Readiness')}</span>
             </h2>
             <p className="text-xs text-slate-500">
-              Cross-referenced with information collected during your onboarding.
+              {t('schemes.docReadinessNote', 'Cross-referenced with information collected during your onboarding.')}
             </p>
           </div>
 
           <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-xl self-start sm:self-center">
-            {documentChecklist.filter(d => d.status === 'AVAILABLE_FROM_PROFILE').length} of {documentChecklist.length} Document Types Accounted For
+            {documentChecklist.filter(d => d.status === 'AVAILABLE_FROM_PROFILE').length} {t('schemes.of', 'of')} {documentChecklist.length} {t('schemes.accountedFor', 'Document Types Accounted For')}
           </span>
         </div>
 
@@ -412,7 +413,7 @@ export default function SchemeDetailPage() {
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-slate-900">
-                      {doc.name}
+                      {localizeBusinessValue(doc.name, language)}
                     </span>
                     {doc.mandatory && (
                       <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-rose-100 text-rose-700">
@@ -421,10 +422,10 @@ export default function SchemeDetailPage() {
                     )}
                   </div>
                   <p className="text-[11px] text-slate-500">
-                    {doc.description}
+                    {localizeBusinessValue(doc.description, language)}
                   </p>
                   <p className="text-[10px] font-semibold text-slate-600 pt-0.5">
-                    {doc.statusNote}
+                    {localizeBusinessValue(doc.statusNote, language)}
                   </p>
                 </div>
 
@@ -455,7 +456,7 @@ export default function SchemeDetailPage() {
             <span>{t('schemes.howToApplyTitle', 'How to Apply: Verified Application Sequence')}</span>
           </h2>
           <p className="text-xs text-slate-500">
-            Standard government workflow according to nodal agency operating guidelines.
+            {t('schemes.workflowNote', 'Standard government workflow according to nodal agency operating guidelines.')}
           </p>
         </div>
 
@@ -467,10 +468,10 @@ export default function SchemeDetailPage() {
               </div>
               <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 ml-2">
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">
-                  {step.title}
+                  {localizeBusinessValue(step.title, language)}
                 </h3>
                 <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                  {step.description}
+                  {localizeBusinessValue(step.description, language)}
                 </p>
               </div>
             </div>
@@ -482,13 +483,13 @@ export default function SchemeDetailPage() {
       <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-soft-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 block">
-            Data Trust & Provenance
+            {t('schemes.dataTrustTitle', 'Data Trust & Provenance')}
           </span>
           <h3 className="text-base font-black text-white">
-            Source: {officialSource}
+            {t('schemes.sourceLabel', 'Source:')} {officialSource}
           </h3>
           <p className="text-xs text-slate-400">
-            Verified as of {lastVerified} directly from official departmental notifications.
+            {t('schemes.lastVerified', 'Last Verified:')} {lastVerified} · {t('schemes.verifiedAsOf', 'Verified directly from official departmental notifications.')}
           </p>
         </div>
 
@@ -500,7 +501,7 @@ export default function SchemeDetailPage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl shadow-soft-sm transition-all"
             >
-              <span>Nodal Agency Portal</span>
+              <span>{t('schemes.nodalAgencyPortal', 'Nodal Agency Portal')}</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
           )}
@@ -511,7 +512,7 @@ export default function SchemeDetailPage() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl border border-white/20 transition-all"
             >
-              <span>National myScheme Page</span>
+              <span>{t('schemes.nationalMySchemePage', 'National myScheme Page')}</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
           )}

@@ -1548,13 +1548,32 @@ export const TRANSLATIONS = {
 import { SCHEMES_TRANSLATIONS } from './schemesTranslations';
 import { PLATFORM_TRANSLATIONS } from './platformTranslations';
 
-// Merge schemes and platform translations into each language
+// Merge schemes and platform translations into each language with deep fallbacks
 Object.keys(TRANSLATIONS).forEach((lang) => {
-  TRANSLATIONS[lang].schemes = SCHEMES_TRANSLATIONS[lang] || SCHEMES_TRANSLATIONS.en;
+  TRANSLATIONS[lang].schemes = {
+    ...(SCHEMES_TRANSLATIONS.en || {}),
+    ...(SCHEMES_TRANSLATIONS[lang] || {})
+  };
   
   const platform = PLATFORM_TRANSLATIONS[lang] || PLATFORM_TRANSLATIONS.en;
-  TRANSLATIONS[lang].dashboard = platform.dashboard;
-  TRANSLATIONS[lang].business = platform.business;
+  const platformEn = PLATFORM_TRANSLATIONS.en || {};
+
+  TRANSLATIONS[lang].dashboard = {
+    ...(platformEn.dashboard || {}),
+    ...(platform.dashboard || {})
+  };
+  TRANSLATIONS[lang].business = {
+    ...(platformEn.business || {}),
+    ...(platform.business || {})
+  };
+  TRANSLATIONS[lang].funding = {
+    ...(platformEn.funding || {}),
+    ...(platform.funding || {})
+  };
+  TRANSLATIONS[lang].roadmap = {
+    ...(platformEn.roadmap || {}),
+    ...(platform.roadmap || {})
+  };
   
   // Also provide common entity stage translations
   if (!TRANSLATIONS[lang].nav.entityStage) {

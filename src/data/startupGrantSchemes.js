@@ -848,8 +848,8 @@ export const STARTUP_GRANT_SCHEMES = [
     },
     financialBenefits: {
       fundingType: 'GRANT', maximumFunding: 8300000, minimumFunding: 160000,
-      subsidyPercentage: '100% Free Google Cloud & Gemini AI Credits',
-      subsidyDetails: 'First year up to $100,000 in Google Cloud and Firebase credits; free Gemini API tokens; 1-on-1 technical office hours with Google engineers.',
+      subsidyPercentage: '100% Free Google Cloud & Enterprise AI Credits',
+      subsidyDetails: 'First year up to $100,000 in Google Cloud and Firebase credits; free enterprise AI tokens; 1-on-1 technical office hours with engineers.',
       loanDetails: 'Zero debt / 100% free credits.',
       marginMoneyDetails: 'Nil.', interestDetails: '0% interest.', repaymentDetails: 'Non-repayable.', collateralRequirement: 'Zero collateral.'
     },
@@ -866,7 +866,7 @@ export const STARTUP_GRANT_SCHEMES = [
     mySchemeUrl: 'https://cloud.google.com/startup',
     officialSource: 'Google for Startups',
     lastVerified: '2026-02-28', status: 'ACTIVE',
-    keyHighlights: ['Up to $100,000 in Google Cloud, Firebase, and Gemini AI tokens', '1-on-1 technical office hours with Google engineers', 'Free listing and growth workshops via Google Play Academy']
+    keyHighlights: ['Up to $100,000 in Google Cloud, Firebase, and Enterprise AI tokens', '1-on-1 technical office hours with Google engineers', 'Free listing and growth workshops via Google Play Academy']
   },
 
   // 23. TIE INDIA ANGEL & SEED MENTORSHIP

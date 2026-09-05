@@ -76,6 +76,25 @@ export const SCHEMES_TRANSLATIONS = {
     mandatory: 'Mandatory',
     available: 'Available',
     toPrepare: 'To Prepare',
+    subsidyScale: 'Subsidy Scale',
+    subsidyDetails: 'Subsidy Details',
+    marginMoney: 'Margin Money (Promoter Equity)',
+    collateralGuarantee: 'Collateral & Guarantee',
+    repaymentTerms: 'Loan & Repayment Terms',
+    allSupportTypes: 'All Support Types',
+    allSectors: 'All Sectors',
+    anyAmount: 'Any Funding Amount',
+    profileReflects: 'Reflects alignment with your declared profile.',
+    roadmapSuccess: "Successfully added to your business roadmap! You can track this scheme's preparation steps.",
+    docReadinessNote: 'Cross-referenced with information collected during your onboarding.',
+    accountedFor: 'Document Types Accounted For',
+    workflowNote: 'Standard government workflow according to nodal agency operating guidelines.',
+    dataTrustTitle: 'Data Trust & Provenance',
+    sourceLabel: 'Source:',
+    verifiedAsOf: 'Verified directly from official departmental notifications.',
+    nodalAgencyPortal: 'Nodal Agency Portal',
+    nationalMySchemePage: 'National myScheme Page',
+    upTo: 'Up to',
     facilities: {
       loan: 'Loan',
       grant: 'Grant',
@@ -190,6 +209,25 @@ export const SCHEMES_TRANSLATIONS = {
     mandatory: 'বাধ্যতামূলক',
     available: 'প্রস্তুত আছে',
     toPrepare: 'প্রস্তুত করতে হবে',
+    subsidyScale: 'ভর্তুকির অনুপাত',
+    subsidyDetails: 'ভর্তুকির বিবরণ',
+    marginMoney: 'মার্জিন মানি (উদ্যোক্তার নিজস্ব অংশ)',
+    collateralGuarantee: 'জামানত ও গ্যারান্টি',
+    repaymentTerms: 'ঋণ ও পরিশোধের শর্তাবলী',
+    allSupportTypes: 'সকল সহায়তার ধরন',
+    allSectors: 'সকল খাত',
+    anyAmount: 'যেকোনো তহবিলের পরিমাণ',
+    profileReflects: 'আপনার ঘোষিত প্রোফাইলের সাথে সামঞ্জস্য প্রতিফলিত করে।',
+    roadmapSuccess: 'সফলভাবে আপনার ব্যবসায়িক রোডম্যাপে যুক্ত করা হয়েছে! আপনি এই প্রকল্পের প্রস্তুতির ধাপগুলো ট্র্যাক করতে পারেন।',
+    docReadinessNote: 'অনবোর্ডিংয়ের সময় সংগৃহীত তথ্যের সাথে সমন্বিত।',
+    accountedFor: 'ধরনের নথি অন্তর্ভুক্ত',
+    workflowNote: 'নোডাল এজেন্সির নির্দেশিকা অনুযায়ী আদর্শ সরকারি কার্যপদ্ধতি।',
+    dataTrustTitle: 'তথ্যের নির্ভরযোগ্যতা ও উৎস',
+    sourceLabel: 'উৎস:',
+    verifiedAsOf: 'বিভাগীয় অফিসিয়াল বিজ্ঞপ্তি থেকে সরাসরি যাচাইকৃত।',
+    nodalAgencyPortal: 'নোডাল এজেন্সি পোর্টাল',
+    nationalMySchemePage: 'জাতীয় myScheme পেজ',
+    upTo: 'সর্বোচ্চ',
     facilities: {
       loan: 'ঋণ',
       grant: 'অনুদান',
@@ -285,6 +323,44 @@ export const SCHEMES_TRANSLATIONS = {
     documentsToPrepare: 'दस्तावेज़ तैयार करने होंगे',
     documentToPrepare: 'दस्तावेज़ तैयार करना होगा',
     profileDocsReady: 'मूल प्रोफ़ाइल दस्तावेज़ तैयार हैं',
+    backToMatcher: 'योजना सूची में वापस जाएं',
+    lastVerified: 'अंतिम सत्यापन:',
+    verifiedSource: 'सत्यापित स्रोत',
+    profileCompatibility: 'प्रोफ़ाइल अनुकूलता',
+    savedInRoadmap: 'रोडमैप में सहेजा गया',
+    addRoadmap: 'मेरे रोडमैप में जोड़ें',
+    visitNodalPortal: 'नोडल पोर्टल पर जाएं',
+    nationalPortal: 'राष्ट्रीय myScheme पोर्टल',
+    matchBreakdown: 'आपकी पात्रता का विश्लेषण',
+    whyMatchesProfile: 'यह आपकी प्रोफ़ाइल से क्यों मेल खाता है:',
+    considerations: 'पुष्टि करने योग्य शर्तें / विचारणीय बिंदु:',
+    unmatchedConditions: 'अपात्रता की शर्तें:',
+    officialDisclaimer: 'आधिकारिक अस्वीकरण:',
+    potentialBenefitsTitle: 'संभावित लाभ एवं वित्तीय ढांचा',
+    docChecklistTitle: 'दस्तावेज़ चेकलिस्ट एवं प्रोफ़ाइल सज्जता',
+    howToApplyTitle: 'आवेदन कैसे करें: चरणबद्ध प्रक्रिया',
+    mandatory: 'अनिवार्य',
+    available: 'उपलब्ध',
+    toPrepare: 'तैयार करना है',
+    subsidyScale: 'सब्सिडी पैमाना',
+    subsidyDetails: 'सब्सिडी विवरण',
+    marginMoney: 'मार्जिन मनी (प्रमोटर इक्विटी)',
+    collateralGuarantee: 'संपार्श्विक एवं गारंटी',
+    repaymentTerms: 'ऋण एवं पुनर्भुगतान शर्तें',
+    allSupportTypes: 'सभी सहायता के प्रकार',
+    allSectors: 'सभी क्षेत्र',
+    anyAmount: 'कोई भी वित्तीय राशि',
+    profileReflects: 'आपकी घोषित प्रोफ़ाइल के साथ संरेखण को दर्शाता है।',
+    roadmapSuccess: 'सफलतापूर्वक आपके बिजनेस रोडमैप में जोड़ा गया! आप इस योजना के तैयारी चरणों को ट्रैक कर सकते हैं।',
+    docReadinessNote: 'ऑनबोर्डिंग के दौरान एकत्रित जानकारी के साथ क्रॉस-रेफ़रेंस किया गया।',
+    accountedFor: 'प्रकार के दस्तावेज़ शामिल',
+    workflowNote: 'नोडल एजेंसी के परिचालन दिशानिर्देशों के अनुसार मानक सरकारी प्रक्रिया।',
+    dataTrustTitle: 'डेटा विश्वसनीयता एवं स्रोत',
+    sourceLabel: 'स्रोत:',
+    verifiedAsOf: 'विभागीय आधिकारिक अधिसूचनाओं से सीधे सत्यापित।',
+    nodalAgencyPortal: 'नोडल एजेंसी पोर्टल',
+    nationalMySchemePage: 'राष्ट्रीय myScheme पेज',
+    upTo: 'अधिकतम',
     facilities: {
       loan: 'ऋण',
       grant: 'अनुदान',
@@ -742,36 +818,51 @@ export function localizeMinistry(ministry, lang) {
 
   const map = {
     bn: {
-      'Ministry of Finance': 'অর্থ মন্ত্রণালয়',
-      'Ministry of MSME': 'এমএসএমই মন্ত্রণালয়',
-      'Ministry of Agriculture': 'কৃষি মন্ত্রণালয়',
+      'Ministry of Food Processing Industries (MoFPI)': 'খাদ্য প্রক্রিয়াকরণ শিল্প মন্ত্রণালয় (MoFPI)',
+      'National Institute of Food Technology Entrepreneurship and Management': 'জাতীয় খাদ্য প্রযুক্তি প্রতিষ্ঠান (NIFTEM)',
+      'National Institute of Food Technology (NIFTEM)': 'জাতীয় খাদ্য প্রযুক্তি প্রতিষ্ঠান (NIFTEM)',
+      'Khadi and Village Industries Commission (KVIC)': 'খাদি ও গ্রামোদ্যোগ কমিশন (KVIC)',
+      'Department of Financial Services (DFS)': 'আর্থিক সেবা বিভাগ (DFS)',
+      'Department of Financial Services': 'আর্থিক সেবা বিভাগ (DFS)',
       'Ministry of Commerce and Industry': 'বাণিজ্য ও শিল্প মন্ত্রণালয়',
       'Ministry of Food Processing': 'খাদ্য প্রক্রিয়াকরণ মন্ত্রণালয়',
-      'Ministry of Textiles': 'বস্ত্র মন্ত্রণালয়',
-      'Ministry of Electronics and IT': 'তথ্যপ্রযুক্তি মন্ত্রণালয়',
       'Ministry of Housing and Urban Affairs': 'নগর উন্নয়ন মন্ত্রণালয়',
       'Ministry of Skill Development': 'দক্ষতা উন্নয়ন মন্ত্রণালয়',
       'Ministry of Rural Development': 'পল্লী উন্নয়ন মন্ত্রণালয়',
+      'Ministry of Electronics and IT': 'তথ্যপ্রযুক্তি মন্ত্রণালয়',
+      'Ministry of Agriculture': 'কৃষি মন্ত্রণালয়',
+      'Ministry of Textiles': 'বস্ত্র মন্ত্রণালয়',
+      'Ministry of Finance': 'অর্থ মন্ত্রণালয়',
+      'Ministry of MSME': 'এমএসএমই মন্ত্রণালয়',
       'Skill Development Joint Cell': 'দক্ষতা উন্নয়ন সেল',
       'SIDBI': 'সিডবি (SIDBI)',
       'NABARD': 'নাবার্ড (NABARD)'
     },
     hi: {
-      'Ministry of Finance': 'वित्त मंत्रालय',
-      'Ministry of MSME': 'एमएसएमई मंत्रालय',
-      'Ministry of Agriculture': 'कृषि मंत्रालय',
+      'Ministry of Food Processing Industries (MoFPI)': 'खाद्य प्रसंस्करण उद्योग मंत्रालय (MoFPI)',
+      'National Institute of Food Technology Entrepreneurship and Management': 'राष्ट्रीय खाद्य प्रौद्योगिकी संस्थान (NIFTEM)',
+      'National Institute of Food Technology (NIFTEM)': 'राष्ट्रीय खाद्य प्रौद्योगिकी संस्थान (NIFTEM)',
+      'Khadi and Village Industries Commission (KVIC)': 'खादी एवं ग्रामोद्योग आयोग (KVIC)',
+      'Department of Financial Services (DFS)': 'वित्तीय सेवाएं विभाग (DFS)',
+      'Department of Financial Services': 'वित्तीय सेवाएं विभाग (DFS)',
       'Ministry of Commerce and Industry': 'वाणिज्य एवं उद्योग मंत्रालय',
       'Ministry of Food Processing': 'खाद्य प्रसंस्करण मंत्रालय',
-      'Ministry of Textiles': 'कपड़ा मंत्रालय',
-      'Ministry of Electronics and IT': 'इलेक्ट्रॉनिक्स एवं आईटी मंत्रालय',
       'Ministry of Housing and Urban Affairs': 'आवासन एवं शहरी कार्य मंत्रालय',
       'Ministry of Skill Development': 'कौशल विकास मंत्रालय',
       'Ministry of Rural Development': 'ग्रामीण विकास मंत्रालय',
+      'Ministry of Electronics and IT': 'इलेक्ट्रॉनिक्स एवं आईटी मंत्रालय',
+      'Ministry of Agriculture': 'कृषि मंत्रालय',
+      'Ministry of Textiles': 'कपड़ा मंत्रालय',
+      'Ministry of Finance': 'वित्त मंत्रालय',
+      'Ministry of MSME': 'एमएसएमई मंत्रालय',
       'Skill Development Joint Cell': 'कौशल विकास संयुक्त प्रकोष्ठ',
-      'SIDBI': 'सिडबी (SIDBI)',
+      'SIDBI': 'सिडबी (सिडबी)',
       'NABARD': 'नाबार्ड (NABARD)'
     },
     mr: {
+      'Ministry of Food Processing Industries (MoFPI)': 'अन्न प्रक्रिया उद्योग मंत्रालय (MoFPI)',
+      'Department of Financial Services (DFS)': 'वित्तीय सेवा विभाग (DFS)',
+      'Khadi and Village Industries Commission (KVIC)': 'खादी व ग्रामोद्योग आयोग (KVIC)',
       'Ministry of Finance': 'वित्त मंत्रालय',
       'Ministry of MSME': 'एमएसएमई मंत्रालय',
       'Ministry of Agriculture': 'कृषी मंत्रालय',
@@ -797,8 +888,11 @@ export function localizeMinistry(ministry, lang) {
 
   if (map[lang]) {
     let res = ministry;
-    for (const [enKey, localized] of Object.entries(map[lang])) {
-      res = res.replace(new RegExp(enKey, 'gi'), localized);
+    // Sort keys by length descending to replace specific phrases first
+    const sortedKeys = Object.keys(map[lang]).sort((a, b) => b.length - a.length);
+    for (const enKey of sortedKeys) {
+      const localized = map[lang][enKey];
+      res = res.replace(new RegExp(enKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), localized);
     }
     return res;
   }
@@ -813,58 +907,85 @@ export function localizePillar(pillar, t, lang) {
   if (lang === 'en') return pillar;
 
   if (pillar.includes('All-India National Scheme')) {
-    return t('schemes.pillars.allIndia', 'Location matches: All-India National Scheme');
+    return t('schemes.pillars.allIndia', 'स्थान मिलान: अखिल भारतीय राष्ट्रीय योजना');
   }
 
   if (pillar.startsWith('Location matches:')) {
     const stateName = pillar.replace('Location matches:', '').trim();
-    return `${t('schemes.pillars.locationMatches', 'Location matches')}: ${stateName}`;
+    return `${t('schemes.pillars.locationMatches', 'स्थान मिलान')}: ${stateName}`;
   }
 
   if (pillar.includes('Universal sector support')) {
-    return t('schemes.pillars.universalSector', 'Universal sector support');
+    return t('schemes.pillars.universalSector', 'सभी क्षेत्रों के लिए मान्य');
   }
 
   const supportsMatch = pillar.match(/Supports\s+(.+?)\s+sector/i);
   if (supportsMatch) {
-    const secName = supportsMatch[1];
-    return `${t('schemes.pillars.supports', 'Supports')} ${secName} ${t('schemes.pillars.sector', 'sector')}`;
+    const secName = supportsMatch[1].trim();
+    let localizedSec = secName;
+    if (lang === 'hi') {
+      if (/services/i.test(secName)) localizedSec = 'सेवा';
+      else if (/manufacturing/i.test(secName)) localizedSec = 'विनिर्माण';
+      else if (/agri|food/i.test(secName)) localizedSec = 'कृषि एवं खाद्य प्रसंस्करण';
+      else if (/trading/i.test(secName)) localizedSec = 'व्यापार एवं खुदरा';
+      return `समर्थन: ${localizedSec} क्षेत्र`;
+    } else if (lang === 'bn') {
+      if (/services/i.test(secName)) localizedSec = 'সেবা';
+      else if (/manufacturing/i.test(secName)) localizedSec = 'উৎপাদন';
+      else if (/agri|food/i.test(secName)) localizedSec = 'কৃষি ও খাদ্য প্রক্রিয়াকরণ';
+      else if (/trading/i.test(secName)) localizedSec = 'বাণিজ্য';
+      return `সমর্থন: ${localizedSec} খাত`;
+    }
+    return `${t('schemes.pillars.supports', 'समर्थन')} ${secName} ${t('schemes.pillars.sector', 'क्षेत्र')}`;
   }
 
   if (pillar.startsWith('Stage aligned:')) {
     const stage = pillar.replace('Stage aligned:', '').trim();
+    let localizedStage = stage;
+    if (lang === 'hi') {
+      if (/idea/i.test(stage)) localizedStage = 'विचार (IDEA)';
+      else if (/planning|feasibility/i.test(stage)) localizedStage = 'योजना';
+      else if (/operating|growth/i.test(stage)) localizedStage = 'सक्रिय';
+      return `व्यावसायिक चरण अनुकूलित: ${localizedStage}`;
+    } else if (lang === 'bn') {
+      if (/idea/i.test(stage)) localizedStage = 'ধারণা (IDEA)';
+      else if (/planning|feasibility/i.test(stage)) localizedStage = 'পরিকল্পনা';
+      else if (/operating|growth/i.test(stage)) localizedStage = 'সক্রিয়';
+      return `উদ্যোগের পর্যায় সমন্বিত: ${localizedStage}`;
+    }
     return `${t('schemes.pillars.stageAligned', 'Stage aligned')}: ${stage}`;
   }
 
   if (pillar.includes('Woman entrepreneur priority')) {
-    return t('schemes.pillars.womanPriority', 'Woman entrepreneur priority & enhanced subsidy');
+    return t('schemes.pillars.womanPriority', 'महिला उद्यमी प्राथमिकता और बढ़ी हुई सब्सिडी');
   }
 
   if (pillar.startsWith('Category benefits available for')) {
     const cat = pillar.replace('Category benefits available for', '').trim();
-    return `${t('schemes.pillars.categoryBenefits', 'Category benefits available for')} ${cat}`;
+    return `${t('schemes.pillars.categoryBenefits', 'श्रेणी लाभ उपलब्ध:')} ${cat}`;
   }
 
   if (pillar.includes('Age eligibility verified')) {
     const ageMatch = pillar.match(/\((\d+)\s*yrs\)/i);
-    const ageStr = ageMatch ? ` (${ageMatch[1]} yrs)` : '';
-    return `${t('schemes.pillars.ageVerified', 'Age eligibility verified')}${ageStr}`;
+    const ageStr = ageMatch ? ` (${ageMatch[1]} वर्ष)` : '';
+    return `${t('schemes.pillars.ageVerified', 'आयु पात्रता सत्यापित')}${ageStr}`;
   }
 
   if (pillar.includes('Financial requirement fits within scheme parameters')) {
-    return t('schemes.pillars.financialFit', 'Financial requirement fits within scheme parameters');
+    return t('schemes.pillars.financialFit', 'वित्तीय आवश्यकता योजना सीमा के भीतर');
   }
 
   if (pillar.includes('Rural Area aligned')) {
-    return t('schemes.pillars.ruralAligned', 'Rural Area aligned');
+    return t('schemes.pillars.ruralAligned', 'ग्रामीण क्षेत्र के अनुकूल');
   }
 
   if (pillar.includes('Urban Area aligned')) {
-    return t('schemes.pillars.urbanAligned', 'Urban Area aligned');
+    return t('schemes.pillars.urbanAligned', 'शहरी क्षेत्र के अनुकूल');
   }
 
   return pillar;
 }
+
 
 /**
  * Localize Funding Facility Type

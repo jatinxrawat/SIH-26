@@ -19,6 +19,7 @@ import {
   localizeFacilityType,
   localizeCategoryLabel
 } from '../../i18n/schemesTranslations';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 
 export default function SchemeCard({
   scheme,
@@ -102,7 +103,7 @@ export default function SchemeCard({
         {/* Scheme Title & Ministry */}
         <h3 className="text-base sm:text-lg font-black text-slate-900 leading-snug group-hover:text-emerald-700 transition-colors">
           <Link to={`/schemes/${id}`} className="hover:underline focus:outline-none">
-            {name}
+            {localizeBusinessValue(name, language)}
           </Link>
         </h3>
         <p className="text-xs text-slate-400 font-medium mt-1">
@@ -116,7 +117,7 @@ export default function SchemeCard({
               {t('schemes.potentialBenefit', 'Potential Benefit')}
             </span>
             <span className="text-sm font-extrabold text-slate-900">
-              {financialBenefits?.subsidyPercentage || `Up to ₹${(financialBenefits?.maximumFunding || 0).toLocaleString('en-IN')}`}
+              {localizeBusinessValue(financialBenefits?.subsidyPercentage, language) || `${t('schemes.upTo', 'Up to')} ₹${(financialBenefits?.maximumFunding || 0).toLocaleString('en-IN')}`}
             </span>
           </div>
           <div className="text-right">

@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import { useRoadmap } from '../context/RoadmapContext';
 import { aiService } from '../services/aiService';
+import { useLanguage } from '../../context/LanguageContext';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 
 export default function NextBestActionCard() {
   const {
@@ -28,6 +30,7 @@ export default function NextBestActionCard() {
     toggleTaskCompletion,
     profile
   } = useRoadmap();
+  const { t, language } = useLanguage();
 
   const [isQuickAIExpanded, setIsQuickAIExpanded] = useState(false);
   const [quickAIContent, setQuickAIContent] = useState(null);
@@ -82,21 +85,21 @@ export default function NextBestActionCard() {
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-black tracking-wide">
                 <Target className="w-3.5 h-3.5 text-emerald-400" />
-                <span>YOUR NEXT BEST ACTION</span>
+                <span>{t('roadmap.nextBestActionBadge', 'YOUR NEXT BEST ACTION')}</span>
               </span>
 
               <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-[11px] font-extrabold uppercase">
-                Priority: {nextBestAction.priority}
+                {t('roadmap.priority', 'Priority')}: {localizeBusinessValue(nextBestAction.priority, language)}
               </span>
 
               <span className="inline-flex items-center gap-1 text-slate-300 text-xs font-semibold">
                 <Clock className="w-3.5 h-3.5 text-slate-400" />
-                <span>{nextBestAction.estimatedTime}</span>
+                <span>{localizeBusinessValue(nextBestAction.estimatedTime, language)}</span>
               </span>
             </div>
 
             <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight leading-snug">
-              {nextBestAction.title}
+              {localizeBusinessValue(nextBestAction.title, language)}
             </h2>
           </div>
 
@@ -113,7 +116,7 @@ export default function NextBestActionCard() {
               ) : (
                 <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
               )}
-              <span>Quick AI Plan</span>
+              <span>{t('roadmap.quickAiPlan', 'Quick AI Plan')}</span>
               {isQuickAIExpanded ? (
                 <ChevronUp className="w-3.5 h-3.5 ml-1" />
               ) : (
@@ -127,7 +130,7 @@ export default function NextBestActionCard() {
               onClick={() => openTaskDrawer(nextBestAction.taskId)}
               className="px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 active:bg-emerald-600 text-slate-950 font-black text-xs shadow-soft-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-2 transform hover:-translate-y-0.5"
             >
-              <span>{isCompleted ? 'Review Task' : 'Start Task'}</span>
+              <span>{isCompleted ? t('roadmap.reviewTask', 'Review Task') : t('roadmap.startTask', 'Start Task')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
@@ -151,19 +154,19 @@ export default function NextBestActionCard() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
             <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400 block">
-              Why this matters
+              {t('roadmap.whyThisMatters', 'Why this matters')}
             </span>
             <p className="text-slate-300 leading-relaxed">
-              {nextBestAction.reason}
+              {localizeBusinessValue(nextBestAction.reason, language)}
             </p>
           </div>
 
           <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
             <span className="text-[10px] font-extrabold uppercase tracking-wider text-sky-400 block">
-              Direct Impact & Unlocks
+              {t('roadmap.directImpact', 'Direct Impact & Unlocks')}
             </span>
             <p className="text-slate-300 leading-relaxed">
-              {nextBestAction.impact}
+              {localizeBusinessValue(nextBestAction.impact, language)}
             </p>
           </div>
         </div>

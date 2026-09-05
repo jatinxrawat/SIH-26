@@ -7,9 +7,12 @@
 import React from 'react';
 import { AlertTriangle, CheckCircle2, ArrowRight, Upload, ShieldCheck } from 'lucide-react';
 import { useRoadmap } from '../context/RoadmapContext';
+import { useLanguage } from '../../context/LanguageContext';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 
 export default function BlockersCard() {
   const { blockers, openTaskDrawer, simulateDocumentUpload } = useRoadmap();
+  const { t, language } = useLanguage();
 
   return (
     <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-soft-sm space-y-4">
@@ -28,10 +31,10 @@ export default function BlockersCard() {
           </div>
           <div>
             <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-              What's Blocking You?
+              {t('roadmap.blockersTitle', "What's Blocking You?")}
             </h3>
             <p className="text-[11px] text-slate-400">
-              Critical impediments to bank loan and scheme subsidy
+              {t('roadmap.blockersSubtitle', 'Critical impediments to bank loan and scheme subsidy')}
             </p>
           </div>
         </div>
@@ -43,7 +46,7 @@ export default function BlockersCard() {
               : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
           }`}
         >
-          {blockers.length > 0 ? `${blockers.length} Items Pending` : 'Clear Path'}
+          {blockers.length > 0 ? `${blockers.length} ${t('roadmap.statusPending', 'Pending')}` : t('roadmap.clearPath', 'Clear Path')}
         </span>
       </div>
 
@@ -54,10 +57,10 @@ export default function BlockersCard() {
           </div>
           <div className="space-y-0.5">
             <strong className="font-black text-slate-900 block text-xs">
-              Zero Critical Roadblocks
+              {t('roadmap.zeroBlockers', 'Zero Critical Roadblocks')}
             </strong>
             <p className="text-slate-600 text-[11px] leading-relaxed">
-              All prerequisite documents, scheme matches, and compliance criteria are up to date for your current stage.
+              {t('roadmap.zeroBlockersDesc', 'All prerequisite documents, scheme matches, and compliance criteria are up to date for your current stage.')}
             </p>
           </div>
         </div>
@@ -73,13 +76,15 @@ export default function BlockersCard() {
               >
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-slate-900">{blocker.title}</span>
+                    <span className="font-bold text-slate-900">
+                      {localizeBusinessValue(blocker.title, language)}
+                    </span>
                     <span className="text-[9px] font-black uppercase px-1.5 py-0.2 rounded bg-slate-200 text-slate-600">
-                      {blocker.category}
+                      {localizeBusinessValue(blocker.category, language)}
                     </span>
                   </div>
                   <p className="text-[11px] text-slate-500 leading-snug">
-                    {blocker.reason}
+                    {localizeBusinessValue(blocker.reason, language)}
                   </p>
                 </div>
 
@@ -92,7 +97,7 @@ export default function BlockersCard() {
                       title="Upload & mark document verified"
                     >
                       <Upload className="w-3 h-3" />
-                      <span>Upload & Verify</span>
+                      <span>{t('roadmap.uploadAndVerify', 'Upload & Verify')}</span>
                     </button>
                   ) : (
                     <button
@@ -100,7 +105,7 @@ export default function BlockersCard() {
                       onClick={() => openTaskDrawer(blocker.taskId)}
                       className="px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-[11px] transition-all flex items-center gap-1"
                     >
-                      <span>Resolve</span>
+                      <span>{t('roadmap.resolve', 'Resolve')}</span>
                       <ArrowRight className="w-3 h-3" />
                     </button>
                   )}
@@ -113,3 +118,4 @@ export default function BlockersCard() {
     </div>
   );
 }
+

@@ -2,6 +2,7 @@ import React from 'react';
 import { Search, RotateCcw } from 'lucide-react';
 import { SCHEME_CATEGORIES, BUSINESS_SECTORS, FUNDING_RANGES } from '../../data/schemesData';
 import { useLanguage } from '../../context/LanguageContext';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 
 export default function SchemeFilters({
   filters,
@@ -10,7 +11,7 @@ export default function SchemeFilters({
   totalCount,
   matchedCount
 }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   return (
     <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-soft-sm space-y-4">
@@ -66,7 +67,7 @@ export default function SchemeFilters({
           >
             {SCHEME_CATEGORIES.map(cat => (
               <option key={cat.id} value={cat.id}>
-                {cat.id === 'ALL' ? t('schemes.categories.all', cat.label) : cat.label}
+                {cat.id === 'ALL' ? t('schemes.allSupportTypes', 'All Support Types') : localizeBusinessValue(cat.label, language)}
               </option>
             ))}
           </select>
@@ -84,7 +85,7 @@ export default function SchemeFilters({
           >
             {BUSINESS_SECTORS.map(sec => (
               <option key={sec.id} value={sec.id}>
-                {sec.id === 'ALL' ? t('schemes.sectors.all', sec.label) : sec.label}
+                {sec.id === 'ALL' ? t('schemes.allSectors', 'All Sectors') : localizeBusinessValue(sec.label, language)}
               </option>
             ))}
           </select>
@@ -101,7 +102,9 @@ export default function SchemeFilters({
             className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             {FUNDING_RANGES.map(f => (
-              <option key={f.id} value={f.id}>{f.label}</option>
+              <option key={f.id} value={f.id}>
+                {f.id === 'ALL' ? t('schemes.anyAmount', 'Any Funding Amount') : localizeBusinessValue(f.label, language)}
+              </option>
             ))}
           </select>
         </div>

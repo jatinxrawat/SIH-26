@@ -19,6 +19,8 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { useRoadmap } from '../context/RoadmapContext';
+import { useLanguage } from '../../context/LanguageContext';
+import { localizeBusinessValue } from '../../i18n/platformTranslations';
 import { aiService } from '../services/aiService';
 
 export default function AIMilestoneModal() {
@@ -30,6 +32,7 @@ export default function AIMilestoneModal() {
     setExpandedStageId
   } = useRoadmap();
 
+  const { t, language } = useLanguage();
   const [promptInput, setPromptInput] = useState('');
   const [targetStage, setTargetStage] = useState('GROWTH');
   const [provider, setProvider] = useState('gemini');
@@ -58,34 +61,31 @@ export default function AIMilestoneModal() {
         provider,
         task: { title: query },
         context: {
-          businessName: profile.businessName,
-          sector: profile.industry,
-          location: profile.location
+          businessName: profile?.businessName || profile?.name || 'My Enterprise',
+          sector: profile?.sector || 'General',
+          location: profile?.location || 'India',
+          targetStage
         },
-        question: `Create a concrete MSME roadmap task milestone for: "${query}". Provide a clear title, why this matters, 4 actionable numbered steps, estimated time, and required documents.`
+        prompt: `Generate a structured milestone JSON with title, whyThisMatters, estimatedTime, and whatToDo (array of 3-4 checkpoints) for goal: "${query}"`
       });
 
       if (response) {
         setGeneratedMilestone({
-          title: query,
+          title: response.title || query,
           stage: targetStage,
-          description: response.answer || `Custom strategic milestone synthesized by ${response.provider || 'AI'}.`,
-          whyThisMatters: response.why || 'Critical for expanding operational capacity and market access.',
-          whatToDo: Array.isArray(response.whatToDo)
-            ? response.whatToDo
-            : [
-                'Conduct feasibility assessment for target objective.',
-                'Identify verified vendors and government guidelines.',
-                'Assemble statutory applications and audit records.',
-                'Submit filing and verify milestone completion.'
-              ],
-          estimatedTime: '3-5 days',
           priority: 'HIGH',
-          requiredDocuments: []
+          estimatedTime: response.estimatedTime || '3-5 days',
+          whyThisMatters: response.why || response.whyThisMatters || 'Strategic expansion goal for your enterprise.',
+          whatToDo: Array.isArray(response.steps) ? response.steps : (Array.isArray(response.whatToDo) ? response.whatToDo : [
+            'Assess detailed regulatory and technical specifications',
+            'Gather requisite quotations and vendor bids',
+            'Submit documentation through authorized portal'
+          ]),
+          isCustom: true
         });
       }
-    } catch (err) {
-      console.error('Failed to generate milestone:', err);
+    } catch (e) {
+      console.error('Failed to generate AI milestone:', e);
     } finally {
       setLoading(false);
     }
@@ -94,14 +94,11 @@ export default function AIMilestoneModal() {
   const handleAddToRoadmap = () => {
     if (!generatedMilestone) return;
     addCustomMilestone(generatedMilestone);
-    setExpandedStageId(generatedMilestone.stage);
     setIsAIMilestoneModalOpen(false);
-    setGeneratedMilestone(null);
-    setPromptInput('');
   };
 
   const modalContent = (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
       {/* Backdrop */}
       <div
         onClick={() => setIsAIMilestoneModalOpen(false)}
@@ -109,16 +106,16 @@ export default function AIMilestoneModal() {
       />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-soft-2xl border border-slate-200/90 overflow-hidden z-10 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-200 z-10 overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-900 text-white shrink-0">
+        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500 text-slate-950 flex items-center justify-center font-black">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-black tracking-tight">
-                Synthesize Custom AI Milestone
+                {t('roadmap.addCustomGoal', 'Synthesize Custom AI Milestone')}
               </h3>
               <p className="text-xs text-slate-400">
                 Tailor your business roadmap with specialized goals powered by live AI
@@ -220,19 +217,19 @@ export default function AIMilestoneModal() {
             </div>
 
             <div className="flex items-center gap-2 text-xs">
-              <span className="text-slate-500 font-semibold">Assign to Stage:</span>
+              <span className="text-slate-500 font-semibold">{t('roadmap.stageLabel', 'Stage')}:</span>
               <select
                 value={targetStage}
                 onChange={(e) => setTargetStage(e.target.value)}
                 className="bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-3 py-1.5 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
-                <option value="FEASIBILITY">02 Feasibility</option>
-                <option value="SUPPORT">03 Govt Support</option>
-                <option value="FUNDING">04 Funding</option>
-                <option value="REGISTRATION">05 Registration</option>
-                <option value="SETUP">06 Setup</option>
-                <option value="LAUNCH">07 Launch</option>
-                <option value="GROWTH">08 Growth & Scale</option>
+                <option value="FEASIBILITY">02 {localizeBusinessValue('Planning', language)}</option>
+                <option value="SUPPORT">03 {localizeBusinessValue('Govt Support', language)}</option>
+                <option value="FUNDING">04 {localizeBusinessValue('Funding', language)}</option>
+                <option value="REGISTRATION">05 {localizeBusinessValue('Registration', language)}</option>
+                <option value="SETUP">06 {localizeBusinessValue('Setup', language)}</option>
+                <option value="LAUNCH">07 {localizeBusinessValue('Launch', language)}</option>
+                <option value="GROWTH">08 {localizeBusinessValue('Growth', language)}</option>
               </select>
             </div>
           </div>
@@ -244,10 +241,10 @@ export default function AIMilestoneModal() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 text-[10px] font-black uppercase">
-                      Generated Milestone
+                      {t('roadmap.aiCustom', 'AI Custom')}
                     </span>
                     <span className="text-slate-400 text-xs">•</span>
-                    <span className="text-xs font-bold text-slate-700">Stage: {generatedMilestone.stage}</span>
+                    <span className="text-xs font-bold text-slate-700">{t('roadmap.stageLabel', 'Stage')}: {generatedMilestone.stage}</span>
                   </div>
                   <h4 className="text-sm sm:text-base font-black text-slate-900 mt-1">
                     {generatedMilestone.title}
@@ -266,7 +263,7 @@ export default function AIMilestoneModal() {
 
               <div>
                 <span className="text-[10px] font-bold uppercase text-emerald-900 block mb-1">
-                  Synthesized Checkpoints
+                  {t('roadmap.checkpoints', 'Execution Checkpoints:')}
                 </span>
                 <div className="space-y-1">
                   {generatedMilestone.whatToDo.map((step, idx) => (
@@ -285,7 +282,7 @@ export default function AIMilestoneModal() {
                   className="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs shadow-soft-sm flex items-center gap-1.5 transition-all"
                 >
                   <Sparkles className="w-4 h-4" />
-                  <span>Add to My Roadmap</span>
+                  <span>{t('schemes.addRoadmap', 'Add to My Roadmap')}</span>
                 </button>
               </div>
             </div>
