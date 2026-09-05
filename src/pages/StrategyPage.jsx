@@ -156,7 +156,7 @@ export default function StrategyPage() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold mb-2">
             <Compass className="w-3.5 h-3.5 text-emerald-600" />
-            <span>SIH26091 — Hyper-Local Feasibility & Strategic Advisory</span>
+            <span>Hyper-Local Feasibility & Strategic Intelligence</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
             Business Strategy
@@ -422,7 +422,7 @@ export default function StrategyPage() {
           {/* 2. FEASIBILITY SNAPSHOT & GAUGE */}
           <FeasibilityGauge feasibility={strategy.feasibility} />
 
-          {/* 3. SIH REQUIREMENT 1: LOCAL MARKET REACH (5–10 KM CATCHMENT) */}
+          {/* 3. LOCAL MARKET REACH (5–10 KM CATCHMENT) */}
           <div className="space-y-6">
             <MarketAreaMap
               marketReach={strategy.marketReach}
@@ -497,13 +497,13 @@ export default function StrategyPage() {
             </div>
           </div>
 
-          {/* 4. SIH REQUIREMENT 2: LOCAL OPPORTUNITY & GAP ANALYSIS */}
+          {/* 4. LOCAL OPPORTUNITY & GAP ANALYSIS */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-soft-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
               <div>
                 <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold mb-1">
                   <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>SIH Pillar 2 — Underserved Local Niches</span>
+                  <span>Strategic Opportunity — Underserved Local Niches</span>
                 </div>
                 <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
                   Local Market Opportunities
@@ -551,13 +551,13 @@ export default function StrategyPage() {
             </div>
           </div>
 
-          {/* 5. SIH REQUIREMENT 5: COMPETITOR LANDSCAPE & DIFFERENTIATION */}
+          {/* 5. COMPETITOR LANDSCAPE & DIFFERENTIATION */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-soft-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
               <div>
                 <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold mb-1">
                   <Store className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>SIH Pillar 5 — Local Competition & Positioning</span>
+                  <span>Competitive Landscape & Positioning</span>
                 </div>
                 <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
                   Local Competitor Landscape
@@ -634,13 +634,13 @@ export default function StrategyPage() {
             </div>
           </div>
 
-          {/* 6. SIH REQUIREMENT 6: PRODUCT & PRICING STRATEGY */}
+          {/* 6. PRODUCT & PRICING STRATEGY */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-soft-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
               <div>
                 <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold mb-1">
                   <DollarSign className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>SIH Pillar 6 — Local Purchasing Power & Pricing</span>
+                  <span>Economic Dynamics — Local Purchasing Power & Pricing</span>
                 </div>
                 <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
                   Product & Pricing Strategy
@@ -703,16 +703,16 @@ export default function StrategyPage() {
             </p>
           </div>
 
-          {/* 7. SIH REQUIREMENT 3: SWOT ANALYSIS */}
+          {/* 7. SWOT ANALYSIS */}
           <SwotGrid swot={strategy.swot} />
 
-          {/* 8. SIH REQUIREMENT 4: LOCAL BUSINESS RISKS */}
+          {/* 8. LOCAL BUSINESS RISKS */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-soft-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
               <div>
                 <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200 text-xs font-semibold mb-1">
                   <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
-                  <span>SIH Pillar 4 — Threat Identification & Mitigation</span>
+                  <span>Risk Assessment — Threat Identification & Mitigation</span>
                 </div>
                 <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
                   Local Business Risks & Mitigation Plan

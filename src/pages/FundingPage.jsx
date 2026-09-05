@@ -127,7 +127,7 @@ export default function FundingPage() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold mb-2">
             <Coins className="w-3.5 h-3.5 text-emerald-600" />
-            <span>{t('funding.capitalStackBadge', 'AI Hyper-Local Financial Structuring Assistant (PS26091)')}</span>
+            <span>{t('funding.capitalStackBadge', 'Enterprise Financial Structuring Assistant')}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
             {t('funding.fundingTitle', 'Smart Funding Planner')}

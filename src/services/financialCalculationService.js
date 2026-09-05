@@ -2,12 +2,12 @@
  * Deterministic Financial Calculation Engine for Business Compass
  * 
  * Strict separation of concerns:
- * All numerical formulas (PS26091 funding tiers, reducing-balance amortizations,
+ * All numerical formulas (enterprise funding tiers, reducing-balance amortizations,
  * margin/cost routing, working capital, and affordability metrics) live here.
  * Components consume this service deterministically.
  */
 
-import { PS26091_FUNDING_PRODUCTS, FUNDING_MODEL_CEILING } from '../data/fundingProducts.js';
+import { FUNDING_PRODUCTS, FUNDING_MODEL_CEILING } from '../data/fundingProducts.js';
 
 /**
  * Robust currency parser supporting Indian financial formats:
@@ -67,7 +67,7 @@ export function formatRupees(amount, options = {}) {
 }
 
 /**
- * PS26091 Core Formula:
+ * Standard Equity Formula:
  * Feasible Project Cost = Available Margin Capital ÷ 10%
  * (e.g. ₹1,00,000 ÷ 0.10 = ₹10,00,000)
  */
@@ -79,7 +79,7 @@ export function calculateFeasibleProjectCost(availableMargin, marginPercentage =
 }
 
 /**
- * PS26091 Funding Router:
+ * Funding Product Router:
  * Routes project cost to the appropriate funding tier or ceiling alert.
  */
 export function routeFundingProduct(projectCost) {
@@ -106,7 +106,7 @@ export function routeFundingProduct(projectCost) {
     return {
       status: 'MATCHED',
       tierKey: 'MICRO_FINANCE',
-      product: PS26091_FUNDING_PRODUCTS[0], // Micro Finance Scheme
+      product: FUNDING_PRODUCTS[0], // Micro Finance Scheme
       message: 'Routed to Micro Finance Scheme (Up to ₹1.40 Lakh project cost)'
     };
   }
@@ -114,13 +114,13 @@ export function routeFundingProduct(projectCost) {
   return {
     status: 'MATCHED',
     tierKey: 'TERM_LOAN',
-    product: PS26091_FUNDING_PRODUCTS[1], // Term Loan Scheme
+    product: FUNDING_PRODUCTS[1], // Term Loan Scheme
     message: 'Routed to Term Loan Scheme (₹1.40 Lakh to ₹50 Lakh project cost)'
   };
 }
 
 /**
- * Calculates complete financing structure respecting PS26091 caps.
+ * Calculates complete financing structure respecting institutional caps.
  * Handles Micro Finance cap (₹1.25L max loan) and Term Loan cap (₹45L max loan).
  */
 export function calculateFinancingStructure(availableMargin, customProjectCost = null) {
@@ -149,7 +149,7 @@ export function calculateFinancingStructure(availableMargin, customProjectCost =
     };
   }
 
-  const product = routing.product || PS26091_FUNDING_PRODUCTS[1];
+  const product = routing.product || FUNDING_PRODUCTS[1];
   const uncappedLoan = Math.round(effectiveProjectCost * (product.financingPercentage / 100));
   const potentialLoan = Math.min(uncappedLoan, product.maximumLoanAmount);
   const isCapped = uncappedLoan > product.maximumLoanAmount;

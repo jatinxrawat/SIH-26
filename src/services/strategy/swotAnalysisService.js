@@ -1,5 +1,5 @@
 /**
- * SIH Requirement 3 — Grounded SWOT Analysis Service
+ * Grounded SWOT Analysis Service
  * Generates an individualized 4-quadrant SWOT matrix tailored strictly to:
  * - Entrepreneur's available capital & project outlay
  * - Business sector, description, stage, and location

@@ -3,12 +3,12 @@
  * Orchestrates:
  * - Entrepreneur Profile Snapshot
  * - Business Domain Classifier (Accurately reflects company description & trade)
- * - Market Reach (SIH Req 1)
- * - Opportunity Analysis (SIH Req 2)
- * - SWOT Analysis (SIH Req 3)
- * - Risk & Threat Identification (SIH Req 4)
- * - Competitor Mapping & Positioning (SIH Req 5)
- * - Product Value & Pricing Strategy (SIH Req 6)
+ * - Market Reach (Geographic Catchment)
+ * - Opportunity Analysis (Unserved Niches)
+ * - SWOT Analysis (Contextual Matrix)
+ * - Risk & Threat Identification (Mitigation Plan)
+ * - Competitor Mapping & Positioning
+ * - Product Value & Pricing Strategy
  * - Financial Feasibility & Unit Economics
  * - Government Scheme Matcher Integration
  * - Next Best Actions (Connecting to Roadmap)
@@ -133,7 +133,7 @@ export async function generateBusinessStrategy(profile, localOverrides = {}) {
       keyAdvantage: competitors.positioning.coreAdvantage
     },
 
-    // SIH 6 Pillar Datasets
+    // Core Strategy Datasets
     marketReach,
     opportunities,
     competitors,

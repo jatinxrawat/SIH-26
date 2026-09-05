@@ -1,5 +1,5 @@
 /**
- * SIH Requirement 2 — Local Opportunity & Gap Analysis Service
+ * Local Opportunity & Gap Analysis Service
  * Identifies unserved or underserved niches in the local 5–10 km trade radius.
  * Grounded strictly in businessDomainClassifier.
  * 

@@ -104,7 +104,7 @@ export default function Footer() {
             © 2026 UdyamSaathi. Built for entrepreneurial empowerment.
           </div>
           <div className="flex items-center gap-2">
-            <span>Developed for Smart India Hackathon</span>
+            <span>National MSME Digital Enablement Platform</span>
             <span>•</span>
             <span className="text-emerald-500 font-medium">Digital India</span>
           </div>

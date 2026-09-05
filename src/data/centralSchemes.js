@@ -821,7 +821,7 @@ export const CENTRAL_SCHEMES = [
     },
     requiredDocuments: [
       { id: 'doc_udyam', name: 'Udyam Registration Certificate', category: 'BUSINESS', mandatory: true, profileFieldMatch: 'business.registrationStatus', description: 'Active MSME Udyam' },
-      { id: 'doc_proposal', name: 'Innovation Concept Note', category: 'BUSINESS', mandatory: true, profileFieldMatch: 'business.description', description: 'Problem statement and solution' }
+      { id: 'doc_proposal', name: 'Innovation Concept Note', category: 'BUSINESS', mandatory: true, profileFieldMatch: 'business.description', description: 'Business challenge and innovative solution' }
     ],
     applicationProcess: [
       { step: 1, title: 'Submit Idea in Hackathon', description: 'Apply online on champions.gov.in under MSME Idea Hackathon.' },

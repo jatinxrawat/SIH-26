@@ -57,7 +57,7 @@ export default function ProjectCostCalculator({
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-xs font-bold mb-1">
             <Calculator className="w-3.5 h-3.5 text-emerald-600" />
-            <span>PS26091 Financial Structuring Engine</span>
+            <span>Capital Structuring Engine</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
             Smart Project Cost & Capital Structuring

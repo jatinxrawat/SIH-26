@@ -1,17 +1,17 @@
 /**
  * Configurable Government & Institutional Funding Products
  * 
- * Configured specifically around Problem Statement PS26091 parameters:
+ * Configured enterprise institutional parameters:
  * - Micro Finance Scheme: Up to ₹1.40L project cost, 90% financing capped at ₹1.25L, 6.5% p.a., 3 yrs, 3 mo moratorium
  * - Term Loan Scheme: ₹1.40L to ₹50L project cost, 90% financing capped at ₹45L, 8.0% p.a., 7 yrs, 6 mo moratorium
  * - Ceiling: > ₹50L project cost requires specialized MSME consortium or commercial financing
  */
 
-export const PS26091_FUNDING_PRODUCTS = [
+export const FUNDING_PRODUCTS = [
   {
     id: 'micro-finance',
     name: 'Micro Finance Scheme',
-    code: 'PS26091-MFS',
+    code: 'MFS-TIER-1',
     tagline: 'Collateral-free micro enterprise financing for early-stage rural & urban ventures',
     minProjectCost: 1,
     maxProjectCost: 140000, // ₹1.40 Lakh
@@ -37,7 +37,7 @@ export const PS26091_FUNDING_PRODUCTS = [
   {
     id: 'term-loan',
     name: 'Term Loan Scheme',
-    code: 'PS26091-TLS',
+    code: 'TLS-TIER-2',
     tagline: 'Comprehensive asset creation & expansion term financing for MSME enterprises',
     minProjectCost: 140001, // Above ₹1.40 Lakh
     maxProjectCost: 5000000, // Up to ₹50 Lakh
@@ -61,6 +61,7 @@ export const PS26091_FUNDING_PRODUCTS = [
     governingAgency: 'State Financial Corporations (SFC), Scheduled Commercial Banks & Channelizing Agencies'
   }
 ];
+
 
 export const FUNDING_MODEL_CEILING = 5000000; // ₹50 Lakhs
 

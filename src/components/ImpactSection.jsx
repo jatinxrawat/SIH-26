@@ -80,7 +80,7 @@ export default function ImpactSection() {
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
-                  <span>Smart India Hackathon Initiative</span>
+                  <span>National Enterprise Initiative</span>
                   <span>Digital Public Good</span>
                 </div>
               </div>

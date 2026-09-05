@@ -98,7 +98,7 @@ function synthesizeDeterministicFundingAdvice(question, context) {
   }
 
   // General grounded synthesis
-  return `Under the configured PS26091 financial model for ${business?.name || 'your enterprise'}, your available contribution of ${marginStr} supports an indicative ${costStr} project. Based on this, you qualify for the ${tierName} with potential financing of ${loanStr} at ${interestRate}% p.a. over ${tenureYears} years with a ${moratorium}-month grace period. Estimated ${freqStr} repayment is ${repStr}.`;
+  return `Under the configured financial structuring framework for ${business?.name || 'your enterprise'}, your available contribution of ${marginStr} supports an indicative ${costStr} project. Based on this, you qualify for the ${tierName} with potential financing of ${loanStr} at ${interestRate}% p.a. over ${tenureYears} years with a ${moratorium}-month grace period. Estimated ${freqStr} repayment is ${repStr}.`;
 }
 
 /**
@@ -168,7 +168,7 @@ export async function askFundingAdvisor(question, calculationContext) {
           keyTakeaways: data.structured.whatToDo || [],
           warning: data.structured.warnings || null,
           isLive: Boolean(data.structured.isLive),
-          source: data.structured.provider || data.structured.source || 'Groq Underwriting Intelligence'
+          source: data.structured.provider || data.structured.source || 'UdyamSaathi Financial Intelligence'
         };
       }
     }

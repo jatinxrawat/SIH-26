@@ -264,7 +264,7 @@ Respond ONLY with valid JSON containing:
     if (isFunding) {
       const fin = context?.financials || {};
       const qLower = (question || '').toLowerCase();
-      let answer = `Under the configured PS26091 financial model, your available margin of ₹${(fin.availableMargin || 100000).toLocaleString('en-IN')} supports an indicative project outlay of ₹${(fin.projectCost || 1000000).toLocaleString('en-IN')}. This qualifies you for the ${fin.fundingTier || 'Term Loan Scheme'} with potential financing of up to ₹${(fin.potentialLoan || 900000).toLocaleString('en-IN')} at ${fin.interestRate || 8}% p.a. over ${fin.tenureYears || 7} years.`;
+      let answer = `Under the configured financial structuring framework, your available margin of ₹${(fin.availableMargin || 100000).toLocaleString('en-IN')} supports an indicative project outlay of ₹${(fin.projectCost || 1000000).toLocaleString('en-IN')}. This qualifies you for the ${fin.fundingTier || 'Term Loan Scheme'} with potential financing of up to ₹${(fin.potentialLoan || 900000).toLocaleString('en-IN')} at ${fin.interestRate || 8}% p.a. over ${fin.tenureYears || 7} years.`;
 
       if (qLower.includes('afford')) {
         answer = `Based on your numbers, your available margin of ₹${(fin.availableMargin || 100000).toLocaleString('en-IN')} supports an indicative ₹${(fin.projectCost || 1000000).toLocaleString('en-IN')} project. With an estimated ${fin.repaymentFrequency || 'quarterly'} repayment of ₹${(fin.periodicInstallment || 42291).toLocaleString('en-IN')} (~₹${(fin.monthlyEquivalent || 14097).toLocaleString('en-IN')}/mo) and a projected monthly surplus of ₹${(fin.monthlySurplus || 55000).toLocaleString('en-IN')}, your repayment coverage ratio is approximately ${fin.coverageRatio || 3.9}x (Comfortable).`;
@@ -286,7 +286,7 @@ Respond ONLY with valid JSON containing:
 
       structured = {
         answer,
-        why: `Structured under configured PS26091 ${fin.fundingTier || 'Term Loan'} parameters.`,
+        why: `Structured under configured ${fin.fundingTier || 'Term Loan'} institutional parameters.`,
         whatToDo: [
           `Project Outlay: ₹${(fin.projectCost || 1000000).toLocaleString('en-IN')}`,
           `Potential Loan: ₹${(fin.potentialLoan || 900000).toLocaleString('en-IN')}`,

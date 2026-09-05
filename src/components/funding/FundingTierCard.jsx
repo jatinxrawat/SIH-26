@@ -59,7 +59,7 @@ export default function FundingTierCard({ structure, matchedSchemes = [] }) {
             </span>
             <span className="text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              <span>PS26091 Configured</span>
+              <span>Institutional Framework</span>
             </span>
           </div>
         </div>

@@ -1,5 +1,5 @@
 /**
- * SIH Requirement 1 — Local Market Reach Service
+ * Local Market Reach Service
  * Analyzes:
  * - 0–5 km immediate primary market
  * - 5–10 km extended local market

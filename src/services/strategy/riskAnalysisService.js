@@ -1,5 +1,5 @@
 /**
- * SIH Requirement 4 — Local Business Risks & Threat Identification Service
+ * Local Business Risks & Threat Identification Service
  * Grounded strictly in businessDomainClassifier.
  */
 

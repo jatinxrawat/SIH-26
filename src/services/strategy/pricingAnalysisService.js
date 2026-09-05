@@ -1,5 +1,5 @@
 /**
- * SIH Requirement 6 — Product Market Value & Pricing Strategy Service
+ * Product Market Value & Pricing Strategy Service
  * Analyzes:
  * - Regional purchasing power & local price sensitivity
  * - Indicative market price range based on regional cost of living & domain benchmarks

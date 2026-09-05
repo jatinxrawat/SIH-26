@@ -1013,7 +1013,7 @@ export const STATE_SCHEMES = [
     },
     requiredDocuments: [
       { id: 'doc_aadhaar', name: 'Jan Aadhaar / Aadhaar Card', category: 'IDENTITY', mandatory: true, profileFieldMatch: 'personalInfo.fullName', description: 'Rajasthan Jan Aadhaar card' },
-      { id: 'doc_pitch', name: 'Pitch Presentation', category: 'BUSINESS', mandatory: true, profileFieldMatch: 'business.name', description: 'Innovation and problem statement pitch' }
+      { id: 'doc_pitch', name: 'Pitch Presentation', category: 'BUSINESS', mandatory: true, profileFieldMatch: 'business.name', description: 'Innovation and business challenge pitch' }
     ],
     applicationProcess: [
       { step: 1, title: 'Register on iStart Portal', description: 'Apply on istart.rajasthan.gov.in with QRate evaluation.' },

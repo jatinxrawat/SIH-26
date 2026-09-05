@@ -1,5 +1,5 @@
 /**
- * SIH Requirement 5 — Competitor Landscape & Differentiation Service
+ * Competitor Landscape & Differentiation Service
  * Grounded strictly in businessDomainClassifier.
  * 
  * Strict Principle:

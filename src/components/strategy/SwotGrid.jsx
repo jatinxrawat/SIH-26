@@ -14,7 +14,7 @@ export default function SwotGrid({ swot }) {
         <div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold mb-1">
             <Layers className="w-3.5 h-3.5 text-emerald-600" />
-            <span>SIH Pillar 3 — Contextual Strategic Matrix</span>
+            <span>Strategic Assessment — Contextual Matrix</span>
           </div>
           <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
             Profile & Budget-Grounded SWOT Analysis

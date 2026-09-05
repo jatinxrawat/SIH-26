@@ -21,7 +21,7 @@ const DEMO_USER_STORAGE_KEY = 'udyamsathi_demo_user';
 const DEMO_PROFILE_STORAGE_KEY = 'udyamsathi_demo_profile';
 
 const DEFAULT_DEMO_USER = {
-  uid: 'demo-entrepreneur-sih',
+  uid: 'demo-entrepreneur-01',
   displayName: 'Priya Sharma',
   email: 'priya.sharma@udyamsathi.in',
   photoURL: null,
@@ -29,7 +29,7 @@ const DEFAULT_DEMO_USER = {
 };
 
 const DEFAULT_DEMO_PROFILE = {
-  id: 'demo-entrepreneur-sih',
+  id: 'demo-entrepreneur-01',
   name: 'Priya Sharma',
   email: 'priya.sharma@udyamsathi.in',
   onboardingCompleted: true,
