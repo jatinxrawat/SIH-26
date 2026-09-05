@@ -1,54 +1,75 @@
 import React from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import ProblemSection from './components/ProblemSection';
-import JourneySection from './components/JourneySection';
-import HowItWorks from './components/HowItWorks';
-import FeatureShowcase from './components/FeatureShowcase';
-import AISection from './components/AISection';
-import TrustSection from './components/TrustSection';
-import ImpactSection from './components/ImpactSection';
-import CTASection from './components/CTASection';
-import Footer from './components/Footer';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { EntrepreneurProfileProvider } from './context/EntrepreneurProfileContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+
+import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/LoginPage';
+import SignUpPage from './pages/SignUpPage';
+import OnboardingPage from './pages/OnboardingPage';
+
+// Authenticated Application Shell & Dashboard Pages
+import AppLayout from './components/layout/AppLayout';
+import DashboardPage from './pages/DashboardPage';
+import MyBusinessPage from './pages/MyBusinessPage';
+import SchemesPage from './pages/SchemesPage';
+import FundingPage from './pages/FundingPage';
+import RoadmapPage from './pages/RoadmapPage';
+import ProfessionalsPage from './pages/ProfessionalsPage';
+import AdvisorPage from './pages/AdvisorPage';
+import DocumentsPage from './pages/DocumentsPage';
+import ProfilePage from './pages/ProfilePage';
+import SettingsPage from './pages/SettingsPage';
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#FBFBFA] text-[#0F172A] selection:bg-emerald-100 selection:text-emerald-900 font-sans">
-      {/* Sticky/Floating Navbar */}
-      <Navbar />
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          {/* Public Landing Page */}
+          <Route path="/" element={<LandingPage />} />
 
-      {/* Main Content Sections */}
-      <main className="flex-grow">
-        {/* Hero Section with interactive profile switcher toggle */}
-        <Hero />
+          {/* Authentication Routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
 
-        {/* Section 2: The Problem with Before/After comparison toggle */}
-        <ProblemSection />
+          {/* Protected Onboarding Flow (if already completed, redirects to /dashboard) */}
+          <Route
+            path="/onboarding"
+            element={
+              <ProtectedRoute requireIncompleteOnboarding={true}>
+                <OnboardingPage />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Section 3: The Solution (Connected Milestone Track) */}
-        <JourneySection />
+          {/* Protected Business Compass Application Shell & Routes */}
+          <Route
+            element={
+              <ProtectedRoute requireCompletedOnboarding={true}>
+                <EntrepreneurProfileProvider>
+                  <AppLayout />
+                </EntrepreneurProfileProvider>
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/business" element={<MyBusinessPage />} />
+            <Route path="/schemes" element={<SchemesPage />} />
+            <Route path="/funding" element={<FundingPage />} />
+            <Route path="/roadmap" element={<RoadmapPage />} />
+            <Route path="/professionals" element={<ProfessionalsPage />} />
+            <Route path="/advisor" element={<AdvisorPage />} />
+            <Route path="/documents" element={<DocumentsPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+          </Route>
 
-        {/* Section 4: How UdyamSaathi Works (4 Connected Steps) */}
-        <HowItWorks />
-
-        {/* Section 5: Feature Showcase with Segmented Control Toggle */}
-        <FeatureShowcase />
-
-        {/* Section 6: Context-Aware AI Layer with Scenario Switcher Toggle */}
-        <AISection />
-
-        {/* Section 7: Trust & Responsible AI */}
-        <TrustSection />
-
-        {/* Section 8: National Impact Metrics */}
-        <ImpactSection />
-
-        {/* Section 9: Dark Closing CTA */}
-        <CTASection />
-      </main>
-
-      {/* Footer */}
-      <Footer />
-    </div>
+          {/* Catch-all route */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }

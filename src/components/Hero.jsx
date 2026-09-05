@@ -25,29 +25,29 @@ export default function Hero() {
   const profile = heroProfiles[activeProfileKey];
 
   return (
-    <section className="relative pt-28 sm:pt-36 pb-24 md:pb-32 overflow-hidden bg-grid-subtle">
+    <section className="relative pt-24 sm:pt-36 pb-20 md:pb-32 overflow-hidden bg-grid-subtle w-full max-w-full">
       {/* Dynamic Ambient Background Glows */}
-      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[850px] h-[500px] bg-gradient-to-tr from-emerald-200/40 via-teal-100/30 to-amber-100/30 blur-3xl -z-10 rounded-full pointer-events-none" />
-      <div className="absolute top-1/3 -right-24 w-96 h-96 bg-emerald-300/15 blur-3xl -z-10 rounded-full pointer-events-none" />
-      <div className="absolute top-1/2 -left-24 w-96 h-96 bg-amber-200/20 blur-3xl -z-10 rounded-full pointer-events-none" />
+      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[850px] max-w-full h-[500px] bg-gradient-to-tr from-emerald-200/40 via-teal-100/30 to-amber-100/30 blur-3xl -z-10 rounded-full pointer-events-none" />
+      <div className="absolute top-1/3 -right-24 w-80 sm:w-96 h-80 sm:h-96 bg-emerald-300/15 blur-3xl -z-10 rounded-full pointer-events-none" />
+      <div className="absolute top-1/2 -left-24 w-80 sm:w-96 h-80 sm:h-96 bg-amber-200/20 blur-3xl -z-10 rounded-full pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-10 items-center">
           
           {/* Left Column: Value Proposition */}
-          <div className="lg:col-span-6 flex flex-col items-start text-left">
+          <div className="lg:col-span-6 flex flex-col items-center text-center lg:items-start lg:text-left">
             
             {/* Small badge above headline */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-emerald-200/90 text-emerald-800 text-xs font-bold tracking-wide mb-6 shadow-soft-sm">
-              <span className="flex h-2 w-2 relative">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-emerald-200/90 text-emerald-800 text-[11px] sm:text-xs font-bold tracking-wide mb-6 shadow-soft-sm max-w-full">
+              <span className="flex h-2 w-2 relative shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-              <span className="uppercase tracking-wider">AI-POWERED DIGITAL BUSINESS COMPANION</span>
+              <span className="uppercase tracking-wider truncate">AI DIGITAL BUSINESS COMPANION</span>
             </div>
 
             {/* Main Headline with high-polish gradient */}
-            <h1 className="text-4xl sm:text-5xl lg:text-[3.35rem] font-black tracking-tight text-slate-900 leading-[1.12]">
+            <h1 className="text-3xl sm:text-5xl lg:text-[3.35rem] font-black tracking-tight text-slate-900 leading-[1.15]">
               Turn Your Business Idea Into Your{' '}
               <span className="relative inline-block">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600">
@@ -58,24 +58,24 @@ export default function Hero() {
             </h1>
 
             {/* Supporting Line */}
-            <p className="mt-6 text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl font-normal">
+            <p className="mt-5 sm:mt-6 text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0 font-normal">
               UdyamSaathi helps first-time entrepreneurs discover government support, plan funding, navigate business setup, and understand what to do next — all in one place.
             </p>
 
             {/* CTAs with sleek tactile feel */}
-            <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto">
+            <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3.5 w-full sm:w-auto">
               <a
                 href="#solutions"
-                className="inline-flex items-center justify-center gap-2.5 px-7 py-4 text-base font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] rounded-xl shadow-soft-md shadow-emerald-700/25 transition-all group focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 sm:py-4 text-sm sm:text-base font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] rounded-xl shadow-soft-md shadow-emerald-700/25 transition-all group focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
                 <span>Start Your Journey</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
               <a
                 href="#how-it-works"
-                className="inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-bold text-slate-700 hover:text-slate-950 bg-white/90 hover:bg-white border border-slate-200/90 rounded-xl shadow-soft-sm hover:shadow-soft-md transition-all focus:outline-none focus:ring-2 focus:ring-slate-300"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 text-sm sm:text-base font-bold text-slate-700 hover:text-slate-950 bg-white/90 hover:bg-white border border-slate-200/90 rounded-xl shadow-soft-sm hover:shadow-soft-md transition-all focus:outline-none focus:ring-2 focus:ring-slate-300"
               >
-                <div className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                <div className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
                   <Play className="w-2.5 h-2.5 fill-emerald-700" />
                 </div>
                 <span>See How It Works</span>
@@ -83,19 +83,18 @@ export default function Hero() {
             </div>
 
             {/* Trust statement */}
-            <div className="mt-8 flex items-center gap-3 text-xs text-slate-500 font-medium">
-              <div className="flex -space-x-2">
+            <div className="mt-8 flex items-center justify-center lg:justify-start gap-3 text-xs text-slate-500 font-medium flex-wrap">
+              <div className="flex -space-x-2 shrink-0">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 border-2 border-white text-[9px] font-extrabold text-emerald-900 shadow-soft-sm">UP</span>
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-100 border-2 border-white text-[9px] font-extrabold text-amber-900 shadow-soft-sm">BR</span>
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sky-100 border-2 border-white text-[9px] font-extrabold text-sky-900 shadow-soft-sm">MH</span>
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-100 border-2 border-white text-[9px] font-extrabold text-purple-900 shadow-soft-sm">OR</span>
               </div>
-              <span className="flex items-center gap-1.5 font-semibold text-slate-700">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span className="flex items-center gap-1.5 font-semibold text-slate-700 text-center sm:text-left">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
                 Built for India’s rural & underserved entrepreneurs
               </span>
             </div>
-
           </div>
 
           {/* Right Column: Premium Interactive Product Card */}
@@ -353,19 +352,19 @@ export default function Hero() {
                 )}
 
                 {/* Metric Mini-Cards with visual progress */}
-                <div className="grid grid-cols-3 gap-3 pt-1">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-1">
                   {profile.metrics.map((m, idx) => (
                     <div
                       key={idx}
-                      className="bg-slate-50/90 hover:bg-slate-50 border border-slate-200/80 rounded-2xl p-3 text-left transition-colors"
+                      className="bg-slate-50/90 hover:bg-slate-50 border border-slate-200/80 rounded-xl sm:rounded-2xl p-2 sm:p-3 text-left transition-colors"
                     >
-                      <span className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight block">
+                      <span className="text-base sm:text-2xl font-black text-slate-900 tracking-tight block truncate">
                         {m.value}
                       </span>
-                      <span className="text-[11px] font-bold text-slate-700 block mt-0.5 leading-tight">
+                      <span className="text-[10px] sm:text-[11px] font-bold text-slate-700 block mt-0.5 leading-tight truncate">
                         {m.label}
                       </span>
-                      <span className="text-[10px] text-emerald-700 font-medium block mt-1">
+                      <span className="text-[9px] sm:text-[10px] text-emerald-700 font-medium block mt-1 truncate">
                         {m.change}
                       </span>
                     </div>
@@ -373,15 +372,15 @@ export default function Hero() {
                 </div>
 
                 {/* Active Roadmap Timeline Mini Preview */}
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                    <span className="font-semibold text-slate-800">Next milestone:</span>
-                    <span className="text-slate-500 truncate max-w-[190px]">Udyam & FSSAI Filing</span>
+                <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-slate-600">
+                  <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                    <span className="font-semibold text-slate-800 shrink-0">Next:</span>
+                    <span className="text-slate-500 truncate">Udyam & FSSAI Filing</span>
                   </div>
                   <a
                     href="#solutions"
-                    className="text-emerald-700 hover:text-emerald-800 font-bold text-xs inline-flex items-center gap-0.5"
+                    className="text-emerald-700 hover:text-emerald-800 font-bold text-[11px] sm:text-xs inline-flex items-center gap-0.5 shrink-0"
                   >
                     <span>Inspect Roadmap</span>
                     <ChevronRight className="w-3.5 h-3.5" />

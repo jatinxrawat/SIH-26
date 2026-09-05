@@ -49,14 +49,14 @@ export default function AISection() {
         <div className="max-w-4xl mx-auto">
           
           {/* Cool Scenario Toggle */}
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center p-1 rounded-xl bg-slate-200/80 border border-slate-300/70 shadow-soft-sm text-xs font-semibold">
+          <div className="flex justify-center mb-6 w-full max-w-full px-2">
+            <div className="flex flex-col sm:inline-flex sm:flex-row items-center p-1 rounded-xl bg-slate-200/80 border border-slate-300/70 shadow-soft-sm text-xs font-semibold w-full sm:w-auto">
               <span className="text-[11px] font-bold text-slate-500 px-2.5 uppercase tracking-wider hidden sm:inline">
                 Test Prompt:
               </span>
               <button
                 onClick={() => setActiveScenario('first-step')}
-                className={`px-3 py-1.5 rounded-lg transition-all ${
+                className={`w-full sm:w-auto px-3 py-1.5 rounded-lg transition-all text-center ${
                   activeScenario === 'first-step'
                     ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
                     : 'text-slate-600 hover:text-slate-900'
@@ -66,7 +66,7 @@ export default function AISection() {
               </button>
               <button
                 onClick={() => setActiveScenario('bank-loan')}
-                className={`px-3 py-1.5 rounded-lg transition-all ${
+                className={`w-full sm:w-auto px-3 py-1.5 rounded-lg transition-all text-center ${
                   activeScenario === 'bank-loan'
                     ? 'bg-white text-slate-900 shadow-soft-sm font-bold'
                     : 'text-slate-600 hover:text-slate-900'
