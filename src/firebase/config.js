@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
@@ -12,15 +12,40 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Check if valid Firebase configuration is provided
+export const isFirebaseConfigured = Boolean(
+  firebaseConfig.apiKey &&
+  firebaseConfig.apiKey !== 'undefined' &&
+  firebaseConfig.apiKey.trim() !== '' &&
+  firebaseConfig.projectId &&
+  firebaseConfig.projectId !== 'undefined' &&
+  firebaseConfig.projectId.trim() !== ''
+);
 
-// Initialize Firebase Services
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-googleProvider.setCustomParameters({
-  prompt: 'select_account'
-});
+let app = null;
+let auth = null;
+let googleProvider = null;
+let db = null;
 
-export const db = getFirestore(app);
+if (isFirebaseConfigured) {
+  try {
+    app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    googleProvider = new GoogleAuthProvider();
+    googleProvider.setCustomParameters({
+      prompt: 'select_account'
+    });
+    db = getFirestore(app);
+  } catch (error) {
+    console.error('Failed to initialize Firebase with provided credentials:', error);
+  }
+} else {
+  console.warn(
+    '[UdyamSaathi] Firebase credentials are not configured in environment variables (VITE_FIREBASE_*). ' +
+    'Running in graceful fallback/demo mode. Add these variables in your hosting provider (e.g. Vercel, Netlify) settings.'
+  );
+}
+
+export { app, auth, googleProvider, db };
 export default app;
+

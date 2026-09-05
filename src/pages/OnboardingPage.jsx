@@ -283,15 +283,32 @@ export default function OnboardingPage() {
         }
       };
 
-      // 1. Save structured profile
-      await setDoc(doc(db, 'entrepreneurProfiles', currentUser.uid), structuredProfile);
+      // Save structured profile
+      if (db && !currentUser?.isDemo) {
+        // 1. Save structured profile to Firestore
+        await setDoc(doc(db, 'entrepreneurProfiles', currentUser.uid), structuredProfile);
 
-      // 2. Mark user doc as onboarding completed
-      await updateDoc(doc(db, 'users', currentUser.uid), {
-        name: formData.fullName.trim() || currentUser.displayName,
-        onboardingCompleted: true,
-        updatedAt: serverTimestamp()
-      });
+        // 2. Mark user doc as onboarding completed
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+          name: formData.fullName.trim() || currentUser.displayName,
+          onboardingCompleted: true,
+          updatedAt: serverTimestamp()
+        });
+      } else {
+        // Fallback local storage for preview / demo mode
+        localStorage.setItem('udyamsathi_demo_profile_data', JSON.stringify(structuredProfile));
+        const storedProfile = localStorage.getItem('udyamsathi_demo_profile');
+        if (storedProfile) {
+          try {
+            const p = JSON.parse(storedProfile);
+            p.name = formData.fullName.trim() || p.name;
+            p.onboardingCompleted = true;
+            localStorage.setItem('udyamsathi_demo_profile', JSON.stringify(p));
+          } catch (e) {
+            console.error('Error updating demo profile:', e);
+          }
+        }
+      }
 
       // Clear local draft
       localStorage.removeItem(DRAFT_STORAGE_KEY);
@@ -306,6 +323,7 @@ export default function OnboardingPage() {
     } finally {
       setSaving(false);
     }
+
   };
 
   const stepsMeta = [
