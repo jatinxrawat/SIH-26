@@ -17,7 +17,8 @@ import {
   CheckCircle2,
   CircleDot,
   Lock,
-  Route
+  Route,
+  Check
 } from 'lucide-react';
 import { useRoadmap } from '../context/RoadmapContext';
 import { evaluateStageStatus } from '../engine/dependencyEngine';
@@ -158,113 +159,86 @@ export default function JourneyHeader() {
         </div>
       </div>
 
-      {/* Bottom Row: 8-Stage Interactive Lifecycle Pipeline (Stitch Design System) */}
-      <div className="bg-slate-50/80 p-4 sm:p-5 rounded-3xl border border-slate-200/90 shadow-soft-xs space-y-3.5 relative overflow-hidden">
-        {/* Subtle decorative glow */}
-        <div className="pointer-events-none absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-2xl" />
+      {/* 8-Stage Horizontal Timeline Stepper (Matching Reference Design) */}
+      <div className="pt-2 pb-2">
+        <div className="overflow-x-auto pb-3 pt-2 scrollbar-none">
+          <div className="relative min-w-[780px] px-2 sm:px-6">
+            {/* Background Continuous Horizontal Connecting Line */}
+            <div className="absolute top-[22px] left-[6.25%] right-[6.25%] h-0.5 bg-slate-200 z-0" />
 
-        {/* Stepper Header Bar */}
-        <div className="flex items-center justify-between gap-3 relative z-10">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-emerald-100/80 text-emerald-700 flex items-center justify-center font-bold">
-              <Route className="w-3.5 h-3.5" />
-            </div>
-            <span className="text-xs font-black uppercase tracking-wider text-slate-800">
-              Enterprise Lifecycle Pipeline
-            </span>
-            <span className="hidden sm:inline-block text-[11px] text-slate-400 font-medium">
-              • Click any milestone to inspect or jump
-            </span>
-          </div>
+            {/* Filled Progress Line up to current active stage */}
+            <div
+              className="absolute top-[22px] left-[6.25%] h-0.5 bg-emerald-500 z-0 transition-all duration-500 ease-out"
+              style={{
+                width: `${(Math.max(0, stages.findIndex((s) => s.id === currentStageId)) / (stages.length - 1)) * 87.5}%`
+              }}
+            />
 
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] font-black text-emerald-800 shadow-soft-xs">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
-              </span>
-              <span>Stage {currentStageObj.number} of {stages.length}: {currentStageObj.shortName}</span>
-            </span>
-          </div>
-        </div>
+            {/* Stepper Node Columns */}
+            <div className="relative z-10 flex items-start justify-between">
+              {stages.map((stage) => {
+                const stageTasks = allTasks.filter((t) => t.stage === stage.id);
+                const stageEval = evaluateStageStatus(stage.id, stageTasks, completedTaskIds, currentStageId);
+                const isCurrent = stage.id === currentStageId;
+                const isCompleted = stageEval.status === 'COMPLETED';
 
-        {/* Pipeline Rail with Horizontal Stepper Cards */}
-        <div className="overflow-x-auto pb-1.5 scrollbar-none relative z-10">
-          <div className="flex items-center min-w-[820px] justify-between gap-1 sm:gap-2">
-            {stages.map((stage, idx) => {
-              const stageTasks = allTasks.filter((t) => t.stage === stage.id);
-              const stageEval = evaluateStageStatus(stage.id, stageTasks, completedTaskIds, currentStageId);
-              const isCurrent = stage.id === currentStageId;
-              const isCompleted = stageEval.status === 'COMPLETED';
-
-              return (
-                <React.Fragment key={stage.id}>
+                return (
                   <button
+                    key={stage.id}
                     type="button"
                     onClick={() => handleStageClick(stage.id)}
-                    className={`group flex items-center gap-2.5 px-3 py-2.5 rounded-2xl transition-all duration-200 text-left relative shrink-0 ${
-                      isCurrent
-                        ? 'bg-white text-slate-900 border-2 border-emerald-500 shadow-md shadow-emerald-600/10 ring-4 ring-emerald-500/10 scale-[1.03]'
-                        : isCompleted
-                        ? 'bg-white/90 hover:bg-emerald-50/60 text-slate-800 border border-emerald-200/90 shadow-soft-xs hover:-translate-y-0.5'
-                        : 'bg-white/70 hover:bg-white text-slate-500 border border-slate-200/80 hover:border-slate-300 shadow-soft-xs hover:-translate-y-0.5'
-                    }`}
+                    className="group flex-1 flex flex-col items-center text-center cursor-pointer transition-transform hover:-translate-y-0.5 focus:outline-none select-none"
                   >
-                    {/* Node Badge */}
-                    <span
-                      className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black shrink-0 transition-all ${
-                        isCompleted
-                          ? 'bg-emerald-600 text-white shadow-soft-xs'
-                          : isCurrent
-                          ? 'bg-gradient-to-tr from-emerald-700 to-emerald-500 text-white shadow-md shadow-emerald-600/25 ring-2 ring-emerald-300'
-                          : 'bg-slate-100 text-slate-600 border border-slate-200 group-hover:bg-slate-200/80'
+                    {/* Circle Node Badge */}
+                    <div
+                      className={`w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
+                        isCurrent
+                          ? 'bg-emerald-500 text-white ring-8 ring-emerald-100 shadow-sm'
+                          : isCompleted
+                          ? 'bg-emerald-600 text-white shadow-xs'
+                          : 'bg-white border-2 border-slate-200 text-slate-400 group-hover:border-slate-300 group-hover:text-slate-600 shadow-xs'
                       }`}
                     >
-                      {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : `0${stage.number}`}
+                      {isCompleted ? (
+                        <Check className="w-5 h-5 stroke-[2.5]" />
+                      ) : (
+                        <span>0{stage.number}</span>
+                      )}
+                    </div>
+
+                    {/* Stage Title */}
+                    <span
+                      className={`text-xs sm:text-sm font-bold mt-3 transition-colors ${
+                        isCurrent
+                          ? 'text-emerald-800 font-extrabold'
+                          : isCompleted
+                          ? 'text-slate-800 font-bold'
+                          : 'text-slate-500 group-hover:text-slate-700'
+                      }`}
+                    >
+                      {stage.shortName}
                     </span>
 
-                    {/* Step Label & Micro-status */}
-                    <div className="flex flex-col min-w-0 pr-1">
-                      <span
-                        className={`text-xs whitespace-nowrap ${
-                          isCurrent
-                            ? 'font-black text-slate-900'
-                            : isCompleted
-                            ? 'font-bold text-slate-800'
-                            : 'font-semibold text-slate-600'
-                        }`}
-                      >
-                        {stage.shortName}
-                      </span>
-                      <span className="text-[10px] whitespace-nowrap leading-none mt-0.5">
-                        {isCurrent ? (
-                          <span className="text-emerald-700 font-black flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            In Progress
-                          </span>
-                        ) : isCompleted ? (
-                          <span className="text-emerald-700 font-bold">Complete</span>
-                        ) : (
-                          <span className="text-slate-400 font-medium">
-                            {stageEval.completedCount}/{stageEval.totalCount} Tasks
-                          </span>
-                        )}
-                      </span>
+                    {/* Status Pill / Label */}
+                    <div className="mt-1 h-6 flex items-center justify-center">
+                      {isCurrent ? (
+                        <span className="px-2 py-0.5 rounded-md border border-emerald-300 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-wider">
+                          CURRENT
+                        </span>
+                      ) : isCompleted ? (
+                        <span className="text-[11px] font-semibold text-emerald-600">
+                          Complete
+                        </span>
+                      ) : (
+                        <span className="text-[11px] font-medium text-slate-400">
+                          Pending
+                        </span>
+                      )}
                     </div>
                   </button>
-
-                  {idx < stages.length - 1 && (
-                    <div className="flex items-center justify-center shrink-0 px-0.5">
-                      <ChevronRight
-                        className={`w-4 h-4 transition-colors ${
-                          isCompleted ? 'text-emerald-500 stroke-[2.5]' : 'text-slate-300'
-                        }`}
-                      />
-                    </div>
-                  )}
-                </React.Fragment>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
