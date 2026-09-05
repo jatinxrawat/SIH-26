@@ -1,7 +1,10 @@
-# Git Workflow Rules
+# Git & Deployment Workflow Rules
 
-- **NEVER merge into `main` branch**:
-  All code changes and commits must ONLY be pushed to the `feature` branch (`origin/feature`).
-- **Do not switch to or merge with `main`**:
-  The user will inspect and merge changes into `main` themselves when ready.
-- Always remain on the `feature` branch.
+- **Push ONLY to `feature` branch (`origin/feature`)**:
+  All commits must strictly be pushed only to the `feature` branch.
+- **NEVER push to or merge with `main`**:
+  The user will test, review, and merge to `main` themselves when ready.
+- **NEVER deploy to Vercel**:
+  Do not run `vercel` or `npx vercel --prod` commands automatically. Deployment will be triggered by the user or when they merge to main.
+- **Local Verification Only**:
+  Verify builds with `npm run build` and test locally on `http://localhost:5173`.
