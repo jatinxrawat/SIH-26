@@ -15,12 +15,20 @@ import {
   BookmarkCheck
 } from 'lucide-react';
 import { useEntrepreneurProfile } from '../context/EntrepreneurProfileContext';
+import { useLanguage } from '../context/LanguageContext';
+import {
+  localizeMinistry,
+  localizePillar,
+  localizeFacilityType,
+  localizeCategoryLabel
+} from '../i18n/schemesTranslations';
 import { schemeApi } from '../services/schemeApi';
 import SchemeAdvisorChat from '../components/schemes/SchemeAdvisorChat';
 
 export default function SchemeDetailPage() {
   const { id } = useParams();
   const { profile } = useEntrepreneurProfile();
+  const { t, language } = useLanguage();
 
   const [scheme, setScheme] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -120,16 +128,16 @@ export default function SchemeDetailPage() {
           className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Schemes Matcher</span>
+          <span>{t('schemes.backToMatcher', 'Back to Schemes Matcher')}</span>
         </Link>
 
         <div className="flex items-center gap-3">
           <span className="text-[11px] font-semibold text-slate-400">
-            Last Verified: <strong className="text-slate-700">{lastVerified}</strong>
+            {t('schemes.lastVerified', 'Last Verified:')} <strong className="text-slate-700">{lastVerified}</strong>
           </span>
           <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Verified Source</span>
+            <span>{t('schemes.verifiedSource', 'Verified Source')}</span>
           </span>
         </div>
       </div>
@@ -140,10 +148,10 @@ export default function SchemeDetailPage() {
           <div className="space-y-3 max-w-3xl">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200">
-                {schemeCategoryLabel}
+                {localizeCategoryLabel(scheme, t, language)}
               </span>
               <span className="text-xs text-slate-500 font-semibold">
-                {ministry} {department ? `· ${department}` : ''}
+                {localizeMinistry(ministry, language)} {department ? `· ${localizeMinistry(department, language)}` : ''}
               </span>
             </div>
 
@@ -175,13 +183,13 @@ export default function SchemeDetailPage() {
           <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-5 shrink-0 flex flex-col justify-between text-center lg:w-64 gap-4">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                Profile Compatibility
+                {t('schemes.profileCompatibility', 'Profile Compatibility')}
               </span>
               <span className="text-3xl sm:text-4xl font-black text-slate-900 mt-1 block">
                 {matchScore}
               </span>
               <span className="text-xs font-bold text-emerald-700">
-                Match Score
+                {t('schemes.matchScore', 'Match Score')}
               </span>
               <p className="text-[10px] text-slate-400 mt-1">
                 Reflects alignment with your declared profile.
@@ -201,12 +209,12 @@ export default function SchemeDetailPage() {
                 {isSavedInRoadmap ? (
                   <>
                     <BookmarkCheck className="w-4 h-4" />
-                    <span>Saved in Roadmap</span>
+                    <span>{t('schemes.savedInRoadmap', 'Saved in Roadmap')}</span>
                   </>
                 ) : (
                   <>
                     <Bookmark className="w-4 h-4" />
-                    <span>Add to My Roadmap</span>
+                    <span>{t('schemes.addRoadmap', 'Add to My Roadmap')}</span>
                   </>
                 )}
               </button>
@@ -218,7 +226,7 @@ export default function SchemeDetailPage() {
                   rel="noopener noreferrer"
                   className="w-full py-2 px-3 rounded-xl bg-white border border-slate-200 hover:border-emerald-300 text-slate-700 hover:text-emerald-700 text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition-colors"
                 >
-                  <span>Visit Nodal Portal</span>
+                  <span>{t('schemes.visitNodalPortal', 'Visit Nodal Portal')}</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               )}
@@ -230,7 +238,7 @@ export default function SchemeDetailPage() {
                   rel="noopener noreferrer"
                   className="w-full py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition-colors"
                 >
-                  <span>National myScheme Portal</span>
+                  <span>{t('schemes.nationalPortal', 'National myScheme Portal')}</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               )}
@@ -254,26 +262,26 @@ export default function SchemeDetailPage() {
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h2 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-emerald-600" />
-              <span>Your Match Breakdown</span>
+              <span>{t('schemes.matchBreakdown', 'Your Match Breakdown')}</span>
             </h2>
             <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
               eligibility?.status === 'ELIGIBLE'
                 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                 : 'bg-amber-50 text-amber-700 border border-amber-200'
             }`}>
-              {eligibility?.status === 'ELIGIBLE' ? 'Eligible' : 'Potentially Eligible'}
+              {eligibility?.status === 'ELIGIBLE' ? t('schemes.eligible', 'Eligible') : t('schemes.potentiallyEligible', 'Potentially Eligible')}
             </span>
           </div>
 
           <div className="space-y-3">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-              Why this matches your profile:
+              {t('schemes.whyMatchesProfile', 'Why this matches your profile:')}
             </span>
             <div className="space-y-2">
               {matchedPillars.map((pillar, idx) => (
                 <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-800 font-medium">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>{pillar}</span>
+                  <span>{localizePillar(pillar, t, language)}</span>
                 </div>
               ))}
             </div>
@@ -281,7 +289,7 @@ export default function SchemeDetailPage() {
             {warnings.length > 0 && (
               <div className="pt-3 border-t border-slate-100 space-y-2">
                 <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider block">
-                  Considerations / Criteria to Confirm:
+                  {t('schemes.considerations', 'Considerations / Criteria to Confirm:')}
                 </span>
                 {warnings.map((w, idx) => (
                   <div key={idx} className="flex items-start gap-2.5 text-xs text-amber-800 font-medium">
@@ -295,7 +303,7 @@ export default function SchemeDetailPage() {
             {disqualifications.length > 0 && (
               <div className="pt-3 border-t border-slate-100 space-y-2">
                 <span className="text-[11px] font-bold text-rose-700 uppercase tracking-wider block">
-                  Unmatched Conditions:
+                  {t('schemes.unmatchedConditions', 'Unmatched Conditions:')}
                 </span>
                 {disqualifications.map((d, idx) => (
                   <div key={idx} className="flex items-start gap-2.5 text-xs text-rose-800 font-medium">
@@ -308,7 +316,7 @@ export default function SchemeDetailPage() {
           </div>
 
           <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-[11px] text-slate-500 font-medium">
-            <p className="font-semibold text-slate-700 mb-1">Official Disclaimer:</p>
+            <p className="font-semibold text-slate-700 mb-1">{t('schemes.officialDisclaimer', 'Official Disclaimer:')}</p>
             {eligibility?.disclaimer}
           </div>
         </div>
@@ -318,7 +326,7 @@ export default function SchemeDetailPage() {
           <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
             <h2 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
               <Coins className="w-4 h-4 text-emerald-600" />
-              <span>Potential Benefits & Financing Structure</span>
+              <span>{t('schemes.potentialBenefitsTitle', 'Potential Benefits & Financing Structure')}</span>
             </h2>
             <span className="text-xs font-black text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200">
               ₹{(financialBenefits?.maximumFunding || 0).toLocaleString('en-IN')} Max
@@ -327,9 +335,9 @@ export default function SchemeDetailPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">Funding Type</span>
+              <span className="text-slate-400 block text-[10px] uppercase font-bold">{t('schemes.facilityType', 'Facility Type')}</span>
               <strong className="text-slate-900 text-xs sm:text-sm capitalize mt-0.5 block">
-                {(financialBenefits?.fundingType || '').replace(/_/g, ' ').toLowerCase()}
+                {localizeFacilityType(financialBenefits?.fundingType, t)}
               </strong>
             </div>
 
@@ -377,7 +385,7 @@ export default function SchemeDetailPage() {
           <div>
             <h2 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
               <FileCheck className="w-4 h-4 text-emerald-600" />
-              <span>Document Checklist & Profile Readiness</span>
+              <span>{t('schemes.docChecklistTitle', 'Document Checklist & Profile Readiness')}</span>
             </h2>
             <p className="text-xs text-slate-500">
               Cross-referenced with information collected during your onboarding.
@@ -408,7 +416,7 @@ export default function SchemeDetailPage() {
                     </span>
                     {doc.mandatory && (
                       <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-rose-100 text-rose-700">
-                        Mandatory
+                        {t('schemes.mandatory', 'Mandatory')}
                       </span>
                     )}
                   </div>
@@ -424,12 +432,12 @@ export default function SchemeDetailPage() {
                   {isReady ? (
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-xl border border-emerald-300">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Available</span>
+                      <span>{t('schemes.available', 'Available')}</span>
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-xl border border-amber-300">
                       <Clock className="w-3.5 h-3.5 text-amber-600" />
-                      <span>To Prepare</span>
+                      <span>{t('schemes.toPrepare', 'To Prepare')}</span>
                     </span>
                   )}
                 </div>
@@ -444,7 +452,7 @@ export default function SchemeDetailPage() {
         <div className="border-b border-slate-100 pb-3">
           <h2 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
             <Layers className="w-4 h-4 text-emerald-600" />
-            <span>How to Apply: Verified Application Sequence</span>
+            <span>{t('schemes.howToApplyTitle', 'How to Apply: Verified Application Sequence')}</span>
           </h2>
           <p className="text-xs text-slate-500">
             Standard government workflow according to nodal agency operating guidelines.

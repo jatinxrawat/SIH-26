@@ -12,6 +12,13 @@ import {
   Minus,
   Sparkles
 } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
+import {
+  localizeMinistry,
+  localizePillar,
+  localizeFacilityType,
+  localizeCategoryLabel
+} from '../../i18n/schemesTranslations';
 
 export default function SchemeCard({
   scheme,
@@ -21,6 +28,8 @@ export default function SchemeCard({
   onToggleCompare,
   canCompareMore
 }) {
+  const { language, t } = useLanguage();
+
   const {
     id,
     name,
@@ -44,21 +53,21 @@ export default function SchemeCard({
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">
             <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-            <span>Eligible</span>
+            <span>{t('schemes.eligible', 'Eligible')}</span>
           </span>
         );
       case 'NOT_ELIGIBLE':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-bold">
             <AlertCircle className="w-3 h-3 text-rose-600" />
-            <span>Not Eligible</span>
+            <span>{t('schemes.notEligible', 'Not Eligible')}</span>
           </span>
         );
       default:
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[11px] font-bold">
             <Clock className="w-3 h-3 text-amber-600" />
-            <span>Potentially Eligible</span>
+            <span>{t('schemes.potentiallyEligible', 'Potentially Eligible')}</span>
           </span>
         );
     }
@@ -79,14 +88,14 @@ export default function SchemeCard({
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-600">
-              {schemeCategoryLabel || 'Government Scheme'}
+              {localizeCategoryLabel(scheme, t, language)}
             </span>
             {getStatusBadge()}
           </div>
 
           <div className={`flex items-center gap-1.5 px-3 py-1 rounded-2xl border font-black text-xs ${getScoreColor(matchScore)} shadow-soft-xs`}>
             <Sparkles className="w-3.5 h-3.5" />
-            <span>{matchScore} Match Score</span>
+            <span>{matchScore} {t('schemes.matchScore', 'Match Score')}</span>
           </div>
         </div>
 
@@ -97,23 +106,25 @@ export default function SchemeCard({
           </Link>
         </h3>
         <p className="text-xs text-slate-400 font-medium mt-1">
-          {ministry} {department ? `· ${department}` : ''}
+          {localizeMinistry(ministry, language)} {department ? `· ${localizeMinistry(department, language)}` : ''}
         </p>
 
         {/* Potential Support Banner */}
         <div className="mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-emerald-50/70 to-teal-50/50 border border-emerald-100 flex items-center justify-between">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">
-              Potential Benefit
+              {t('schemes.potentialBenefit', 'Potential Benefit')}
             </span>
             <span className="text-sm font-extrabold text-slate-900">
               {financialBenefits?.subsidyPercentage || `Up to ₹${(financialBenefits?.maximumFunding || 0).toLocaleString('en-IN')}`}
             </span>
           </div>
           <div className="text-right">
-            <span className="text-[10px] font-semibold text-slate-400 block">Facility Type</span>
+            <span className="text-[10px] font-semibold text-slate-400 block">
+              {t('schemes.facilityType', 'Facility Type')}
+            </span>
             <span className="text-xs font-bold text-emerald-800 capitalize">
-              {(financialBenefits?.fundingType || 'Government Support').replace(/_/g, ' ').toLowerCase()}
+              {localizeFacilityType(financialBenefits?.fundingType, t)}
             </span>
           </div>
         </div>
@@ -123,19 +134,19 @@ export default function SchemeCard({
           {matchedPillars.slice(0, 3).map((pillar, idx) => (
             <div key={idx} className="flex items-center gap-2 text-slate-700 font-medium">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span className="truncate">{pillar}</span>
+              <span className="truncate">{localizePillar(pillar, t, language)}</span>
             </div>
           ))}
 
           {missingDocsCount > 0 ? (
             <div className="flex items-center gap-2 text-amber-700 font-medium pt-1">
               <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-              <span>{missingDocsCount} document{missingDocsCount > 1 ? 's' : ''} to be prepared</span>
+              <span>{missingDocsCount} {t('schemes.documentsToPrepare', 'documents to be prepared')}</span>
             </div>
           ) : (
             <div className="flex items-center gap-2 text-emerald-700 font-medium pt-1">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Basic profile documents ready</span>
+              <span>{t('schemes.profileDocsReady', 'Basic profile documents ready')}</span>
             </div>
           )}
         </div>
@@ -158,7 +169,7 @@ export default function SchemeCard({
           title={isCompared ? 'Remove from comparison' : 'Compare with another scheme'}
         >
           {isCompared ? <Minus className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
-          <span>{isCompared ? 'Comparing' : 'Compare'}</span>
+          <span>{isCompared ? t('schemes.comparing', 'Comparing') : t('schemes.compare', 'Compare')}</span>
         </button>
 
         <div className="flex items-center gap-2">
@@ -185,7 +196,7 @@ export default function SchemeCard({
             to={`/schemes/${id}`}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-soft-xs"
           >
-            <span>View Details</span>
+            <span>{t('schemes.viewDetails', 'View Details')}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>

@@ -1544,3 +1544,20 @@ export const TRANSLATIONS = {
     }
   }
 };
+
+import { SCHEMES_TRANSLATIONS } from './schemesTranslations';
+
+// Merge schemes translations into each language
+Object.keys(TRANSLATIONS).forEach((lang) => {
+  TRANSLATIONS[lang].schemes = SCHEMES_TRANSLATIONS[lang] || SCHEMES_TRANSLATIONS.en;
+  
+  // Also provide common entity stage translations
+  if (!TRANSLATIONS[lang].nav.entityStage) {
+    if (lang === 'bn') TRANSLATIONS[lang].nav.entityStage = 'উদ্যোগের পর্যায়';
+    else if (lang === 'hi') TRANSLATIONS[lang].nav.entityStage = 'इकाई का चरण';
+    else if (lang === 'mr') TRANSLATIONS[lang].nav.entityStage = 'उद्योगाचा टप्पा';
+    else if (lang === 'ta') TRANSLATIONS[lang].nav.entityStage = 'நிறுவன நிலை';
+    else if (lang === 'te') TRANSLATIONS[lang].nav.entityStage = 'సంస్థ దశ';
+    else TRANSLATIONS[lang].nav.entityStage = 'Entity Stage';
+  }
+});

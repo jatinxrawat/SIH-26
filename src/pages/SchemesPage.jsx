@@ -22,9 +22,11 @@ import SchemeFilters from '../components/schemes/SchemeFilters';
 import SchemeMatchingLoader from '../components/schemes/SchemeMatchingLoader';
 import SchemeComparisonModal from '../components/schemes/SchemeComparisonModal';
 import SchemeAdvisorChat from '../components/schemes/SchemeAdvisorChat';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function SchemesPage() {
   const { profile } = useEntrepreneurProfile();
+  const { t, language } = useLanguage();
 
   const [loading, setLoading] = useState(true);
   const [recommendations, setRecommendations] = useState([]);
@@ -226,14 +228,14 @@ export default function SchemesPage() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold mb-3">
             <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Government Scheme Matcher</span>
+            <span>{t('schemes.pageBadge', 'Government Scheme Matcher')}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Personalized Government Support Opportunities
+            {t('schemes.pageTitle', 'Personalized Government Support Opportunities')}
           </h1>
           <p className="text-sm text-slate-500 mt-1.5 max-w-2xl leading-relaxed">
-            Deterministic eligibility evaluation across verified Central and State MSME programs.
-            Ranked specifically for <strong className="text-slate-900">{businessName}</strong>.
+            {t('schemes.pageSubtitle', 'Deterministic eligibility evaluation across verified Central and State MSME programs. Ranked specifically for')}{' '}
+            <strong className="text-slate-900">{businessName}</strong>.
           </p>
         </div>
 
@@ -241,12 +243,12 @@ export default function SchemesPage() {
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shrink-0">
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-            <span>Profile Synchronized</span>
+            <span>{t('schemes.profileSync', 'Profile Synchronized')}</span>
           </div>
           {roadmapSchemeIds.length > 0 && (
             <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shrink-0 shadow-soft-xs">
               <BookmarkCheck className="w-4 h-4 text-emerald-400" />
-              <span>{roadmapSchemeIds.length} in Roadmap</span>
+              <span>{roadmapSchemeIds.length} {t('schemes.inRoadmap', 'in Roadmap')}</span>
             </div>
           )}
         </div>
@@ -257,36 +259,36 @@ export default function SchemesPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
             <Filter className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Active Match Parameters From Your Profile</span>
+            <span>{t('schemes.activeParams', 'Active Match Parameters From Your Profile')}</span>
           </span>
           <Link
             to="/profile"
             className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
           >
-            <span>Edit Profile</span>
+            <span>{t('schemes.editProfile', 'Edit Profile')}</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-xs">
           <div className="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-soft-xs">
-            <span className="text-slate-400 block text-[10px] uppercase font-bold">State / Location</span>
+            <span className="text-slate-400 block text-[10px] uppercase font-bold">{t('schemes.stateLocation', 'State / Location')}</span>
             <strong className="text-slate-900 text-xs sm:text-sm truncate block">{state}</strong>
           </div>
           <div className="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-soft-xs">
-            <span className="text-slate-400 block text-[10px] uppercase font-bold">Category</span>
+            <span className="text-slate-400 block text-[10px] uppercase font-bold">{t('schemes.categoryLabel', 'Category')}</span>
             <strong className="text-slate-900 text-xs sm:text-sm truncate block">{category}</strong>
           </div>
           <div className="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-soft-xs">
-            <span className="text-slate-400 block text-[10px] uppercase font-bold">Industry Sector</span>
+            <span className="text-slate-400 block text-[10px] uppercase font-bold">{t('schemes.industrySector', 'Industry Sector')}</span>
             <strong className="text-slate-900 text-xs sm:text-sm truncate block">{sector}</strong>
           </div>
           <div className="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-soft-xs">
-            <span className="text-slate-400 block text-[10px] uppercase font-bold">Business Stage</span>
+            <span className="text-slate-400 block text-[10px] uppercase font-bold">{t('schemes.businessStage', 'Business Stage')}</span>
             <strong className="text-slate-900 text-xs sm:text-sm truncate block">{businessStage}</strong>
           </div>
           <div className="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-soft-xs col-span-2 sm:col-span-1">
-            <span className="text-slate-400 block text-[10px] uppercase font-bold">Capital Need</span>
+            <span className="text-slate-400 block text-[10px] uppercase font-bold">{t('schemes.capitalNeed', 'Capital Need')}</span>
             <strong className="text-slate-900 text-xs sm:text-sm truncate block">{fundingRequired}</strong>
           </div>
         </div>
@@ -301,10 +303,10 @@ export default function SchemesPage() {
             </div>
             <div>
               <h4 className="text-sm font-bold text-amber-900">
-                Improve Your Match Accuracy
+                {t('schemes.improveAccuracy', 'Improve Your Match Accuracy')}
               </h4>
               <p className="text-xs text-amber-800/90 mt-0.5">
-                Your profile is missing details that could unlock state-specific subsidies:{' '}
+                {t('schemes.missingDetails', 'Your profile is missing details that could unlock state-specific subsidies:')}{' '}
                 <strong>{missingProfileFields.join(', ')}</strong>.
               </p>
             </div>
@@ -313,7 +315,7 @@ export default function SchemesPage() {
             to="/profile"
             className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shrink-0 self-start sm:self-center transition-colors"
           >
-            Complete Profile
+            {t('schemes.completeProfile', 'Complete Profile')}
           </Link>
         </div>
       )}
@@ -325,15 +327,15 @@ export default function SchemesPage() {
             <div className="space-y-3 max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
                 {loadingAi ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bot className="w-3.5 h-3.5" />}
-                <span>AI Recommendation Spotlight</span>
+                <span>{t('schemes.aiSpotlight', 'AI Recommendation Spotlight')}</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
-                Why We Recommend {topMatch.name}
+                {t('schemes.whyRecommend', 'Why We Recommend')} {topMatch.name}
               </h2>
               <div className="text-xs sm:text-sm text-emerald-100/80 leading-relaxed font-medium whitespace-pre-line">
                 {whyRecommendAi || (
                   <p>
-                    {topMatch.name} is currently your strongest match ({topMatch.matchScore} Match Score)
+                    {topMatch.name} is currently your strongest match ({topMatch.matchScore} {t('schemes.matchScore', 'Match Score')})
                     because it supports {sector} in {state}, provides capital subsidies up to 35%,
                     and aligns with your {businessStage} stage.
                   </p>
@@ -344,13 +346,13 @@ export default function SchemesPage() {
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/15 shrink-0 flex flex-col justify-between text-center lg:w-72">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300 block">
-                  Top Matched Program
+                  {t('schemes.topMatchedProgram', 'Top Matched Program')}
                 </span>
                 <span className="text-3xl font-black text-white mt-1 block">
                   {topMatch.matchScore}
                 </span>
                 <span className="text-[11px] text-emerald-200 font-semibold">
-                  Match Score
+                  {t('schemes.matchScore', 'Match Score')}
                 </span>
               </div>
               <div className="mt-4 pt-3 border-t border-white/10">
@@ -358,7 +360,7 @@ export default function SchemesPage() {
                   to={`/schemes/${topMatch.id}`}
                   className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs inline-flex items-center justify-center gap-1.5 transition-all shadow-soft-md"
                 >
-                  <span>Inspect Top Match</span>
+                  <span>{t('schemes.inspectTopMatch', 'Inspect Top Match')}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
@@ -381,10 +383,10 @@ export default function SchemesPage() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">
-              Your Ranked Government Schemes
+              {t('schemes.rankedSchemes', 'Your Ranked Government Schemes')}
             </h2>
             <p className="text-xs text-slate-500">
-              Ranked deterministically by alignment with your business profile.
+              {t('schemes.rankedDesc', 'Ranked deterministically by alignment with your business profile.')}
             </p>
           </div>
 
@@ -394,7 +396,7 @@ export default function SchemesPage() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-soft-sm transition-all animate-bounce"
             >
               <Scale className="w-4 h-4" />
-              <span>Compare {comparedSchemeIds.length} Schemes</span>
+              <span>{t('schemes.compare', 'Compare')} {comparedSchemeIds.length} {t('schemes.schemesCount', 'Schemes')}</span>
             </button>
           )}
         </div>
@@ -420,10 +422,10 @@ export default function SchemesPage() {
               <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-soft-sm flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
                 <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
                   <span>
-                    Showing <strong className="text-slate-800 font-bold">{itemsPerPage === 'ALL' ? 1 : (currentPage - 1) * itemsPerPage + 1}</strong> to <strong className="text-slate-800 font-bold">{itemsPerPage === 'ALL' ? filteredSchemes.length : Math.min(currentPage * itemsPerPage, filteredSchemes.length)}</strong> of <strong className="text-emerald-700 font-bold">{filteredSchemes.length}</strong> schemes
+                    {t('schemes.showing', 'Showing')} <strong className="text-slate-800 font-bold">{itemsPerPage === 'ALL' ? 1 : (currentPage - 1) * itemsPerPage + 1}</strong> {t('schemes.to', 'to')} <strong className="text-slate-800 font-bold">{itemsPerPage === 'ALL' ? filteredSchemes.length : Math.min(currentPage * itemsPerPage, filteredSchemes.length)}</strong> {t('schemes.of', 'of')} <strong className="text-emerald-700 font-bold">{filteredSchemes.length}</strong> {t('schemes.schemesCount', 'schemes')}
                   </span>
                   <div className="flex items-center gap-1.5 pl-3 border-l border-slate-200">
-                    <span className="text-[11px] text-slate-400">Per Page:</span>
+                    <span className="text-[11px] text-slate-400">{t('schemes.perPage', 'Per Page:')}</span>
                     {[12, 24, 48].map(size => (
                       <button
                         key={size}
@@ -445,7 +447,7 @@ export default function SchemesPage() {
                           : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                       }`}
                     >
-                      All
+                      {t('schemes.all', 'All')}
                     </button>
                   </div>
                 </div>
