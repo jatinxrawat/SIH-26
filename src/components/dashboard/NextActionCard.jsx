@@ -1,16 +1,48 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Target, ArrowRight, Sparkles, ShieldCheck } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Target, ArrowRight, Sparkles, ShieldCheck, Zap, Landmark, Coins, Bot } from 'lucide-react';
+import { useRoadmap } from '../../roadmap/context/RoadmapContext';
 
 export default function NextActionCard({
-  title = 'Explore government support programs',
-  description = "Based on your business sector and location, we'll identify schemes, subsidies, and credit guarantee programs relevant to your enterprise.",
-  actionLabel = 'Explore Schemes',
-  route = '/schemes',
-  priority = 'High Priority',
+  title,
+  description,
+  actionLabel,
+  route,
+  priority,
   icon: Icon = Target,
-  badge = 'Recommended Next Step'
+  badge
 }) {
+  const navigate = useNavigate();
+  const { nextBestAction, openTaskDrawer, setExpandedStageId } = useRoadmap();
+
+  // Dynamically resolve values if not explicitly overridden
+  const hasDynamicAction = Boolean(nextBestAction);
+  const activeTitle = title || (hasDynamicAction ? nextBestAction.title : 'Explore government support programs');
+  const activeDesc = description || (hasDynamicAction ? nextBestAction.reason : 'Identify schemes, subsidies, and credit guarantee programs relevant to your enterprise.');
+  const activePriority = priority || (hasDynamicAction ? `${nextBestAction.priority || 'High'} Priority` : 'Step 1 Recommendation');
+  const activeBadge = badge || (hasDynamicAction ? (nextBestAction.impact || 'Next Milestone') : 'Roadmap Driver');
+  const activeActionLabel = actionLabel || (hasDynamicAction ? 'Execute Milestone' : 'Explore Schemes');
+
+  const handleActionClick = (e) => {
+    if (route) {
+      navigate(route);
+      return;
+    }
+
+    if (hasDynamicAction && nextBestAction.taskId) {
+      e.preventDefault();
+      if (setExpandedStageId && nextBestAction.stageId) {
+        setExpandedStageId(nextBestAction.stageId);
+      }
+      if (openTaskDrawer) {
+        openTaskDrawer(nextBestAction.taskId);
+      }
+      navigate('/roadmap');
+    } else {
+      navigate('/roadmap');
+    }
+  };
+
   return (
     <div className="bg-gradient-to-br from-emerald-900 via-slate-900 to-slate-950 text-white rounded-3xl p-6 sm:p-8 shadow-soft-lg relative overflow-hidden">
       {/* Decorative Glow */}
@@ -18,14 +50,19 @@ export default function NextActionCard({
 
       <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="max-w-2xl space-y-2.5">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold uppercase tracking-wider">
               <Sparkles className="w-3 h-3 text-emerald-400" />
-              <span>{badge}</span>
+              <span>{activeBadge}</span>
             </span>
             <span className="text-[11px] font-semibold text-emerald-400/80">
-              • {priority}
+              • {activePriority}
             </span>
+            {hasDynamicAction && nextBestAction.estimatedTime && (
+              <span className="text-[11px] font-medium text-slate-400">
+                • Est. time: {nextBestAction.estimatedTime}
+              </span>
+            )}
           </div>
 
           <div className="flex items-start gap-3 pt-1">
@@ -34,24 +71,52 @@ export default function NextActionCard({
             </div>
             <div>
               <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                {title}
+                {activeTitle}
               </h3>
               <p className="text-sm text-emerald-100/80 mt-1.5 leading-relaxed">
-                {description}
+                {activeDesc}
               </p>
             </div>
+          </div>
+
+          {/* Quick Action Pills */}
+          <div className="pt-2 flex flex-wrap items-center gap-2 text-xs">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">
+              Shortcuts:
+            </span>
+            <Link
+              to="/schemes"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-emerald-300 transition-colors font-semibold"
+            >
+              <Landmark className="w-3 h-3" />
+              <span>Government Schemes</span>
+            </Link>
+            <Link
+              to="/funding"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-emerald-300 transition-colors font-semibold"
+            >
+              <Coins className="w-3 h-3" />
+              <span>Loan & DPR Calculator</span>
+            </Link>
+            <Link
+              to="/advisor"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-emerald-300 transition-colors font-semibold"
+            >
+              <Bot className="w-3 h-3" />
+              <span>AI Advisor</span>
+            </Link>
           </div>
         </div>
 
         {/* Action Button */}
         <div className="shrink-0 flex items-center md:self-center">
-          <Link
-            to={route}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-400 hover:bg-emerald-300 active:scale-[0.98] text-slate-950 font-bold text-sm rounded-xl shadow-soft-md transition-all group"
+          <button
+            onClick={handleActionClick}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-400 hover:bg-emerald-300 active:scale-[0.98] text-slate-950 font-bold text-sm rounded-xl shadow-soft-md transition-all group cursor-pointer"
           >
-            <span>{actionLabel}</span>
+            <span>{activeActionLabel}</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          </button>
         </div>
       </div>
     </div>

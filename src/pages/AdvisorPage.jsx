@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Bot,
   Sparkles,
@@ -20,6 +21,8 @@ import { useAuth } from '../context/AuthContext';
 import { sendAdvisorMessage } from '../services/aiAdvisorService';
 
 export default function AdvisorPage() {
+  const routerLocation = useLocation();
+  const initialPromptHandled = useRef(false);
   const { profile } = useEntrepreneurProfile();
   const { activeBusiness, activeBusinessId } = useBusiness();
   const { currentUser, userProfile } = useAuth();
@@ -143,6 +146,17 @@ export default function AdvisorPage() {
       setLoading(false);
     }
   };
+
+  // Handle incoming initial prompt from Dashboard or external navigation
+  useEffect(() => {
+    const prompt = routerLocation.state?.initialPrompt;
+    if (prompt && !initialPromptHandled.current) {
+      initialPromptHandled.current = true;
+      handleSend(prompt);
+      // Clean location state to avoid resending on accidental reload
+      window.history.replaceState({}, document.title);
+    }
+  }, [routerLocation.state]);
 
   const handleResetChat = () => {
     setMessages([initialGreeting]);

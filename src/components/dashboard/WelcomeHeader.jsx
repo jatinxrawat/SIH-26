@@ -1,11 +1,16 @@
 import React from 'react';
-import { Building2, Sparkles, MapPin } from 'lucide-react';
+import { Building2, Sparkles, MapPin, ArrowRight, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useEntrepreneurProfile } from '../../context/EntrepreneurProfileContext';
+import { useBusiness } from '../../context/BusinessContext';
 
 export default function WelcomeHeader() {
   const { currentUser, userProfile } = useAuth();
   const { profile } = useEntrepreneurProfile();
+  const { activeBusiness } = useBusiness();
+
+  const business = activeBusiness || profile?.business || profile || {};
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -14,11 +19,11 @@ export default function WelcomeHeader() {
     return 'Good evening';
   };
 
-  const displayName = profile?.personalInfo?.fullName || userProfile?.name || currentUser?.displayName || 'Entrepreneur';
-  const businessName = profile?.name || profile?.business?.name || 'Your Enterprise';
-  const stage = profile?.stage || profile?.business?.stage || 'PLANNING';
-  const location = profile?.location || (profile?.personalInfo?.district
-    ? `${profile.personalInfo.district}, ${profile.personalInfo.state}`
+  const displayName = business.personalInfo?.fullName || profile?.personalInfo?.fullName || userProfile?.name || currentUser?.displayName || 'Entrepreneur';
+  const businessName = business.name || 'Your Enterprise';
+  const stage = business.stage || 'PLANNING';
+  const location = business.location || (business.personalInfo?.district
+    ? `${business.personalInfo.district}, ${business.personalInfo.state}`
     : 'India');
 
   return (
@@ -32,30 +37,37 @@ export default function WelcomeHeader() {
           {getGreeting()}, {displayName} 👋
         </h1>
         <p className="text-sm text-slate-500 mt-1">
-          Here is the live status of your business parameters, scheme alignments, and next actions.
+          Live command center for enterprise parameters, roadmap progression, and capital linkages.
         </p>
       </div>
 
-      {/* Business & Stage Badge Card */}
-      <div className="flex items-center gap-3 p-3 sm:p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 shrink-0">
-        <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold shadow-soft-sm">
+      {/* Business & Stage Badge Card (Clickable to My Business) */}
+      <Link
+        to="/business"
+        title="Manage in Business Center"
+        className="group flex items-center gap-3 p-3 sm:p-3.5 rounded-2xl bg-slate-50 hover:bg-emerald-50/60 border border-slate-200/80 hover:border-emerald-300 transition-all shrink-0 cursor-pointer shadow-soft-xs"
+      >
+        <div className="w-10 h-10 rounded-xl bg-emerald-600 group-hover:bg-emerald-700 text-white flex items-center justify-center font-bold shadow-soft-sm transition-colors">
           <Building2 className="w-5 h-5" />
         </div>
         <div className="min-w-0 text-left">
           <div className="flex items-center gap-2">
-            <h2 className="text-xs sm:text-sm font-bold text-slate-900 truncate max-w-[160px] sm:max-w-[200px]">
+            <h2 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-emerald-800 truncate max-w-[160px] sm:max-w-[200px] transition-colors">
               {businessName}
             </h2>
             <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 uppercase">
               {stage.replace('_', ' ')}
             </span>
           </div>
-          <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-0.5">
-            <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
-            <span className="truncate">{location}</span>
+          <div className="flex items-center justify-between gap-2 text-[11px] text-slate-500 mt-0.5">
+            <div className="flex items-center gap-1 truncate">
+              <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
+              <span className="truncate">{location}</span>
+            </div>
+            <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />
           </div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 }

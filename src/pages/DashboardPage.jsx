@@ -43,15 +43,8 @@ export default function DashboardPage() {
       {/* 1. Welcome & Business Identity Header */}
       <WelcomeHeader />
 
-      {/* 2. Urgent / High-Value Next Best Action */}
-      <NextActionCard
-        title="Explore government scheme opportunities"
-        description="Your profile matches criteria for capital subsidies and credit support. Inspect aligned schemes to lower your startup risk."
-        actionLabel="Explore Schemes"
-        route="/schemes"
-        priority="Step 1 Recommendation"
-        badge="Roadmap Driver"
-      />
+      {/* 2. Dynamic High-Value Next Best Action */}
+      <NextActionCard />
 
       {/* 3. 7-Stage Visual Business Journey Progress */}
       <BusinessProgressCard />
