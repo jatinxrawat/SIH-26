@@ -6,6 +6,7 @@
  */
 
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   X,
   CheckCircle2,
@@ -26,6 +27,7 @@ import {
   Rocket,
   Info,
   ChevronRight,
+  Zap
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useRoadmap } from '../context/RoadmapContext';
@@ -76,8 +78,8 @@ export default function TaskDetailDrawer() {
   const completedStepsCount = Object.values(completedStepsMap).filter(Boolean).length;
   const stepsProgressPercent = taskSteps.length > 0 ? Math.round((completedStepsCount / taskSteps.length) * 100) : 0;
 
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end animate-in fade-in duration-200">
+  const drawerContent = (
+    <div className="fixed inset-0 z-[100] flex justify-end animate-in fade-in duration-200">
       {/* Dimmed Backdrop */}
       <div
         onClick={closeTaskDrawer}
@@ -85,9 +87,9 @@ export default function TaskDetailDrawer() {
       />
 
       {/* Slide-over Drawer Panel */}
-      <div className="relative w-full md:w-[48%] max-w-[660px] bg-white h-full shadow-[0_20px_60px_rgba(5,150,105,0.18)] flex flex-col z-10 overflow-hidden border-l border-slate-200/80 animate-in slide-in-from-right duration-300">
+      <div className="relative w-full md:w-[50%] lg:w-[46%] max-w-[640px] bg-white h-screen shadow-[0_20px_60px_rgba(5,150,105,0.18)] flex flex-col z-10 overflow-hidden border-l border-slate-200/80 animate-in slide-in-from-right duration-300 top-0">
         {/* Header Section */}
-        <div className="p-6 sm:p-7 border-b border-slate-100 bg-white shrink-0 space-y-4">
+        <div className="px-6 sm:px-7 pt-5 pb-4 border-b border-slate-100 bg-white shrink-0 space-y-3">
           {/* Top Badges */}
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-xs font-bold shadow-soft-xs">
@@ -581,4 +583,6 @@ export default function TaskDetailDrawer() {
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(drawerContent, document.body) : drawerContent;
 }

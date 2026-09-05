@@ -5,6 +5,7 @@
  */
 
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   X,
   Sparkles,
@@ -99,8 +100,8 @@ export default function AIMilestoneModal() {
     setPromptInput('');
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
+  const modalContent = (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
       {/* Backdrop */}
       <div
         onClick={() => setIsAIMilestoneModalOpen(false)}
@@ -128,14 +129,14 @@ export default function AIMilestoneModal() {
           <button
             type="button"
             onClick={() => setIsAIMilestoneModalOpen(false)}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-all"
+            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-400 hover:text-white transition-all cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-5">
+        {/* Scrollable Content */}
+        <div className="p-6 sm:p-7 space-y-6 overflow-y-auto">
           {/* Engine Selector */}
           <div className="flex items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/80 text-xs">
             <div className="flex items-center gap-2">
@@ -293,4 +294,6 @@ export default function AIMilestoneModal() {
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(modalContent, document.body) : modalContent;
 }
