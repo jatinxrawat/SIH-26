@@ -38,10 +38,6 @@ export default function StrategyPage() {
   const { language, t } = useLanguage();
   const { profile, loading: profileLoading } = useEntrepreneurProfile();
 
-<<<<<<< HEAD
-  const [strategy, setStrategy] = useState(null);
-  const [aiSummary, setAiSummary] = useState(null);
-=======
   const LOADING_STEPS = [
     t('strategy.step1', 'Understanding your business profile & industry'),
     t('strategy.step2', 'Analyzing your geographic district & rural/urban cluster'),
@@ -53,15 +49,8 @@ export default function StrategyPage() {
     t('strategy.step8', 'Assembling grounded AI strategic recommendations')
   ];
 
-  const [strategy, setStrategy] = useState(() => {
-    try {
-      const cached = localStorage.getItem(STRATEGY_STORAGE_KEY);
-      return cached ? JSON.parse(cached) : null;
-    } catch {
-      return null;
-    }
-  });
->>>>>>> e91f8da (feat(i18n): comprehensive 23-language localization and automated parity verification)
+  const [strategy, setStrategy] = useState(null);
+  const [aiSummary, setAiSummary] = useState(null);
 
   // Reload strategy when active profile changes
   useEffect(() => {
