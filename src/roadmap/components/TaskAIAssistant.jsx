@@ -36,7 +36,7 @@ const formatEngineName = (name, fallback = 'Saathi Strategic Advisor') => {
 };
 
 export default function TaskAIAssistant({ task, businessContext }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [provider, setProvider] = useState('gemini'); // 'gemini' = Strategy Core, 'grok' = Tactical Core
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
@@ -89,6 +89,7 @@ export default function TaskAIAssistant({ task, businessContext }) {
           activeEntity: biz.entityType,
           financialScale: biz.financialScale
         },
+        preferredLanguage: language,
         prompt: textToSend
       });
 

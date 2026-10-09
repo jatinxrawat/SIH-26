@@ -1,13 +1,6 @@
 /**
  * Grounded AI Financial Advisor Service
- * 
- * Complies with Section 28, 29, 30:
- * The AI does NOT independently calculate or invent financial facts.
- * It receives structured numerical outputs from the deterministic financialCalculationService
- * and explains them clearly in the context of MSME and government scheme underwriting.
- * 
- * Communicates with backend proxy /api/ai.
- * If backend/keys are offline, executes an instant, rich deterministic synthesis engine.
+ * Strictly grounded in deterministic calculations with multilingual capabilities.
  */
 
 import { formatRupees } from './financialCalculationService.js';
@@ -24,10 +17,17 @@ export const FUNDING_SUGGESTED_QUESTIONS = [
   'Is my current project cost realistic?'
 ];
 
+function getActiveLanguage() {
+  if (typeof localStorage !== 'undefined') {
+    return localStorage.getItem('udyam_language') || 'en';
+  }
+  return 'en';
+}
+
 /**
  * Synthesizes a factual, deterministic response grounded exclusively in the calculated numbers.
  */
-function synthesizeDeterministicFundingAdvice(question, context) {
+function synthesizeDeterministicFundingAdvice(question, context, lang = 'en') {
   const q = (question || '').toLowerCase();
   const {
     margin,
@@ -51,6 +51,34 @@ function synthesizeDeterministicFundingAdvice(question, context) {
   const freqStr = repayment?.frequency || 'quarterly';
   const surplusStr = formatRupees(affordability?.monthlySurplus || 0);
 
+  if (lang === 'hi') {
+    if (q.includes('afford') || q.includes('सक्षम') || q.includes('खर्च')) {
+      return `आपकी उपलब्ध पूंजी ${marginStr} के आधार पर, 10% प्रमोटर मार्जिन मॉडल के तहत सांकेतिक परियोजना लागत ${costStr} है। अनुमानित ${freqStr} किस्त ${repStr} (~${formatRupees(repayment?.monthlyEquivalent || 0)}/माह) और अनुमानित मासिक अधिशेष ${surplusStr} के साथ, आपका ऋण पुनर्भुगतान कवरेज अनुपात ${affordability?.coverageRatio || 3.9}x है।`;
+    }
+    if (q.includes('borrow') || q.includes('ऋण') || q.includes('कर्ज')) {
+      return `${costStr} की परियोजना लागत के लिए, 10% मार्जिन / 90% वित्तपोषण मॉडल के तहत आपकी संभावित ऋण क्षमता ${loanStr} है। समझदारी इसी में है कि केवल आवश्यक मशीनरी और 2-3 महीने की कार्यशील पूंजी के लिए ही ऋण लें।`;
+    }
+    if (q.includes('repay') || q.includes('किस्त') || q.includes('चुकाना')) {
+      return `${loanStr} के ऋण पर ${interestRate}% वार्षिक ब्याज दर से ${tenureYears} वर्षों में आपकी अनुमानित ${freqStr} किस्त ${repStr} होगी।`;
+    }
+    return `वित्तीय मॉडल के तहत, आपका ${marginStr} का उपलब्ध योगदान ${costStr} की परियोजना लागत का समर्थन करता है। इसके आधार पर, आप ${tierName} के लिए पात्र हैं, जिसमें ${interestRate}% वार्षिक ब्याज पर ${tenureYears} वर्षों के लिए ${loanStr} तक का संभावित ऋण मिल सकता है।`;
+  }
+
+  if (lang === 'mr') {
+    if (q.includes('afford') || q.includes('परवडेल')) {
+      return `तुमच्या उपलब्ध भांडवल ${marginStr} नुसार, १०% मार्जिन मॉडेलनुसार प्रकल्प खर्च ${costStr} ठरतो. अंदाजे ${freqStr} हप्ता ${repStr} आणि अंदाजित मासिक नफा ${surplusStr} नुसार तुमचे परतफेड प्रमाण उत्तम आहे.`;
+    }
+    return `१०% मार्जिन मॉडेलनुसार ${costStr} च्या प्रकल्पासाठी संभाव्य कर्ज क्षमता ${loanStr} (${interestRate}% वार्षिक दर, ${tenureYears} वर्षे मुदत) आहे. अंदाजे ${freqStr} हप्ता ${repStr} असेल.`;
+  }
+
+  if (lang === 'bn') {
+    if (q.includes('afford') || q.includes('সমর্থ্য')) {
+      return `আপনার উপলব্ধ মার্জিন ${marginStr}-এর ভিত্তিতে ${costStr}-এর প্রকল্পের জন্য আপনার ঋণ পরিশোধ সক্ষমতা অনুপাত সন্তোষজনক। আনুমানিক ${freqStr} কিস্তি ${repStr}।`;
+    }
+    return `${costStr} প্রকল্প ব্যয়ের জন্য ${interestRate}% সুদের হারে ${tenureYears} বছরের জন্য আপনার সম্ভাব্য ব্যাংক ঋণ ${loanStr}।`;
+  }
+
+  // English default
   if (q.includes('afford')) {
     if (affordability?.status === 'NO_DATA') {
       return `To evaluate affordability, we need your estimated monthly revenue and operating expenses. Based on your current structure, your estimated ${freqStr} repayment obligation is approximately ${repStr}. We recommend updating your revenue projections in your profile to view your exact repayment coverage ratio.`;
@@ -104,10 +132,12 @@ function synthesizeDeterministicFundingAdvice(question, context) {
 /**
  * Ask the Grounded AI Financial Advisor
  */
-export async function askFundingAdvisor(question, calculationContext) {
+export async function askFundingAdvisor(question, calculationContext, customLang = null) {
   if (!question || !calculationContext) {
     throw new Error('Question and calculation context are required.');
   }
+
+  const lang = customLang || getActiveLanguage();
 
   const {
     margin,
@@ -123,6 +153,7 @@ export async function askFundingAdvisor(question, calculationContext) {
 
   const payload = {
     provider: 'grok',
+    preferredLanguage: lang,
     task: {
       type: 'FUNDING_ADVISORY',
       title: 'Smart Financial Structuring Advisory',
@@ -132,6 +163,7 @@ export async function askFundingAdvisor(question, calculationContext) {
       businessName: business?.name || 'Venture',
       sector: business?.sector || 'General MSME',
       location: `${personal?.district || ''}, ${personal?.state || 'India'}`,
+      preferredLanguage: lang,
       financials: {
         availableMargin: margin,
         projectCost: effectiveProjectCost,
@@ -155,7 +187,10 @@ export async function askFundingAdvisor(question, calculationContext) {
   try {
     const res = await fetch('/api/ai', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Preferred-Language': lang
+      },
       body: JSON.stringify(payload)
     });
 
@@ -177,15 +212,31 @@ export async function askFundingAdvisor(question, calculationContext) {
   }
 
   // Deterministic fallback execution
-  const fallbackAnswer = synthesizeDeterministicFundingAdvice(question, calculationContext);
-  return {
-    answer: fallbackAnswer,
-    keyTakeaways: [
+  const fallbackAnswer = synthesizeDeterministicFundingAdvice(question, calculationContext, lang);
+
+  let keyTakeaways = [];
+  let warningText = '';
+
+  if (lang === 'hi') {
+    keyTakeaways = [
+      `संरचना: ${formatRupees(margin)} अपना मार्जिन → ${formatRupees(effectiveProjectCost)} परियोजना लागत`,
+      `वित्तपोषण: ${product?.name || 'ऋण योजना'} के तहत ${formatRupees(potentialLoan)} तक`,
+      `किस्त: ${formatRupees(repayment?.installment || 0)} (${repayment?.frequency || 'त्रैमासिक'})`
+    ];
+    warningText = 'गणना सांकेतिक अनुमान है। अंतिम ऋण स्वीकृति बैंक मूल्यांकन पर निर्भर करेगी।';
+  } else {
+    keyTakeaways = [
       `Structure: ${formatRupees(margin)} own margin → ${formatRupees(effectiveProjectCost)} project cost`,
       `Financing: Up to ${formatRupees(potentialLoan)} under ${product?.name || 'Scheme Tier'}`,
       `Repayment: ${formatRupees(repayment?.installment || 0)} (${repayment?.frequency || 'quarterly'}) after ${product?.moratoriumMonths || 6} mo moratorium`
-    ],
-    warning: 'Calculations are indicative estimates based on scheme parameters. Formal loan sanction is subject to institutional appraisal.',
+    ];
+    warningText = 'Calculations are indicative estimates based on scheme parameters. Formal loan sanction is subject to institutional appraisal.';
+  }
+
+  return {
+    answer: fallbackAnswer,
+    keyTakeaways,
+    warning: warningText,
     isLive: false,
     source: 'Business Compass Financial Engine'
   };

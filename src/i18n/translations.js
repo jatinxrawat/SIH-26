@@ -1545,43 +1545,139 @@ export const TRANSLATIONS = {
   }
 };
 
-import { SCHEMES_TRANSLATIONS } from './schemesTranslations';
-import { PLATFORM_TRANSLATIONS } from './platformTranslations';
+import { SCHEMES_TRANSLATIONS } from './schemesTranslations.js';
+import { PLATFORM_TRANSLATIONS } from './platformTranslations.js';
+import { UI_TRANSLATIONS } from './uiTranslations.js';
+import { SCRIPT_FAMILY_FALLBACKS } from './locales/familyFallbacks.js';
 
-// Merge schemes and platform translations into each language with deep fallbacks
+const ENTITY_STAGE_MAP = {
+  en: 'Entity Stage',
+  hi: 'इकाई का चरण',
+  mr: 'उद्योगाचा टप्पा',
+  bn: 'উদ্যোগের পর্যায়',
+  gu: 'એકમનો તબક્કો',
+  ta: 'நிறுவன நிலை',
+  te: 'సంస్థ దశ',
+  kn: 'ಘಟಕದ ಹಂತ',
+  ml: 'സ്ഥാപന ഘട്ടം',
+  pa: 'ਇਕਾਈ ਦਾ ਪੜਾਅ',
+  or: 'ସଂସ୍ଥାର ପର୍ଯ୍ୟାୟ',
+  as: 'প্ৰতিষ্ঠানৰ পৰ্যায়',
+  ur: 'ادارے کا مرحلہ'
+};
+
+const NAV_STRATEGY_MAP = {
+  en: 'Business Strategy',
+  hi: 'व्यापार रणनीति',
+  mr: 'व्यवसाय रणनीती',
+  bn: 'ব্যবসায়িক কৌশল',
+  gu: 'વ્યવસાય વ્યૂહરચના',
+  ta: 'வணிக உத்தி',
+  te: 'వ్యాపార వ్యూహం',
+  kn: 'ವ್ಯವಹಾರ ತಂತ್ರ',
+  ml: 'ബിസിനസ് സ്ട്രാറ്റജി',
+  pa: 'ਕਾਰੋਬਾਰੀ ਰਣਨੀਤੀ',
+  or: 'ବ୍ୟବସାୟ ରଣନୀତି',
+  as: 'ব্যৱসায়িক ৰণনীতি',
+  ur: 'کاروباری حکمت عملی',
+  sa: 'व्यापार रणनीतिः',
+  mai: 'व्यापार रणनीति',
+  bho: 'व्यापार रणनीति',
+  sd: 'کاروبار جي حڪمت عملي',
+  ks: 'کاروبار حکمت عملی',
+  kok: 'वेवसाय रणनीती',
+  doi: 'बपार रणनीति',
+  mni: 'ললোন-ইতিক্কী থৌরাং',
+  sat: 'ᱵᱮᱯᱟᱨ ᱦᱚᱨᱟ',
+  brx: 'फालांगि खान्थि'
+};
+
+// Merge schemes, platform, and UI translations into each language with deep fallbacks
 Object.keys(TRANSLATIONS).forEach((lang) => {
+  const fallbackLang = SCRIPT_FAMILY_FALLBACKS[lang] || 'en';
+
+  const schemesDirect = SCHEMES_TRANSLATIONS[lang];
+  const schemesFallback = SCHEMES_TRANSLATIONS[fallbackLang] || SCHEMES_TRANSLATIONS.en || {};
+
   TRANSLATIONS[lang].schemes = {
     ...(SCHEMES_TRANSLATIONS.en || {}),
-    ...(SCHEMES_TRANSLATIONS[lang] || {})
+    ...(schemesFallback || {}),
+    ...(schemesDirect || {})
   };
-  
-  const platform = PLATFORM_TRANSLATIONS[lang] || PLATFORM_TRANSLATIONS.en;
+
+  // Ensure credit_linked_subsidy is populated
+  if (TRANSLATIONS[lang].schemes?.facilities && !TRANSLATIONS[lang].schemes.facilities.credit_linked_subsidy) {
+    TRANSLATIONS[lang].schemes.facilities.credit_linked_subsidy = SCHEMES_TRANSLATIONS.en?.facilities?.credit_linked_subsidy || 'Credit-Linked Capital Subsidy';
+  }
+
+  const platformDirect = PLATFORM_TRANSLATIONS[lang];
+  const platformFallback = PLATFORM_TRANSLATIONS[fallbackLang] || PLATFORM_TRANSLATIONS.en || {};
   const platformEn = PLATFORM_TRANSLATIONS.en || {};
 
   TRANSLATIONS[lang].dashboard = {
     ...(platformEn.dashboard || {}),
-    ...(platform.dashboard || {})
+    ...(platformFallback.dashboard || {}),
+    ...(platformDirect?.dashboard || {})
   };
   TRANSLATIONS[lang].business = {
     ...(platformEn.business || {}),
-    ...(platform.business || {})
+    ...(platformFallback.business || {}),
+    ...(platformDirect?.business || {})
   };
   TRANSLATIONS[lang].funding = {
     ...(platformEn.funding || {}),
-    ...(platform.funding || {})
+    ...(platformFallback.funding || {}),
+    ...(platformDirect?.funding || {})
   };
   TRANSLATIONS[lang].roadmap = {
     ...(platformEn.roadmap || {}),
-    ...(platform.roadmap || {})
+    ...(platformFallback.roadmap || {}),
+    ...(platformDirect?.roadmap || {})
   };
-  
-  // Also provide common entity stage translations
-  if (!TRANSLATIONS[lang].nav.entityStage) {
-    if (lang === 'bn') TRANSLATIONS[lang].nav.entityStage = 'উদ্যোগের পর্যায়';
-    else if (lang === 'hi') TRANSLATIONS[lang].nav.entityStage = 'इकाई का चरण';
-    else if (lang === 'mr') TRANSLATIONS[lang].nav.entityStage = 'उद्योगाचा टप्पा';
-    else if (lang === 'ta') TRANSLATIONS[lang].nav.entityStage = 'நிறுவன நிலை';
-    else if (lang === 'te') TRANSLATIONS[lang].nav.entityStage = 'సంస్థ దశ';
-    else TRANSLATIONS[lang].nav.entityStage = 'Entity Stage';
-  }
+
+  const uiDirect = UI_TRANSLATIONS[lang];
+  const uiFallback = UI_TRANSLATIONS[fallbackLang] || UI_TRANSLATIONS.en || {};
+  const uiEn = UI_TRANSLATIONS.en || {};
+
+  TRANSLATIONS[lang].landing = {
+    ...(uiEn.landing || {}),
+    ...(uiFallback.landing || {}),
+    ...(uiDirect?.landing || {})
+  };
+  TRANSLATIONS[lang].auth = {
+    ...(uiEn.auth || {}),
+    ...(uiFallback.auth || {}),
+    ...(uiDirect?.auth || {})
+  };
+  TRANSLATIONS[lang].onboarding = {
+    ...(uiEn.onboarding || {}),
+    ...(uiFallback.onboarding || {}),
+    ...(uiDirect?.onboarding || {})
+  };
+  TRANSLATIONS[lang].professionals = {
+    ...(uiEn.professionals || {}),
+    ...(uiFallback.professionals || {}),
+    ...(uiDirect?.professionals || {})
+  };
+  TRANSLATIONS[lang].documents = {
+    ...(uiEn.documents || {}),
+    ...(uiFallback.documents || {}),
+    ...(uiDirect?.documents || {})
+  };
+  TRANSLATIONS[lang].profile = {
+    ...(uiEn.profile || {}),
+    ...(uiFallback.profile || {}),
+    ...(uiDirect?.profile || {})
+  };
+  TRANSLATIONS[lang].strategy = {
+    ...(uiEn.strategy || {}),
+    ...(uiFallback.strategy || {}),
+    ...(uiDirect?.strategy || {})
+  };
+
+  // Nav entityStage & strategy
+  TRANSLATIONS[lang].nav = TRANSLATIONS[lang].nav || {};
+  TRANSLATIONS[lang].nav.entityStage = ENTITY_STAGE_MAP[lang] || ENTITY_STAGE_MAP[fallbackLang] || 'Entity Stage';
+  TRANSLATIONS[lang].nav.strategy = NAV_STRATEGY_MAP[lang] || NAV_STRATEGY_MAP[fallbackLang] || 'Business Strategy';
 });
+

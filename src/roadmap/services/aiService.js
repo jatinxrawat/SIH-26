@@ -37,9 +37,10 @@ class AIService {
   /**
    * Primary entrypoint: asks AI for structured task guidance
    */
-  async askAI({ provider = this.activeProviderId, task, context, question }) {
+  async askAI({ provider = this.activeProviderId, task, context, question, preferredLanguage }) {
     const providerInstance = this.getProvider(provider);
-    return await providerInstance.generateAdvice({ task, context, question });
+    const lang = preferredLanguage || (typeof localStorage !== 'undefined' ? localStorage.getItem('udyam_language') : 'en') || 'en';
+    return await providerInstance.generateAdvice({ task, context, question, preferredLanguage: lang });
   }
 }
 

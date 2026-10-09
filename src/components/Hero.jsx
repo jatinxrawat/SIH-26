@@ -18,10 +18,12 @@ import {
 } from 'lucide-react';
 import Badge from './common/Badge';
 import { heroProfiles } from '../data/mockData';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Hero() {
   const [activeProfileKey, setActiveProfileKey] = useState('sita');
   const [activeCardTab, setActiveCardTab] = useState('action'); // 'action' | 'capital' | 'roadmap'
+  const { t, language } = useLanguage();
   const profile = heroProfiles[activeProfileKey];
 
   return (
@@ -43,23 +45,35 @@ export default function Hero() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-              <span className="uppercase tracking-wider truncate">AI DIGITAL BUSINESS COMPANION</span>
+              <span className="uppercase tracking-wider truncate">
+                {t('landing.heroBadge', 'AI DIGITAL BUSINESS COMPANION')}
+              </span>
             </div>
 
             {/* Main Headline with high-polish gradient */}
             <h1 className="text-3xl sm:text-5xl lg:text-[3.35rem] font-black tracking-tight text-slate-900 leading-[1.15]">
-              Turn Your Business Idea Into Your{' '}
-              <span className="relative inline-block">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600">
-                  Next Step.
-                </span>
-                <span className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500/80 to-teal-400/80 rounded-full" />
-              </span>
+              {language === 'hi' ? (
+                <>व्यापार के विचार से विकास तक — <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600">एक मार्गदर्शित यात्रा</span></>
+              ) : language === 'mr' ? (
+                <>व्यवसाय कल्पनेपासून ते वाढीपर्यंत — <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600">एक मार्गदर्शित प्रवास</span></>
+              ) : language === 'bn' ? (
+                <>ব্যবসার ধারণা থেকে বৃদ্ধি — <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600">একটি নির্দেশিত যাত্রা</span></>
+              ) : (
+                <>
+                  Turn Your Business Idea Into Your{' '}
+                  <span className="relative inline-block">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600">
+                      Next Step.
+                    </span>
+                    <span className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500/80 to-teal-400/80 rounded-full" />
+                  </span>
+                </>
+              )}
             </h1>
 
             {/* Supporting Line */}
             <p className="mt-5 sm:mt-6 text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0 font-normal">
-              UdyamSaathi helps first-time entrepreneurs discover government support, plan funding, navigate business setup, and understand what to do next — all in one place.
+              {t('landing.heroSubtitle', 'UdyamSaathi helps first-time entrepreneurs discover government support, plan funding, navigate business setup, and understand what to do next — all in one place.')}
             </p>
 
             {/* CTAs with sleek tactile feel */}
@@ -68,7 +82,7 @@ export default function Hero() {
                 href="/signup"
                 className="inline-flex items-center justify-center gap-2.5 px-6 sm:px-7 py-3.5 sm:py-4 text-sm sm:text-base font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] rounded-xl shadow-soft-md shadow-emerald-700/25 transition-all group focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
-                <span>Start Your Journey</span>
+                <span>{t('landing.startJourney', 'Start Your Journey')}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
               <a
@@ -78,7 +92,7 @@ export default function Hero() {
                 <div className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
                   <Play className="w-2.5 h-2.5 fill-emerald-700" />
                 </div>
-                <span>See How It Works</span>
+                <span>{t('landing.howItWorks', 'See How It Works')}</span>
               </a>
             </div>
 
@@ -92,12 +106,12 @@ export default function Hero() {
               </div>
               <span className="flex items-center gap-1.5 font-semibold text-slate-700 text-center sm:text-left">
                 <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                Built for India’s rural & underserved entrepreneurs
+                {t('landing.trustSubtitle', 'Built for India’s rural & underserved entrepreneurs')}
               </span>
             </div>
           </div>
 
-          {/* Right Column: Premium Interactive Product Card */}
+          {/* Right Column: Interactive Product Card */}
           <div className="lg:col-span-6 relative">
             
             {/* Top Floating Badge 1: 94% Match */}
@@ -110,14 +124,16 @@ export default function Hero() {
                   <span className="text-emerald-700 font-extrabold">{profile.floatingBadges[0].text}</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 </div>
-                <span className="text-[10px] text-slate-400 block font-medium leading-none mt-0.5">Deterministic Fit</span>
+                <span className="text-[10px] text-slate-400 block font-medium leading-none mt-0.5">
+                  {t('common.verified', 'Deterministic Fit')}
+                </span>
               </div>
             </div>
 
-            {/* Main Window Container with macOS-style glass bar */}
+            {/* Main Window Container */}
             <div className="relative bg-white rounded-3xl border border-slate-200/90 shadow-card-lift overflow-hidden transition-all duration-300">
               
-              {/* Window Header Bar with Cool Integrated Persona Toggle */}
+              {/* Window Header Bar */}
               <div className="bg-slate-900 text-white px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800">
                 
                 {/* Left: Window Dots & App Label */}
@@ -130,13 +146,14 @@ export default function Hero() {
                   <div className="h-4 w-px bg-slate-700" />
                   <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
                     <Activity className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Live Companion Session</span>
+                    <span>{t('dashboard.aiCompanion', 'Live Companion Session')}</span>
                   </span>
                 </div>
 
-                {/* Right: Sleek Sliding Persona Switcher */}
+                {/* Right: Persona Switcher */}
                 <div className="inline-flex items-center p-0.5 rounded-xl bg-slate-800/90 border border-slate-700/80 text-[11px]">
                   <button
+                    type="button"
                     onClick={() => setActiveProfileKey('sita')}
                     className={`px-3 py-1 rounded-lg font-bold transition-all ${
                       activeProfileKey === 'sita'
@@ -147,6 +164,7 @@ export default function Hero() {
                     Sita (UP)
                   </button>
                   <button
+                    type="button"
                     onClick={() => setActiveProfileKey('rajesh')}
                     className={`px-3 py-1 rounded-lg font-bold transition-all ${
                       activeProfileKey === 'rajesh'
@@ -178,25 +196,26 @@ export default function Hero() {
                     <div className="flex items-center gap-2 mt-1.5">
                       <span className="text-xs text-slate-500 font-medium">{profile.sector}</span>
                       <span className="text-slate-300">•</span>
-                      <span className="text-xs font-semibold text-emerald-700">Verified Profile</span>
+                      <span className="text-xs font-semibold text-emerald-700">{t('common.verified', 'Verified Profile')}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="text-right hidden sm:block">
                   <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
-                    Your Business Journey
+                    {t('dashboard.enterpriseJourney', 'Your Business Journey')}
                   </span>
                   <span className="text-xs font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-md inline-block mt-0.5">
-                    Stage 3: Funding & Setup
+                    {t('dashboard.stageOf', 'Stage 3 of 5')}
                   </span>
                 </div>
               </div>
 
-              {/* Cool Sub-View Switcher inside Dashboard */}
+              {/* Sub-View Switcher inside Dashboard */}
               <div className="px-5 sm:px-6 pt-3 flex items-center justify-between border-b border-slate-100 text-xs">
                 <div className="flex gap-4">
                   <button
+                    type="button"
                     onClick={() => setActiveCardTab('action')}
                     className={`pb-2.5 font-bold transition-all border-b-2 ${
                       activeCardTab === 'action'
@@ -204,9 +223,10 @@ export default function Hero() {
                         : 'border-transparent text-slate-500 hover:text-slate-900'
                     }`}
                   >
-                    Next Best Action
+                    {t('roadmap.nextBestAction', 'Next Best Action')}
                   </button>
                   <button
+                    type="button"
                     onClick={() => setActiveCardTab('capital')}
                     className={`pb-2.5 font-bold transition-all border-b-2 ${
                       activeCardTab === 'capital'
@@ -214,9 +234,10 @@ export default function Hero() {
                         : 'border-transparent text-slate-500 hover:text-slate-900'
                     }`}
                   >
-                    Capital Breakdown
+                    {t('dashboard.capitalPlan', 'Capital Breakdown')}
                   </button>
                   <button
+                    type="button"
                     onClick={() => setActiveCardTab('roadmap')}
                     className={`pb-2.5 font-bold transition-all border-b-2 ${
                       activeCardTab === 'roadmap'
@@ -224,11 +245,11 @@ export default function Hero() {
                         : 'border-transparent text-slate-500 hover:text-slate-900'
                     }`}
                   >
-                    Roadmap
+                    {t('nav.roadmap', 'Roadmap')}
                   </button>
                 </div>
                 <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide hidden sm:inline">
-                  Auto-Synced
+                  {t('common.live', 'Auto-Synced')}
                 </span>
               </div>
 
@@ -247,7 +268,7 @@ export default function Hero() {
                         </div>
                         <div>
                           <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800 block">
-                            Your Next Best Action
+                            {t('roadmap.nextBestAction', 'Your Next Best Action')}
                           </span>
                           <h4 className="text-sm sm:text-base font-bold text-slate-900 mt-0.5">
                             {profile.nextBestAction.title}
@@ -266,20 +287,20 @@ export default function Hero() {
                     <div className="mt-4 pt-3.5 border-t border-emerald-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div>
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                          Potential support
+                          {t('funding.potentialLoan', 'Potential support')}
                         </span>
                         <div className="flex items-baseline gap-1.5">
                           <span className="text-2xl font-black text-slate-900 tracking-tight">
                             {profile.nextBestAction.potentialSupport}
                           </span>
-                          <span className="text-xs font-medium text-emerald-700">capital subsidy</span>
+                          <span className="text-xs font-medium text-emerald-700">{t('schemes.subsidy', 'capital subsidy')}</span>
                         </div>
                       </div>
                       <a
-                        href="#features"
+                        href="/schemes"
                         className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs sm:text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-soft-sm transition-all group"
                       >
-                        <span>View Recommendation</span>
+                        <span>{t('schemes.viewDetails', 'View Recommendation')}</span>
                         <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                       </a>
                     </div>
@@ -290,7 +311,7 @@ export default function Hero() {
                 {activeCardTab === 'capital' && (
                   <div className="bg-slate-50/80 border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-3">
                     <div className="flex justify-between items-center text-xs font-bold text-slate-800">
-                      <span>Capital Architecture</span>
+                      <span>{t('funding.projectCostBreakdown', 'Capital Architecture')}</span>
                       <span className="text-emerald-700 font-extrabold">Gap: {profile.metrics[1].value}</span>
                     </div>
 
@@ -302,15 +323,15 @@ export default function Hero() {
 
                     <div className="grid grid-cols-3 gap-2 pt-1 text-[11px]">
                       <div className="bg-white p-2 rounded-xl border border-slate-200/80">
-                        <span className="text-slate-400 block text-[9px] font-bold uppercase">Own Margin</span>
+                        <span className="text-slate-400 block text-[9px] font-bold uppercase">{t('funding.ownMargin', 'Own Margin')}</span>
                         <strong className="text-slate-900">₹75,000</strong>
                       </div>
                       <div className="bg-white p-2 rounded-xl border border-slate-200/80">
-                        <span className="text-slate-400 block text-[9px] font-bold uppercase">Subsidy</span>
+                        <span className="text-slate-400 block text-[9px] font-bold uppercase">{t('schemes.subsidy', 'Subsidy')}</span>
                         <strong className="text-emerald-700">{profile.nextBestAction.potentialSupport}</strong>
                       </div>
                       <div className="bg-white p-2 rounded-xl border border-slate-200/80">
-                        <span className="text-slate-400 block text-[9px] font-bold uppercase">Bank Loan</span>
+                        <span className="text-slate-400 block text-[9px] font-bold uppercase">{t('funding.potentialLoan', 'Bank Loan')}</span>
                         <strong className="text-sky-700">₹1,25,000</strong>
                       </div>
                     </div>
@@ -321,8 +342,8 @@ export default function Hero() {
                 {activeCardTab === 'roadmap' && (
                   <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-2.5">
                     <div className="flex justify-between items-center text-xs font-bold mb-1">
-                      <span className="text-slate-900">Milestone Sequence</span>
-                      <span className="text-emerald-700 font-extrabold">{profile.metrics[2].value} Completed</span>
+                      <span className="text-slate-900">{t('roadmap.journeyTimeline', 'Milestone Sequence')}</span>
+                      <span className="text-emerald-700 font-extrabold">{profile.metrics[2].value} {t('common.completed', 'Completed')}</span>
                     </div>
 
                     <div className="space-y-1.5 text-xs">
@@ -331,27 +352,27 @@ export default function Hero() {
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                           1. Profile Assessment & Trade Intake
                         </span>
-                        <span className="text-[10px] text-emerald-700 font-bold">Done</span>
+                        <span className="text-[10px] text-emerald-700 font-bold">{t('common.completed', 'Done')}</span>
                       </div>
                       <div className="flex items-center justify-between p-2 rounded-lg bg-emerald-50 text-emerald-950 font-semibold">
                         <span className="flex items-center gap-2">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                           2. Scheme Discovery & Eligibility Match
                         </span>
-                        <span className="text-[10px] text-emerald-700 font-bold">Done</span>
+                        <span className="text-[10px] text-emerald-700 font-bold">{t('common.completed', 'Done')}</span>
                       </div>
                       <div className="flex items-center justify-between p-2 rounded-lg bg-blue-50 border border-blue-200 text-blue-950 font-bold">
                         <span className="flex items-center gap-2">
                           <CircleDot className="w-3.5 h-3.5 text-blue-600" />
                           3. Funding Plan & DPR Preparation
                         </span>
-                        <span className="text-[10px] text-blue-700 font-extrabold uppercase">In Progress</span>
+                        <span className="text-[10px] text-blue-700 font-extrabold uppercase">{t('common.inProgress', 'In Progress')}</span>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* Metric Mini-Cards with visual progress */}
+                {/* Metric Mini-Cards */}
                 <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-1">
                   {profile.metrics.map((m, idx) => (
                     <div
@@ -375,14 +396,14 @@ export default function Hero() {
                 <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-slate-600">
                   <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-                    <span className="font-semibold text-slate-800 shrink-0">Next:</span>
+                    <span className="font-semibold text-slate-800 shrink-0">{t('common.next', 'Next')}:</span>
                     <span className="text-slate-500 truncate">Udyam & FSSAI Filing</span>
                   </div>
                   <a
-                    href="#solutions"
+                    href="/roadmap"
                     className="text-emerald-700 hover:text-emerald-800 font-bold text-[11px] sm:text-xs inline-flex items-center gap-0.5 shrink-0"
                   >
-                    <span>Inspect Roadmap</span>
+                    <span>{t('dashboard.viewFullRoadmap', 'Inspect Roadmap')}</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -397,7 +418,9 @@ export default function Hero() {
               </div>
               <div>
                 <span className="text-white text-xs font-bold block">{profile.floatingBadges[1].text}</span>
-                <span className="text-[10px] text-slate-400 block font-normal leading-none mt-0.5">Margin Structured</span>
+                <span className="text-[10px] text-slate-400 block font-normal leading-none mt-0.5">
+                  {t('dashboard.capitalPlan', 'Margin Structured')}
+                </span>
               </div>
             </div>
 

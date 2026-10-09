@@ -70,7 +70,13 @@ export default function SettingsPage() {
     { code: 'bn', native: 'বাংলা', en: 'Bengali' },
     { code: 'gu', native: 'ગુજરાતી', en: 'Gujarati' },
     { code: 'ta', native: 'தமிழ்', en: 'Tamil' },
-    { code: 'te', native: 'తెలుగు', en: 'Telugu' }
+    { code: 'te', native: 'తెలుగు', en: 'Telugu' },
+    { code: 'kn', native: 'ಕನ್ನಡ', en: 'Kannada' },
+    { code: 'ml', native: 'മലയാളം', en: 'Malayalam' },
+    { code: 'pa', native: 'ਪੰਜਾਬੀ', en: 'Punjabi' },
+    { code: 'or', native: 'ଓଡ଼ିଆ', en: 'Odia' },
+    { code: 'as', native: 'অসমীয়া', en: 'Assamese' },
+    { code: 'ur', native: 'اردو', en: 'Urdu' }
   ];
 
   // Filter languages for the drag box

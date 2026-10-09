@@ -12,9 +12,12 @@ import {
   Lock
 } from 'lucide-react';
 import { useRoadmap } from '../roadmap/context/RoadmapContext';
+import { useLanguage } from '../context/LanguageContext';
 import { MASTER_DOCUMENTS } from '../roadmap/data/roadmapDefinitions';
+import { localizeBusinessValue } from '../i18n/platformTranslations';
 
 export default function DocumentsPage() {
+  const { language, t } = useLanguage();
   const { documentStatus, simulateDocumentUpload, toggleDocumentStatus } = useRoadmap();
   const [activeCategory, setActiveCategory] = useState('Personal');
   const fileInputRef = useRef(null);
@@ -23,28 +26,28 @@ export default function DocumentsPage() {
   const categories = [
     {
       id: 'Personal',
-      name: 'Personal Documents',
-      desc: 'Identification and promoter KYC required for statutory registrations and bank appraisals.'
+      name: t('documents.catPersonal', 'Personal Documents'),
+      desc: t('documents.catPersonalDesc', 'Identification and promoter KYC required for statutory registrations and bank appraisals.')
     },
     {
       id: 'Business',
-      name: 'Business Documents',
-      desc: 'Establishment records, premises tenancy leases, and municipal permits.'
+      name: t('documents.catBusiness', 'Business Documents'),
+      desc: t('documents.catBusinessDesc', 'Establishment records, premises tenancy leases, and municipal permits.')
     },
     {
       id: 'Financial',
-      name: 'Financial Documents',
-      desc: 'Banking statements, margin equity proof, and existing loan clearance vouchers.'
+      name: t('documents.catFinancial', 'Financial Documents'),
+      desc: t('documents.catFinancialDesc', 'Banking statements, margin equity proof, and existing loan clearance vouchers.')
     },
     {
       id: 'Government',
-      name: 'Government Documents',
-      desc: 'Statutory registrations: Udyam MSME certificate, GSTIN, and industry licenses.'
+      name: t('documents.catGovernment', 'Government Documents'),
+      desc: t('documents.catGovernmentDesc', 'Statutory registrations: Udyam MSME certificate, GSTIN, and industry licenses.')
     },
     {
       id: 'Funding',
-      name: 'Funding Documents',
-      desc: 'Detailed Project Report (DPR), machine vendor quotes, and scheme subsidy dossiers.'
+      name: t('documents.catFunding', 'Funding Documents'),
+      desc: t('documents.catFundingDesc', 'Detailed Project Report (DPR), machine vendor quotes, and scheme subsidy dossiers.')
     }
   ];
 
@@ -89,25 +92,25 @@ export default function DocumentsPage() {
         <div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold mb-2">
             <FolderCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Document Vault & Checklist</span>
+            <span>{t('documents.badge', 'Document Vault & Checklist')}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Document Center
+            {t('documents.title', 'Document Center')}
           </h1>
           <p className="text-sm text-slate-500 mt-1 max-w-2xl">
-            Central repository for regulatory compliance records, banking appraisal requirements, and scheme subsidy attachments.
+            {t('documents.subtitle', 'Central repository for regulatory compliance records, banking appraisal requirements, and scheme subsidy attachments.')}
           </p>
         </div>
 
         {/* Live Vault Status Pill */}
         <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-left shrink-0">
-          <span className="text-[10px] uppercase font-bold text-slate-400 block">Verified Readiness</span>
+          <span className="text-[10px] uppercase font-bold text-slate-400 block">{t('documents.readiness', 'Verified Readiness')}</span>
           <div className="flex items-center gap-2 mt-0.5">
             <span className="text-lg font-black text-slate-900">
               {verifiedMasterDocs} / {totalMasterDocs}
             </span>
             <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
-              {completionRate}% Complete
+              {completionRate}% {t('documents.complete', 'Complete')}
             </span>
           </div>
         </div>
@@ -181,21 +184,21 @@ export default function DocumentsPage() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-slate-900">{item.name}</span>
+                        <span className="text-xs font-bold text-slate-900">{localizeBusinessValue(item.name, language)}</span>
                         {isVerified ? (
                           <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">
-                            Verified
+                            {t('documents.verified', 'Verified')}
                           </span>
                         ) : (
                           <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
-                            Required
+                            {t('documents.required', 'Required')}
                           </span>
                         )}
                       </div>
                       <span className="text-[11px] text-slate-500 mt-0.5 block">
                         {isVerified
-                          ? 'Uploaded & verified in local encrypted vault'
-                          : `Required for ${item.requiredFor?.join(', ') || 'Statutory Compliance'}`}
+                          ? t('documents.uploadedVerifiedMsg', 'Uploaded & verified in local encrypted vault')
+                          : `${t('documents.requiredFor', 'Required for')} ${item.requiredFor?.map(rf => localizeBusinessValue(rf, language)).join(', ') || localizeBusinessValue('Statutory Compliance', language)}`}
                       </span>
                     </div>
                   </div>
@@ -209,7 +212,7 @@ export default function DocumentsPage() {
                           : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200'
                       }`}
                     >
-                      {isVerified ? 'Mark Pending' : 'Mark Ready'}
+                      {isVerified ? t('documents.markPending', 'Mark Pending') : t('documents.markReady', 'Mark Ready')}
                     </button>
 
                     <button
@@ -217,7 +220,7 @@ export default function DocumentsPage() {
                       className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-soft-xs cursor-pointer"
                     >
                       <Upload className="w-3.5 h-3.5" />
-                      <span>{isVerified ? 'Replace' : 'Upload'}</span>
+                      <span>{isVerified ? t('documents.replace', 'Replace') : t('documents.upload', 'Upload')}</span>
                     </button>
                   </div>
                 </div>
@@ -227,7 +230,7 @@ export default function DocumentsPage() {
 
           <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-500 flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>Encrypted at rest. Documents securely tied to your active enterprise ID.</span>
+            <span>{t('documents.encryptionNotice', 'Encrypted at rest. Documents securely tied to your active enterprise ID.')}</span>
           </div>
         </div>
       </div>

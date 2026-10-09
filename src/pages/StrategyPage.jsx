@@ -23,6 +23,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { useEntrepreneurProfile } from '../context/EntrepreneurProfileContext';
+import { useLanguage } from '../context/LanguageContext';
 import { generateBusinessStrategy } from '../services/strategy/strategyEngine';
 import { generateGroundedAiSummary } from '../services/strategy/strategyAdvisorService';
 import MarketAreaMap from '../components/strategy/MarketAreaMap';
@@ -33,22 +34,34 @@ import { STRATEGY_EXPERT } from '../data/expertConsultants';
 
 const getStrategyStorageKey = (bizId) => `udyamsathi_business_strategy_cache_${bizId || 'default'}`;
 
-const LOADING_STEPS = [
-  'Understanding your business profile & industry',
-  'Analyzing your geographic district & rural/urban cluster',
-  'Estimating 5–10 km market population & customer reach',
-  'Studying local competition density & positioning gaps',
-  'Identifying unserved hyper-local opportunities',
-  'Evaluating supply-chain bottlenecks & seasonal risks',
-  'Building unit economics & break-even financial outlook',
-  'Assembling grounded AI strategic recommendations'
-];
-
 export default function StrategyPage() {
+  const { language, t } = useLanguage();
   const { profile, loading: profileLoading } = useEntrepreneurProfile();
 
+<<<<<<< HEAD
   const [strategy, setStrategy] = useState(null);
   const [aiSummary, setAiSummary] = useState(null);
+=======
+  const LOADING_STEPS = [
+    t('strategy.step1', 'Understanding your business profile & industry'),
+    t('strategy.step2', 'Analyzing your geographic district & rural/urban cluster'),
+    t('strategy.step3', 'Estimating 5–10 km market population & customer reach'),
+    t('strategy.step4', 'Studying local competition density & positioning gaps'),
+    t('strategy.step5', 'Identifying unserved hyper-local opportunities'),
+    t('strategy.step6', 'Evaluating supply-chain bottlenecks & seasonal risks'),
+    t('strategy.step7', 'Building unit economics & break-even financial outlook'),
+    t('strategy.step8', 'Assembling grounded AI strategic recommendations')
+  ];
+
+  const [strategy, setStrategy] = useState(() => {
+    try {
+      const cached = localStorage.getItem(STRATEGY_STORAGE_KEY);
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  });
+>>>>>>> e91f8da (feat(i18n): comprehensive 23-language localization and automated parity verification)
 
   // Reload strategy when active profile changes
   useEffect(() => {
@@ -120,8 +133,8 @@ export default function StrategyPage() {
       // Deterministic analytical run
       const generated = await generateBusinessStrategy(profile, cleanOverrides);
 
-      // AI plain-language summary run
-      const aiResult = await generateGroundedAiSummary(generated);
+      // AI plain-language summary run in user's selected language
+      const aiResult = await generateGroundedAiSummary(generated, language);
 
       generated.aiSummary = aiResult;
 
@@ -172,13 +185,13 @@ export default function StrategyPage() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold mb-2">
             <Compass className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Hyper-Local Feasibility & Strategic Intelligence</span>
+            <span>{t('strategy.badge', 'SIH26091 — Hyper-Local Feasibility & Strategic Advisory')}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            Business Strategy
+            {t('nav.strategy', 'Business Strategy')}
           </h1>
           <p className="text-sm text-slate-500 mt-1 max-w-2xl">
-            Understand your local market, identify unserved opportunities, evaluate supply-chain risks, and plan your business with grounded regional intelligence.
+            {t('strategy.headerDesc', 'Understand your local market, identify unserved opportunities, evaluate supply-chain risks, and plan your business with grounded regional intelligence.')}
           </p>
         </div>
 
@@ -192,7 +205,7 @@ export default function StrategyPage() {
                 title="Print or Export DPR"
               >
                 <Printer className="w-4 h-4" />
-                <span>Export Report</span>
+                <span>{t('strategy.exportReport', 'Export Report')}</span>
               </button>
 
               <button
@@ -201,7 +214,7 @@ export default function StrategyPage() {
                 title="Share link"
               >
                 <Share2 className="w-4 h-4" />
-                <span>{copiedNotification ? 'Link Copied!' : 'Share'}</span>
+                <span>{copiedNotification ? t('strategy.linkCopied', 'Link Copied!') : t('strategy.share', 'Share')}</span>
               </button>
             </>
           )}
@@ -212,7 +225,7 @@ export default function StrategyPage() {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-md shadow-emerald-600/20 disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
-            <span>{strategy ? 'Refresh Strategy' : 'Generate Strategy'}</span>
+            <span>{strategy ? t('strategy.refreshStrategy', 'Refresh Strategy') : t('strategy.generateStrategy', 'Generate Strategy')}</span>
           </button>
         </div>
       </div>
@@ -225,10 +238,10 @@ export default function StrategyPage() {
               <Compass className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-black text-slate-900">
-              BUILDING YOUR HYPER-LOCAL STRATEGY
+              {t('strategy.buildingTitle', 'BUILDING YOUR HYPER-LOCAL STRATEGY')}
             </h3>
             <p className="text-xs text-slate-500 mt-1">
-              Analyzing your location, competitor density, and unit economics without hallucinated figures...
+              {t('strategy.buildingDesc', 'Analyzing your location, competitor density, and unit economics without hallucinated figures...')}
             </p>
           </div>
 
@@ -274,30 +287,30 @@ export default function StrategyPage() {
 
           <div className="space-y-2">
             <h2 className="text-xl sm:text-2xl font-black text-slate-900">
-              Generate Hyper-Local Feasibility Report
+              {t('strategy.emptyHeading', 'Generate Hyper-Local Feasibility Report')}
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Business Compass uses your registered enterprise profile in <strong>{locationText}</strong> to analyze 5–10 km market reach, estimate local competitor clusters, calculate unit break-even points, and structure actionable next steps.
+              {t('strategy.emptyDesc', 'Business Compass uses your registered enterprise profile in {location} to analyze 5–10 km market reach, estimate local competitor clusters, calculate unit break-even points, and structure actionable next steps.').replace('{location}', locationText)}
             </p>
           </div>
 
           {/* Quick Profile Summary Badge Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">Business</span>
+              <span className="text-[10px] text-slate-400 uppercase font-bold block">{t('strategy.business', 'Business')}</span>
               <strong className="text-xs text-slate-900 truncate block">{businessName}</strong>
             </div>
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">District</span>
-              <strong className="text-xs text-slate-900 truncate block">{profile?.personalInfo?.district || 'Not set'}</strong>
+              <span className="text-[10px] text-slate-400 uppercase font-bold block">{t('strategy.district', 'District')}</span>
+              <strong className="text-xs text-slate-900 truncate block">{profile?.personalInfo?.district || t('strategy.notSet', 'Not set')}</strong>
             </div>
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">Available Capital</span>
-              <strong className="text-xs text-slate-900 truncate block">{profile?.financialProfile?.availableCapital || 'Not set'}</strong>
+              <span className="text-[10px] text-slate-400 uppercase font-bold block">{t('strategy.availableCapital', 'Available Capital')}</span>
+              <strong className="text-xs text-slate-900 truncate block">{profile?.financialProfile?.availableCapital || t('strategy.notSet', 'Not set')}</strong>
             </div>
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">Project Cost</span>
-              <strong className="text-xs text-slate-900 truncate block">{profile?.financialProfile?.estimatedProjectCost || 'Not set'}</strong>
+              <span className="text-[10px] text-slate-400 uppercase font-bold block">{t('strategy.projectCost', 'Project Cost')}</span>
+              <strong className="text-xs text-slate-900 truncate block">{profile?.financialProfile?.estimatedProjectCost || t('strategy.notSet', 'Not set')}</strong>
             </div>
           </div>
 
@@ -306,7 +319,7 @@ export default function StrategyPage() {
             className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-lg shadow-emerald-600/30 transition-all hover:scale-[1.02]"
           >
             <Sparkles className="w-4 h-4" />
-            <span>Generate Business Strategy Now</span>
+            <span>{t('strategy.generateNow', 'Generate Business Strategy Now')}</span>
           </button>
         </div>
       )}

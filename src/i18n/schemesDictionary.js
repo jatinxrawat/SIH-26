@@ -1,3 +1,4 @@
+import { REGIONAL_MINISTRIES, REGIONAL_SCHEME_NAMES } from "./locales/dictionaryAdditions.js";
 /**
  * Comprehensive Master Dictionary for Government Schemes, Benefits & Ministries
  * Complete deterministic 100% coverage for 135+ verified schemes in Hindi and Bengali.
@@ -1019,3 +1020,18 @@ export const MINISTRY_MAP = {
     "Apex Academic / Incubation": "শীর্ষ একাডেমিক / ইনকিউবেশন প্রতিষ্ঠান"
   }
 };
+
+// Merge multi-lingual regional schemes and ministries
+Object.keys(REGIONAL_SCHEME_NAMES).forEach((lang) => {
+  SCHEME_NAMES_MAP[lang] = {
+    ...(SCHEME_NAMES_MAP[lang] || {}),
+    ...REGIONAL_SCHEME_NAMES[lang]
+  };
+});
+
+Object.keys(REGIONAL_MINISTRIES).forEach((lang) => {
+  MINISTRY_MAP[lang] = {
+    ...(MINISTRY_MAP[lang] || {}),
+    ...REGIONAL_MINISTRIES[lang]
+  };
+});

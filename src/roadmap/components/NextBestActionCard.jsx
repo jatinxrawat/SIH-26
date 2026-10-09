@@ -61,6 +61,7 @@ export default function NextBestActionCard() {
           sector: profile.industry,
           location: profile.location
         },
+        preferredLanguage: language,
         question: `Give me a rapid 3-step execution plan and compliance checklist for "${nextBestAction.title}".`
       });
 

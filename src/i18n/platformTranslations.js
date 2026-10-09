@@ -3,7 +3,7 @@
  * Supporting 22 Official Scheduled Indian Languages + English
  */
 
-import { SCHEME_NAMES_MAP, SCHEME_BENEFITS_MAP } from './schemesDictionary';
+import { SCHEME_NAMES_MAP, SCHEME_BENEFITS_MAP } from './schemesDictionary.js';
 
 export const PLATFORM_TRANSLATIONS = {
   en: {

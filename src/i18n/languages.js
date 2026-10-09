@@ -188,3 +188,29 @@ export const OFFICIAL_LANGUAGES = [
     flag: '🇮🇳'
   }
 ];
+
+export const LOCALE_MAP = {
+  en: 'en-IN',
+  hi: 'hi-IN',
+  mr: 'mr-IN',
+  bn: 'bn-IN',
+  gu: 'gu-IN',
+  ta: 'ta-IN',
+  te: 'te-IN',
+  kn: 'kn-IN',
+  ml: 'ml-IN',
+  pa: 'pa-IN',
+  or: 'or-IN',
+  as: 'as-IN',
+  ur: 'ur-IN',
+  sa: 'sa-IN',
+  mai: 'mai-IN',
+  ne: 'ne-IN',
+  kok: 'kok-IN',
+  sd: 'sd-IN',
+  ks: 'ks-IN',
+  doi: 'doi-IN',
+  mni: 'mni-IN',
+  brx: 'brx-IN',
+  sat: 'sat-IN'
+};

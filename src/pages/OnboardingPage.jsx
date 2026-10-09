@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useBusiness, normalizeBusinessRecord } from '../context/BusinessContext';
+import { useLanguage } from '../context/LanguageContext';
 import { doc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import Logo from '../components/common/Logo';
@@ -125,6 +126,7 @@ const INITIAL_FORM = {
 };
 
 export default function OnboardingPage() {
+  const { language, t } = useLanguage();
   const { currentUser, userProfile, refreshProfile } = useAuth();
   const { syncUserProfileFromOnboarding } = useBusiness();
   const navigate = useNavigate();
@@ -416,12 +418,12 @@ export default function OnboardingPage() {
   };
 
   const stepsMeta = [
-    { num: 1, title: 'About You', icon: User },
-    { num: 2, title: 'Eligibility', icon: MapPin },
-    { num: 3, title: 'Business', icon: Building2 },
-    { num: 4, title: 'Finances', icon: IndianRupee },
-    { num: 5, title: 'Goals & Needs', icon: Target },
-    { num: 6, title: 'Review & Save', icon: CheckCircle }
+    { num: 1, title: t('onboarding.step1', 'About You'), icon: User },
+    { num: 2, title: t('onboarding.step2', 'Eligibility'), icon: MapPin },
+    { num: 3, title: t('onboarding.step3', 'Business'), icon: Building2 },
+    { num: 4, title: t('onboarding.step4', 'Finances'), icon: IndianRupee },
+    { num: 5, title: t('onboarding.step5', 'Goals & Needs'), icon: Target },
+    { num: 6, title: t('onboarding.step6', 'Review & Save'), icon: CheckCircle }
   ];
 
   return (
@@ -432,11 +434,11 @@ export default function OnboardingPage() {
           <div className="flex items-center gap-2 sm:gap-3">
             <Logo variant="dark" size="sm" showTagline={false} />
             <span className="hidden sm:inline-block px-2.5 py-0.5 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
-              Entrepreneur Onboarding
+              {t('onboarding.topBadge', 'Entrepreneur Onboarding')}
             </span>
           </div>
           <div className="text-xs text-slate-500 font-medium">
-            Step <span className="font-bold text-slate-900">{currentStep}</span> of 6
+            {t('onboarding.stepLabel', 'Step')} <span className="font-bold text-slate-900">{currentStep}</span> {t('onboarding.ofLabel', 'of')} 6
           </div>
         </div>
       </header>
@@ -1477,10 +1479,10 @@ export default function OnboardingPage() {
                 type="button"
                 onClick={handleBack}
                 disabled={saving}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50 cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>Back</span>
+                <span>{t('common.back', 'Back')}</span>
               </button>
             ) : <div />}
 
@@ -1488,9 +1490,9 @@ export default function OnboardingPage() {
               <button
                 type="button"
                 onClick={handleNext}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-sm font-semibold text-white shadow-soft-sm hover:shadow-soft-md transition-all focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-sm font-semibold text-white shadow-soft-sm hover:shadow-soft-md transition-all focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 cursor-pointer"
               >
-                <span>Continue</span>
+                <span>{t('common.continue', 'Continue')}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             ) : (
@@ -1498,17 +1500,17 @@ export default function OnboardingPage() {
                 type="button"
                 onClick={handleSubmitProfile}
                 disabled={saving}
-                className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-sm font-bold text-white shadow-soft-md hover:shadow-soft-lg transition-all focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-60"
+                className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-sm font-bold text-white shadow-soft-md hover:shadow-soft-lg transition-all focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-60 cursor-pointer"
               >
                 {saving ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Saving Profile to Firestore...</span>
+                    <span>{t('onboarding.savingProfile', 'Saving Profile to Firestore...')}</span>
                   </>
                 ) : (
                   <>
                     <CheckCircle className="w-4 h-4" />
-                    <span>Confirm & Complete Profile</span>
+                    <span>{t('onboarding.confirmComplete', 'Confirm & Complete Profile')}</span>
                   </>
                 )}
               </button>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Lock, Mail, User, ArrowRight, AlertCircle, CheckCircle2, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import Logo from '../components/common/Logo';
 
 export default function SignUpPage() {
@@ -15,6 +16,7 @@ export default function SignUpPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const { signupWithEmail, loginWithGoogle, loginAsDemoUser, isFirebaseConfigured } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleDemoLogin = async (completed = false) => {
@@ -50,17 +52,17 @@ export default function SignUpPage() {
     setError('');
 
     if (!fullName.trim()) {
-      setError('Please provide your full name.');
+      setError(t('auth.fullName', 'Please provide your full name.'));
       return;
     }
 
     if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
-      setError('Please enter a valid email address.');
+      setError(t('auth.email', 'Please enter a valid email address.'));
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
+      setError(t('auth.password', 'Password must be at least 6 characters long.'));
       return;
     }
 
@@ -72,14 +74,13 @@ export default function SignUpPage() {
     try {
       setSubmitting(true);
       await signupWithEmail(fullName.trim(), email.trim(), password);
-      // New user always starts onboarding
       navigate('/onboarding', { replace: true });
     } catch (err) {
       console.error('Sign up error:', err);
       if (err.code === 'auth/email-already-in-use') {
         setError('An account with this email already exists. Please log in instead.');
       } else if (err.code === 'auth/weak-password') {
-        setError('Password is too weak. Please use at least 6 characters with mixed characters.');
+        setError('Password is too weak. Please use at least 6 characters.');
       } else {
         setError(err.message || 'Failed to create an account. Please try again.');
       }
@@ -103,7 +104,7 @@ export default function SignUpPage() {
       if (err.code === 'auth/popup-closed-by-user') {
         setError('Google sign in popup was closed.');
       } else if (err.code === 'auth/unauthorized-domain') {
-        setError('This domain is not authorized in Firebase Console. Please add it in Authorized Domains.');
+        setError('This domain is not authorized in Firebase Console.');
       } else {
         setError(err.message || 'Failed to authenticate with Google.');
       }
@@ -121,10 +122,10 @@ export default function SignUpPage() {
           <Logo variant="dark" size="lg" />
         </Link>
         <h2 className="mt-6 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-          Create your account
+          {t('auth.signupTitle', 'Create your account')}
         </h2>
         <p className="mt-2 text-sm text-slate-600">
-          Begin your guided entrepreneurial journey with personalized schemes & roadmap.
+          {t('auth.signupSubtitle', 'Begin your guided entrepreneurial journey with personalized schemes & roadmap.')}
         </p>
       </div>
 
@@ -138,7 +139,7 @@ export default function SignUpPage() {
                 <span>Hosting Notice: Firebase Variables Missing</span>
               </div>
               <p>
-                The deployed site is missing <code className="bg-amber-100 px-1 py-0.5 rounded font-mono">VITE_FIREBASE_*</code> environment variables in your deployment dashboard.
+                The deployed site is missing <code className="bg-amber-100 px-1 py-0.5 rounded font-mono">VITE_FIREBASE_*</code> environment variables.
               </p>
               <button
                 type="button"
@@ -201,7 +202,7 @@ export default function SignUpPage() {
                 />
               </svg>
             )}
-            <span>Sign up with Google</span>
+            <span>{t('auth.orGoogle', 'Sign up with Google')}</span>
           </button>
 
           <div className="relative my-6">
@@ -209,14 +210,16 @@ export default function SignUpPage() {
               <div className="w-full border-t border-slate-200" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-3 text-slate-500 font-medium">Or register with email</span>
+              <span className="bg-white px-3 text-slate-500 font-medium">
+                {t('auth.orContinueWith', 'Or register with email')}
+              </span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-                Full Name
+                {t('auth.fullName', 'Full Name')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -226,7 +229,7 @@ export default function SignUpPage() {
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="e.g. Priya Sharma"
+                  placeholder={t('auth.fullNamePlaceholder', 'e.g. Priya Sharma')}
                   required
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-50/50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
                 />
@@ -235,7 +238,7 @@ export default function SignUpPage() {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-                Email Address
+                {t('auth.email', 'Email Address')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -254,7 +257,7 @@ export default function SignUpPage() {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-                Password
+                {t('auth.password', 'Password')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -291,7 +294,7 @@ export default function SignUpPage() {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-                Confirm Password
+                {t('auth.password', 'Confirm Password')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -327,11 +330,11 @@ export default function SignUpPage() {
               {submitting ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Creating Account...</span>
+                  <span>{t('auth.signingUp', 'Creating Account...')}</span>
                 </>
               ) : (
                 <>
-                  <span>Create Account & Continue</span>
+                  <span>{t('auth.signupButton', 'Create Account & Continue')}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -340,9 +343,9 @@ export default function SignUpPage() {
 
           <div className="mt-6 pt-6 border-t border-slate-100 text-center">
             <p className="text-sm text-slate-600">
-              Already have an account?{' '}
+              {t('auth.haveAccount', 'Already have an account?')}{' '}
               <Link to="/login" className="font-semibold text-emerald-600 hover:text-emerald-700">
-                Sign in
+                {t('auth.signInButton', 'Sign in')}
               </Link>
             </p>
           </div>
@@ -350,7 +353,7 @@ export default function SignUpPage() {
 
         <div className="mt-8 text-center">
           <Link to="/" className="text-xs font-medium text-slate-500 hover:text-slate-800 transition-colors">
-            ← Back to Home
+            ← {t('common.back', 'Back to Home')}
           </Link>
         </div>
       </div>

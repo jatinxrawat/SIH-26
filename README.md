@@ -187,13 +187,62 @@ LLM / Context Orchestrator       ──►  Plain Regional Language Explanation 
 
 ---
 
+---
+
+## Multi-Language & Indic i18n Architecture
+
+UdyamSaathi features end-to-end multilingual localization across all **22 Official Scheduled Indian Languages** (8th Schedule of the Constitution) + English:
+
+| Language | Script / Code | Native Name | Supported Modules |
+| :--- | :--- | :--- | :--- |
+| **English** | Latin (`en`) | English | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Hindi** | Devanagari (`hi`) | हिन्दी | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Marathi** | Devanagari (`mr`) | मराठी | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Bengali** | Bengali (`bn`) | বাংলা | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Gujarati** | Gujarati (`gu`) | ગુજરાતી | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Tamil** | Tamil (`ta`) | தமிழ் | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Telugu** | Telugu (`te`) | తెలుగు | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Kannada** | Kannada (`kn`) | ಕನ್ನಡ | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Malayalam** | Malayalam (`ml`) | മലയാളം | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Punjabi** | Gurmukhi (`pa`) | ਪੰਜਾਬੀ | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Odia** | Odia (`or`) | ଓଡ଼ିଆ | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Assamese** | Bengali (`as`) | অসমীয়া | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Urdu** | Perso-Arabic / RTL (`ur`) | اردو | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Sanskrit** | Devanagari (`sa`) | संस्कृतम् | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Maithili** | Devanagari (`mai`) | मैथिली | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Nepali** | Devanagari (`ne`) | नेपाली | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Konkani** | Devanagari (`kok`) | कोंकणी | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Sindhi** | Perso-Arabic / Devanagari (`sd`)| سنڌي / सिन्धी | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Kashmiri** | Perso-Arabic / Devanagari (`ks`)| كٲشُر / कॉशुर | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Dogri** | Devanagari (`doi`) | डोगरी | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Manipuri** | Meitei / Bengali (`mni`) | মৈতৈলোন্ | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Bodo** | Devanagari (`brx`) | बड़ो | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+| **Santali** | Ol Chiki (`sat`) | ᱥᱟᱱᱛᱟᱲᱤ | All UI, Schemes, AI Advisors, Roadmaps, Documents |
+
+### Key Features of i18n Architecture:
+1. **100% Key Parity**: 470+ unique translation tokens verified across all 23 language dictionaries with deep script-family fallback safety.
+2. **AI Multilingual Enforcement**: Selected user language (`preferredLanguage`) is forwarded as high-priority directives to Gemini and Groq with native script phrasing and zero English mixing.
+3. **Locale-Aware Formatting**: Built-in `formatINR()`, `formatNumber()`, and `formatDate()` utilizing official Indian `Intl` locale codes (e.g. `hi-IN`, `ta-IN`, `bn-IN`, `mr-IN`).
+4. **Indic Typography**: Google Font integration for Indic scripts (`Noto Sans Devanagari`, `Bengali`, `Gujarati`, `Gurmukhi`, `Tamil`, `Telugu`, `Kannada`, `Malayalam`, `Oriya`) and automatic RTL handling for Urdu/Sindhi/Kashmiri.
+5. **Automated Verification**: Run translation parity checks with:
+   ```bash
+   npm run verify:translations
+   ```
+
+### Adding New Strings or Languages
+- **New UI Strings**: Add key-value pairs in `src/i18n/uiTranslations.js` under the respective namespace (`landing`, `auth`, `onboarding`, `profile`, `documents`, `strategy`, `professionals`, `common`).
+- **New Schemes**: Add localized strings in `src/i18n/schemesTranslations.js`.
+- **Verify**: Always run `npm run verify:translations` before committing to ensure 0 missing keys.
+
+---
+
 ## Tech Stack
 
 - **Frontend:** React 18, Vite, Tailwind CSS, Lucide Icons, Framer Motion
 - **Design System:** Warm off-white canvas (`#FBFBFA`), deep navy/slate typography (`#0F172A`), growth emerald accents (`#059669`)
-- **Backend Ready:** Node.js / Express API architecture
+- **Backend Ready:** Node.js / Express API architecture & Serverless AI proxies (`/api/ai.js`)
 - **Rules Engine:** Deterministic JSON schema rules for scheme criteria and capital stack formulas
-- **AI Architecture:** Context Orchestrator + LLM for natural language guidance
+- **AI Architecture:** Context Orchestrator + LLM for natural language guidance (Groq / Gemini) with Indic multilingual enforcement
 
 ---
 
@@ -208,6 +257,9 @@ cd SIH-26
 
 # Install dependencies
 npm install
+
+# Verify translation parity across all 23 languages
+npm run verify:translations
 
 # Launch development server
 npm run dev

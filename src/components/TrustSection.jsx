@@ -1,10 +1,14 @@
 import React from 'react';
-import { ShieldCheck, Cpu, FileCheck, ExternalLink, AlertCircle, CheckCircle } from 'lucide-react';
+import { ShieldCheck, Cpu, FileCheck, AlertCircle, CheckCircle } from 'lucide-react';
 import SectionHeader from './common/SectionHeader';
 import Badge from './common/Badge';
 import { trustPrinciples } from '../data/mockData';
+import { useLanguage } from '../context/LanguageContext';
+import { localizeBusinessValue } from '../i18n/platformTranslations';
 
 export default function TrustSection() {
+  const { t, language } = useLanguage();
+
   const iconMap = {
     ShieldCheck: ShieldCheck,
     Cpu: Cpu,
@@ -17,9 +21,9 @@ export default function TrustSection() {
         
         {/* Section Header */}
         <SectionHeader
-          badge="Responsible Architecture"
-          title="Built for trust, not just convenience."
-          subtitle="Because we advise on government subsidies and financial futures, transparency and deterministic integrity are built directly into our core protocol."
+          badge={t('landing.trustTitle', 'Responsible Architecture')}
+          title={t('landing.trustTitle', 'Built for trust, not just convenience.')}
+          subtitle={t('landing.trustSubtitle', 'Because we advise on government subsidies and financial futures, transparency and deterministic integrity are built directly into our core protocol.')}
           align="center"
         />
 
@@ -38,22 +42,22 @@ export default function TrustSection() {
                       <Icon className="w-6 h-6" />
                     </div>
                     <Badge variant="growth" size="sm">
-                      {principle.badge}
+                      {localizeBusinessValue(principle.badge, language)}
                     </Badge>
                   </div>
 
                   <h3 className="text-lg sm:text-xl font-bold text-slate-900">
-                    {principle.title}
+                    {localizeBusinessValue(principle.title, language)}
                   </h3>
 
                   <p className="mt-3 text-sm text-slate-600 leading-relaxed">
-                    {principle.description}
+                    {localizeBusinessValue(principle.description, language)}
                   </p>
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-slate-200/60 flex items-center gap-2 text-xs font-semibold text-emerald-800">
                   <CheckCircle className="w-3.5 h-3.5" />
-                  <span>Principle 0{idx + 1} of Core Framework</span>
+                  <span>{t('landing.solutions', 'Principle')} 0{idx + 1} {t('common.verified', 'of Core Framework')}</span>
                 </div>
               </div>
             );
@@ -64,11 +68,11 @@ export default function TrustSection() {
         <div className="mt-10 p-5 rounded-2xl bg-amber-50/60 border border-amber-200/80 flex items-start sm:items-center gap-3.5 text-xs sm:text-sm text-amber-900 shadow-soft-sm">
           <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5 sm:mt-0" />
           <div className="flex-1">
-            <strong className="font-bold">Official Disclaimer: </strong>
-            <span>Final eligibility and approvals remain with the relevant government or financial institution.</span>
+            <strong className="font-bold">{t('advisor.complianceWarning', 'Official Disclaimer')}: </strong>
+            <span>{t('funding.warning', 'Final eligibility and approvals remain with the relevant government or financial institution.')}</span>
           </div>
           <span className="hidden md:inline-block text-[11px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100/80 px-2.5 py-1 rounded-md">
-            Statutory Transparency
+            {t('common.verified', 'Statutory Transparency')}
           </span>
         </div>
 

@@ -66,6 +66,7 @@ export default function AIMilestoneModal() {
           location: profile?.location || 'India',
           targetStage
         },
+        preferredLanguage: language,
         prompt: `Generate a structured milestone JSON with title, whyThisMatters, estimatedTime, and whatToDo (array of 3-4 checkpoints) for goal: "${query}"`
       });
 

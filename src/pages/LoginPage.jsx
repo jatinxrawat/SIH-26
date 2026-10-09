@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Lock, Mail, ArrowRight, AlertCircle, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import Logo from '../components/common/Logo';
 
 export default function LoginPage() {
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const { loginWithEmail, loginWithGoogle, loginAsDemoUser, isFirebaseConfigured } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -35,7 +37,7 @@ export default function LoginPage() {
     setError('');
 
     if (!email.trim() || !password) {
-      setError('Please enter both email and password.');
+      setError(t('auth.invalidCredentials', 'Please enter both email and password.'));
       return;
     }
 
@@ -46,11 +48,11 @@ export default function LoginPage() {
     } catch (err) {
       console.error('Login error:', err);
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-        setError('Invalid email or password. Please try again.');
+        setError(t('auth.invalidCredentials', 'Invalid email or password. Please try again.'));
       } else if (err.code === 'auth/too-many-requests') {
         setError('Access temporarily disabled due to many failed attempts. Try again later.');
       } else {
-        setError(err.message || 'Failed to sign in. Please verify your connection.');
+        setError(err.message || t('auth.invalidCredentials', 'Failed to sign in. Please verify your connection.'));
       }
     } finally {
       setSubmitting(false);
@@ -84,10 +86,10 @@ export default function LoginPage() {
           <Logo variant="dark" size="lg" />
         </Link>
         <h2 className="mt-6 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-          Welcome back
+          {t('auth.loginTitle', 'Welcome back')}
         </h2>
         <p className="mt-2 text-sm text-slate-600">
-          Sign in to manage your business journey, scheme eligibility, and roadmap.
+          {t('auth.loginSubtitle', 'Sign in to manage your business journey, scheme eligibility, and roadmap.')}
         </p>
       </div>
 
@@ -135,7 +137,6 @@ export default function LoginPage() {
             </div>
           )}
 
-
           {/* Google Sign-in button */}
           <button
             type="button"
@@ -165,7 +166,7 @@ export default function LoginPage() {
                 />
               </svg>
             )}
-            <span>Continue with Google</span>
+            <span>{t('auth.orGoogle', 'Continue with Google')}</span>
           </button>
 
           <div className="relative my-6">
@@ -173,14 +174,16 @@ export default function LoginPage() {
               <div className="w-full border-t border-slate-200" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-3 text-slate-500 font-medium">Or sign in with email</span>
+              <span className="bg-white px-3 text-slate-500 font-medium">
+                {t('auth.orContinueWith', 'Or sign in with email')}
+              </span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-                Email Address
+                {t('auth.email', 'Email Address')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -190,7 +193,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@business.com"
+                  placeholder={t('auth.emailPlaceholder', 'name@business.com')}
                   required
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-50/50 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
                 />
@@ -199,7 +202,7 @@ export default function LoginPage() {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1.5">
-                Password
+                {t('auth.password', 'Password')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -231,11 +234,11 @@ export default function LoginPage() {
               {submitting ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Signing In...</span>
+                  <span>{t('auth.loggingIn', 'Signing In...')}</span>
                 </>
               ) : (
                 <>
-                  <span>Sign In</span>
+                  <span>{t('auth.loginButton', 'Sign In')}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -244,9 +247,9 @@ export default function LoginPage() {
 
           <div className="mt-6 pt-6 border-t border-slate-100 text-center">
             <p className="text-sm text-slate-600">
-              New to UdyamSaathi?{' '}
+              {t('auth.noAccount', 'New to UdyamSaathi?')}{' '}
               <Link to="/signup" className="font-semibold text-emerald-600 hover:text-emerald-700">
-                Create an account
+                {t('auth.createAccount', 'Create an account')}
               </Link>
             </p>
           </div>
@@ -254,7 +257,7 @@ export default function LoginPage() {
 
         <div className="mt-8 text-center">
           <Link to="/" className="text-xs font-medium text-slate-500 hover:text-slate-800 transition-colors">
-            ← Back to Home
+            ← {t('common.back', 'Back to Home')}
           </Link>
         </div>
       </div>

@@ -3,7 +3,19 @@
  * Supporting 22 Official Scheduled Indian Languages + English
  */
 
-import { SCHEME_NAMES_MAP, SCHEME_BENEFITS_MAP, MINISTRY_MAP } from './schemesDictionary';
+import { SCHEME_NAMES_MAP, SCHEME_BENEFITS_MAP, MINISTRY_MAP } from './schemesDictionary.js';
+import { mr } from "./locales/mr.js";
+import { gu } from "./locales/gu.js";
+import { ta } from "./locales/ta.js";
+import { te } from "./locales/te.js";
+import { kn } from "./locales/kn.js";
+import { ml } from "./locales/ml.js";
+import { pa } from "./locales/pa.js";
+import { or as orLocale } from "./locales/or.js";
+import { as as asLocale } from "./locales/as.js";
+import { ur } from "./locales/ur.js";
+import { SCRIPT_FAMILY_FALLBACKS } from "./locales/familyFallbacks.js";
+
 
 export const SCHEMES_TRANSLATIONS = {
   en: {
@@ -404,388 +416,24 @@ export const SCHEMES_TRANSLATIONS = {
     }
   },
 
-  mr: {
-    pageBadge: 'सरकारी योजना जुळवणी',
-    pageTitle: 'वैयक्तिक सरकारी योजना व पाठबळ',
-    pageSubtitle: 'सत्यापित केंद्रीय आणि राज्य एमएसएमई योजनांमधील पात्रता मूल्यांकन',
-    profileSync: 'प्रोफाइल सिंक झाले',
-    inRoadmap: 'रोडमॅपमध्ये जोडले',
-    activeParams: 'तुमच्या प्रोफाइलमधील सक्रिय निकष',
-    editProfile: 'प्रोफाइल बदला',
-    stateLocation: 'राज्य / स्थान',
-    categoryLabel: 'प्रवर्ग',
-    industrySector: 'उद्योग क्षेत्र',
-    businessStage: 'व्यवसायाचा टप्पा',
-    capitalNeed: 'भांडवली गरज',
-    improveAccuracy: 'अचूकता वाढवा',
-    missingDetails: 'तुमच्या प्रोफाइलमध्ये काही माहिती अपूर्ण आहे:',
-    completeProfile: 'प्रोफाइल पूर्ण करा',
-    aiSpotlight: 'एआय शिफारस केंद्र',
-    whyRecommend: 'आम्ही ही योजना का सुचवतो',
-    topMatchedProgram: 'सर्वोत्तम जुळणारी योजना',
-    inspectTopMatch: 'योजना तपासा',
-    searchPlaceholder: 'योजनेचे नाव, मंत्रालय किंवा कीवर्ड शोधा...',
-    showing: 'दाखवत आहे',
-    to: 'ते',
-    of: 'पैकी',
-    schemesCount: 'योजना',
-    perPage: 'प्रति पान:',
-    all: 'सर्व',
-    supportType: 'मदतीचा प्रकार',
-    targetSector: 'लक्षित क्षेत्र',
-    fundingScale: 'निधी प्रमाण',
-    jurisdiction: 'अधिकार क्षेत्र',
-    jurisdictionAll: 'सर्व स्रोत (केंद्रीय, राज्य, बँका)',
-    jurisdictionCentral: 'केंद्रीय राष्ट्रीय योजना',
-    jurisdictionState: 'राज्यस्तरीय योजना',
-    jurisdictionBanking: 'बँकिंग आणि संस्थात्मक कर्ज',
-    jurisdictionPrivate: 'स्टार्टअप अनुदान आणि सीएसआर',
-    reset: 'रीसेट करा',
-    clear: 'साफ करा',
-    rankedSchemes: 'तुमच्यासाठी सर्वोत्तम सरकारी योजना',
-    rankedDesc: 'तुमच्या व्यवसाय प्रोफाइलनुसार क्रमवारी लावलेली.',
-    compareSchemesBtn: 'योजनांची तुलना करा',
-    compare: 'तुलना करा',
-    comparing: 'तुलना करत आहे',
-    viewDetails: 'तपशील पहा',
-    matchScore: 'मॅच स्कोअर',
-    eligible: 'पात्र',
-    notEligible: 'अपात्र',
-    potentiallyEligible: 'संभाव्य पात्र',
-    potentialBenefit: 'संभाव्य लाभ',
-    facilityType: 'सुविधेचा प्रकार',
-    documentsToPrepare: 'कागदपत्रे तयार करावी लागतील',
-    documentToPrepare: 'कागदपत्र तयार करावे लागेल',
-    profileDocsReady: 'मूळ कागदपत्रे तयार आहेत',
-    facilities: {
-      loan: 'कर्ज',
-      grant: 'अनुदान',
-      subsidy: 'सबसिडी',
-      credit_guarantee: 'क्रेडिट हमी',
-      equity: 'इक्विटी',
-      interest_subvention: 'व्याज सवलत',
-      training: 'प्रशिक्षण सहाय्य',
-      infrastructure: 'पायाभूत सुविधा',
-      government_support: 'सरकारी सहाय्य'
-    },
-    types: {
-      loan: 'सवलतीचे सरकारी कर्ज',
-      grant: 'अनुदान व भांडवल',
-      subsidy: 'भांडवली सबसिडी',
-      credit_linked_subsidy: 'कर्ज संलग्न सबसिडी',
-      training: 'कौशल्य व टूलकिट अनुदान',
-      infrastructure: 'पायाभूत सुविधा'
-    },
-    pillars: {
-      allIndia: 'स्थान जुळवणी: अखिल भारतीय योजना',
-      locationMatches: 'स्थान जुळवणी',
-      supports: 'समर्थन',
-      sector: 'क्षेत्र',
-      universalSector: 'सर्व क्षेत्रांसाठी उपलब्ध',
-      stageAligned: 'टप्पा जुळला',
-      womanPriority: 'महिला उद्योजक प्राधान्य व जादा अनुदान',
-      categoryBenefits: 'प्रवर्ग लाभ उपलब्ध',
-      ageVerified: 'वय पात्रता सत्यापित',
-      financialFit: 'वित्तीय मर्यादा जुळली',
-      ruralAligned: 'ग्रामीण क्षेत्र अनुकूल',
-      urbanAligned: 'शहरी क्षेत्र अनुकूल'
-    },
-    stages: {
-      idea: 'संकल्पना (Idea)',
-      planning: 'नियोजन (Planning)',
-      operating: 'सक्रिय (Operating)',
-      growing: 'वाढ (Growing)'
-    }
-  },
-
-  ta: {
-    pageBadge: 'அரசு திட்டப் பொருத்தப்பாடு',
-    pageTitle: 'தனிப்பயனாக்கப்பட்ட அரசு ஆதரவு வாய்ப்புகள்',
-    pageSubtitle: 'மத்திய மற்றும் மாநில MSME திட்டங்களில் தகுதி மதிப்பீடு',
-    profileSync: 'சுயவிவரம் இணைக்கப்பட்டது',
-    inRoadmap: 'திட்டத்தில் உள்ளது',
-    activeParams: 'செயலில் உள்ள பொருத்துதல் காரணிகள்',
-    editProfile: 'சுயவிவரத்தைத் திருத்து',
-    stateLocation: 'மாநிலம் / இடம்',
-    categoryLabel: 'பிரிவு',
-    industrySector: 'தொழில் துறை',
-    businessStage: 'வணிக நிலை',
-    capitalNeed: 'நிதி தேவை',
-    improveAccuracy: 'பொருத்தத்தின் துல்லியத்தை மேம்படுத்து',
-    missingDetails: 'உங்கள் சுயவிவரத்தில் விவரங்கள் விடுபட்டுள்ளன:',
-    completeProfile: 'சுயவிவரத்தை நிறைவு செய்',
-    aiSpotlight: 'AI பரிந்துரை',
-    whyRecommend: 'நாங்கள் இதை ஏன் பரிந்துரைக்கிறோம்',
-    topMatchedProgram: 'முதன்மையான திட்டம்',
-    inspectTopMatch: 'திட்டத்தைப் பார்',
-    searchPlaceholder: 'திட்டத்தின் பெயர் அல்லது முக்கிய வார்த்தை தேடு...',
-    showing: 'காட்டப்படுகிறது',
-    to: 'முதல்',
-    of: 'இல்',
-    schemesCount: 'திட்டங்கள்',
-    perPage: 'ஒரு பக்கத்திற்கு:',
-    all: 'அனைத்தும்',
-    supportType: 'ஆதரவு வகை',
-    targetSector: 'இலக்கு துறை',
-    fundingScale: 'நிதி அளவு',
-    jurisdiction: 'அதிகார வரம்பு',
-    jurisdictionAll: 'அனைத்து ஆதாரங்கள் (மத்திய, மாநில, வங்கி)',
-    jurisdictionCentral: 'மத்திய அரசு திட்டங்கள்',
-    jurisdictionState: 'மாநில அளவிலான திட்டங்கள்',
-    jurisdictionBanking: 'வங்கி கடன் வசதிகள்',
-    jurisdictionPrivate: 'ஸ்டார்ட்அப் மானியங்கள்',
-    reset: 'மீட்டமை',
-    clear: 'அழி',
-    rankedSchemes: 'உங்களுக்கான சிறந்த அரசு திட்டங்கள்',
-    rankedDesc: 'உங்கள் சுயவிவரத்தின் அடிப்படையில் வரிசைப்படுத்தப்பட்டது.',
-    compareSchemesBtn: 'திட்டங்களை ஒப்பிடு',
-    compare: 'ஒப்பிடு',
-    comparing: 'ஒப்பிடப்படுகிறது',
-    viewDetails: 'விவரங்களை காண்க',
-    matchScore: 'பொருத்த மதிப்பெண்',
-    eligible: 'தகுதியுடையது',
-    notEligible: 'தகுதியற்றது',
-    potentiallyEligible: 'சாத்தியமான தகுதி',
-    potentialBenefit: 'சாத்தியமான பயன்',
-    facilityType: 'வசதி வகை',
-    documentsToPrepare: 'ஆவணங்கள் தயார் செய்யப்பட வேண்டும்',
-    documentToPrepare: 'ஆவணம் தயார் செய்யப்பட வேண்டும்',
-    profileDocsReady: 'அடிப்படை ஆவணங்கள் தயார்',
-    facilities: {
-      loan: 'கடன்',
-      grant: 'மானியம்',
-      subsidy: 'மானிய உதவி',
-      credit_guarantee: 'கடன் உத்தரவாதம்',
-      equity: 'பங்கு ஆதரவு',
-      interest_subvention: 'வட்டி தள்ளுபடி',
-      training: 'பயிற்சி ஆதரவு',
-      infrastructure: 'உள்கட்டமைப்பு',
-      government_support: 'அரசு ஆதரவு'
-    },
-    types: {
-      loan: 'மத்திய சலுகைக் கடன்',
-      grant: 'மானிய உதவி',
-      subsidy: 'மூலதன மானியம்',
-      credit_linked_subsidy: 'கடன் சார்ந்த மானியம்',
-      training: 'திறன் மேம்பாட்டு மானியம்',
-      infrastructure: 'உள்கட்டமைப்பு ஆதரவு'
-    },
-    pillars: {
-      allIndia: 'இடம் பொருத்தம்: அகில இந்திய தேசிய திட்டம்',
-      locationMatches: 'இடம் பொருத்தம்',
-      supports: 'ஆதரவு அளிக்கிறது',
-      sector: 'துறை',
-      universalSector: 'அனைத்து துறைகளுக்கும் பொருந்தும்',
-      stageAligned: 'வணிக நிலை பொருத்தமானது',
-      womanPriority: 'பெண் தொழில்முனைவோர் முன்னுரிமை',
-      categoryBenefits: 'பிரிவு நன்மைகள் உள்ளன',
-      ageVerified: 'வயது தகுதி சரிபார்க்கப்பட்டது',
-      financialFit: 'நிதி தேவை வரம்பிற்குள் உள்ளது',
-      ruralAligned: 'கிராமப்புற பகுதிக்குரியது',
-      urbanAligned: 'நகர்ப்புற பகுதிக்குரியது'
-    },
-    stages: {
-      idea: 'யோசனை (Idea)',
-      planning: 'திட்டமிடல் (Planning)',
-      operating: 'செயல்பாட்டில் (Operating)',
-      growing: 'வளர்ச்சி (Growing)'
-    }
-  },
-
-  te: {
-    pageBadge: 'ప్రభుత్వ పథకాల సరిపోలిక',
-    pageTitle: 'వ్యక్తిగత ప్రభుత్వ మద్దతు అవకాశాలు',
-    pageSubtitle: 'ధృవీకరించబడిన కేంద్ర మరియు రాష్ట్ర MSME పథకాలలో అర్హత అంచనా',
-    profileSync: 'ప్రొఫైల్ సమకాలీకరించబడింది',
-    inRoadmap: 'రోడ్‌మ్యాప్‌లో ఉంది',
-    activeParams: 'మీ ప్రొఫైల్ నుండి క్రియాశీల సరిపోలిక పారామితులు',
-    editProfile: 'ప్రొఫైల్ సవరించండి',
-    stateLocation: 'రాష్ట్రం / స్థానం',
-    categoryLabel: 'వర్గం',
-    industrySector: 'పరిశ్రమ రంగం',
-    businessStage: 'వ్యాపార దశ',
-    capitalNeed: 'మూలధన అవసరం',
-    improveAccuracy: 'సరిపోలిక ఖచ్చితత్వాన్ని మెరుగుపరచండి',
-    missingDetails: 'మీ ప్రొఫైల్‌లో వివరాలు తప్పిపోయాయి:',
-    completeProfile: 'ప్రొఫైల్‌ను పూర్తి చేయండి',
-    aiSpotlight: 'AI సిఫార్సు ముఖ్యాంశాలు',
-    whyRecommend: 'మేము దీన్ని ఎందుకు సిఫార్సు చేస్తున్నాము',
-    topMatchedProgram: 'అత్యుత్తమ పథకం',
-    inspectTopMatch: 'పథకాన్ని పరిశీలించండి',
-    searchPlaceholder: 'పథకం పేరు లేదా కీవర్డ్ ద్వారా వెతకండి...',
-    showing: 'చూపుతోంది',
-    to: 'నుండి',
-    of: 'లో',
-    schemesCount: 'పథకాలు',
-    perPage: 'పేజీకి:',
-    all: 'అన్నీ',
-    supportType: 'మద్దతు రకం',
-    targetSector: 'లక్ష్య రంగం',
-    fundingScale: 'నిధుల పరిధి',
-    jurisdiction: 'అధికార పరిధి',
-    jurisdictionAll: 'అన్ని వనరులు (కేంద్ర, రాష్ట్ర, బ్యాంకులు)',
-    jurisdictionCentral: 'కేంద్ర ప్రభుత్వ పథకాలు',
-    jurisdictionState: 'రాష్ట్ర స్థాయి పథకాలు',
-    jurisdictionBanking: 'బ్యాంకింగ్ & సంస్థాగత రుణాలు',
-    jurisdictionPrivate: 'స్టార్టప్ గ్రాంట్లు',
-    reset: 'రీసెట్ చేయండి',
-    clear: 'తొలగించు',
-    rankedSchemes: 'మీ కోసం సరిపోయే ప్రభుత్వ పథకాలు',
-    rankedDesc: 'మీ వ్యాపార ప్రొఫైల్ ఆధారంగా ర్యాంక్ చేయబడింది.',
-    compareSchemesBtn: 'పథకాలను పోల్చండి',
-    compare: 'పోల్చండి',
-    comparing: 'పోలుస్తోంది',
-    viewDetails: 'వివరాలు చూడండి',
-    matchScore: 'మ్యాచ్ స్కోరు',
-    eligible: 'అర్హత ఉంది',
-    notEligible: 'అర్హత లేదు',
-    potentiallyEligible: 'అర్హత అవకాశం ఉంది',
-    potentialBenefit: 'సంభావ్య ప్రయోజనం',
-    facilityType: 'సౌకర్యం రకం',
-    documentsToPrepare: 'పత్రాలు సిద్ధం చేయాలి',
-    documentToPrepare: 'పత్రం సిద్ధం చేయాలి',
-    profileDocsReady: 'ప్రాథమిక పత్రాలు సిద్ధంగా ఉన్నాయి',
-    facilities: {
-      loan: 'రుణం',
-      grant: 'గ్రాంట్',
-      subsidy: 'సబ్సిడీ',
-      credit_guarantee: 'క్రెడిట్ గ్యారెంటీ',
-      equity: 'ఈక్విటీ',
-      interest_subvention: 'వడ్డీ రాయితీ',
-      training: 'శిక్షణ మద్దతు',
-      infrastructure: 'మౌలిక సదుపాయాలు',
-      government_support: 'ప్రభుత్వ మద్దతు'
-    },
-    types: {
-      loan: 'కేంద్ర రాయితీ రుణం',
-      grant: 'గ్రాంట్ మరియు మూలధనం',
-      subsidy: 'మూలధన సబ్సిడీ పథకం',
-      credit_linked_subsidy: 'క్రెడిట్ లింక్డ్ సబ్సిడీ',
-      training: 'నైపుణ్య గ్రాంట్',
-      infrastructure: 'మౌలిక సదుపాయాల మద్దతు'
-    },
-    pillars: {
-      allIndia: 'స్థాన సరిపోలిక: అఖిల భారత జాతీయ పథకం',
-      locationMatches: 'స్థాన సరిపోలిక',
-      supports: 'మద్దతు ఇస్తుంది',
-      sector: 'రంగం',
-      universalSector: 'అన్ని రంగాలకు వర్తిస్తుంది',
-      stageAligned: 'వ్యాపార దశకు అనుకూలం',
-      womanPriority: 'మహిళా వ్యవస్థాపకులకు ప్రాధాన్యత',
-      categoryBenefits: 'వర్గ ప్రయోజనాలు అందుబాటులో ఉన్నాయి',
-      ageVerified: 'వయోపరిమితి సరిపోయింది',
-      financialFit: 'ఆర్థిక అవసరం సరిపోయింది',
-      ruralAligned: 'గ్రామీణ ప్రాంతాలకు అనుకూలం',
-      urbanAligned: 'పట్టణ ప్రాంతాలకు అనుకూలం'
-    },
-    stages: {
-      idea: 'ఆలోచన (Idea)',
-      planning: 'ప్రణాళిక (Planning)',
-      operating: 'కార్యకలాపాలలో (Operating)',
-      growing: 'వృద్ధి (Growing)'
-    }
-  },
-
-  gu: {
-    pageBadge: 'સરકારી યોજના મેળવણી',
-    pageTitle: 'વ્યક્તિગત સરકારી સહાય અને યોજનાઓ',
-    pageSubtitle: 'ચકાસાયેલ કેન્દ્રીય અને રાજ્ય એમએસએમઇ કાર્યક્રમોમાં પાત્રતા મૂલ્યાંકન',
-    profileSync: 'પ્રોફાઇલ સમન્વયિત',
-    inRoadmap: 'રોડમેપમાં સામેલ',
-    activeParams: 'તમારી પ્રોફાઇલમાંથી સક્રિય માપદંડો',
-    editProfile: 'પ્રોફાઇલ બદલો',
-    stateLocation: 'રાજ્ય / સ્થળ',
-    categoryLabel: 'કેટેગરી',
-    industrySector: 'ઉદ્યોગ ક્ષેત્ર',
-    businessStage: 'વ્યવસાયનો તબક્કો',
-    capitalNeed: 'મૂડી જરૂરિયાત',
-    improveAccuracy: 'ચોકસાઈ વધારો',
-    missingDetails: 'તમારી પ્રોફાઇલમાં કેટલીક વિગતો અધૂરી છે:',
-    completeProfile: 'પ્રોફાઇલ પૂર્ણ કરો',
-    aiSpotlight: 'એઆઈ ભલામણ કેન્દ્ર',
-    whyRecommend: 'અમે આ શા માટે ભલામણ કરીએ છીએ',
-    topMatchedProgram: 'સર્વોચ્ચ મેળ ખાતી યોજના',
-    inspectTopMatch: 'યોજના તપાસો',
-    searchPlaceholder: 'યોજનાનું નામ, મંત્રાલય અથવા કીવર્ડ શોધો...',
-    showing: 'બતાવી રહ્યું છે',
-    to: 'થી',
-    of: 'માંથી',
-    schemesCount: 'યોજનાઓ',
-    perPage: 'પ્રતિ પૃષ્ઠ:',
-    all: 'બધા',
-    supportType: 'સહાય પ્રકાર',
-    targetSector: 'લક્ષ્ય ક્ષેત્ર',
-    fundingScale: 'ધિરાણ સ્કેલ',
-    jurisdiction: 'અધિકાર ક્ષેત્ર',
-    jurisdictionAll: 'બધા સ્ત્રોત (કેન્દ્ર, રાજ્ય, બેંકો)',
-    jurisdictionCentral: 'કેન્દ્રીય રાષ્ટ્રીય યોજનાઓ',
-    jurisdictionState: 'રાજ્ય સ્તરની યોજનાઓ',
-    jurisdictionBanking: 'બેંકિંગ અને સંસ્થાકીય ધિરાણ',
-    jurisdictionPrivate: 'સ્ટાર્ટઅપ ગ્રાન્ટ્સ અને સીએસઆર',
-    reset: 'રીસેટ',
-    clear: 'સાફ કરો',
-    rankedSchemes: 'તમારા માટે શ્રેષ્ઠ સરકારી યોજનાઓ',
-    rankedDesc: 'તમારી બિઝનેસ પ્રોફાઇલ મુજબ ક્રમબદ્ધ.',
-    compareSchemesBtn: 'યોજનાઓની સરખામણી કરો',
-    compare: 'સરખામણી કરો',
-    comparing: 'સરખામણી ચાલુ છે',
-    viewDetails: 'વિગતો જુઓ',
-    matchScore: 'મેચ સ્કોર',
-    eligible: 'પાત્ર',
-    notEligible: 'અપાત્ર',
-    potentiallyEligible: 'સંભવિત પાત્ર',
-    potentialBenefit: 'સંભવિત લાભ',
-    facilityType: 'સુવિધા પ્રકાર',
-    documentsToPrepare: 'દસ્તાવેજો તૈયાર કરવાના રહેશે',
-    documentToPrepare: 'દસ્તાવેજ તૈયાર કરવાનો રહેશે',
-    profileDocsReady: 'મૂળ દસ્તાવેજો તૈયાર છે',
-    facilities: {
-      loan: 'ધિરાણ/લોન',
-      grant: 'ગ્રાન્ટ',
-      subsidy: 'સબસિડી',
-      credit_guarantee: 'ક્રેડિટ ગેરંટી',
-      equity: 'ઇક્વિટી સહાય',
-      interest_subvention: 'વ્યાજ રાહત',
-      training: 'તાલીમ સહાય',
-      infrastructure: 'ઇન્ફ્રાસ્ટ્રક્ચર',
-      government_support: 'સરકારી સહાય'
-    },
-    types: {
-      loan: 'કેન્દ્રીય રાહત લોન',
-      grant: 'સીડ ગ્રાન્ટ અને સહાય',
-      subsidy: 'મૂડી સબસિડી યોજના',
-      credit_linked_subsidy: 'ક્રેડિટ લિંક્ડ સબસિડી',
-      training: 'કૌશલ્ય સહાય',
-      infrastructure: 'ઇન્ફ્રાસ્ટ્રક્ચર સહાય'
-    },
-    pillars: {
-      allIndia: 'સ્થળ મેળ: અખિલ ભારતીય રાષ્ટ્રીય યોજના',
-      locationMatches: 'સ્થળ મેળ',
-      supports: 'ટેકો આપે છે',
-      sector: 'ક્ષેત્ર',
-      universalSector: 'બધા ક્ષેત્રો માટે માન્ય',
-      stageAligned: 'તબક્કો સુસંગત',
-      womanPriority: 'મહિલા ઉદ્યોગસાહસિક અગ્રતા',
-      categoryBenefits: 'કેટેગરી લાભો ઉપલબ્ધ',
-      ageVerified: 'ઉંમર પાત્રતા ચકાસાયેલ',
-      financialFit: 'નાણાકીય જરૂરિયાત સુસંગત',
-      ruralAligned: 'ગ્રામીણ વિસ્તાર અનુકૂળ',
-      urbanAligned: 'શહેરી વિસ્તાર અનુકૂળ'
-    },
-    stages: {
-      idea: 'વિચાર (Idea)',
-      planning: 'આયોજન (Planning)',
-      operating: 'કાર્યાન્વિત (Operating)',
-      growing: 'વિકાસ (Growing)'
-    }
-  }
+  mr: mr.schemes,
+  gu: gu.schemes,
+  ta: ta.schemes,
+  te: te.schemes,
+  kn: kn.schemes,
+  ml: ml.schemes,
+  pa: pa.schemes,
+  or: orLocale.schemes,
+  as: asLocale.schemes,
+  ur: ur.schemes
 };
 
 /**
  * Helper to get scheme translation with fallback to English
  */
 export function getSchemesText(lang, path, fallback = '') {
-  const target = SCHEMES_TRANSLATIONS[lang] || SCHEMES_TRANSLATIONS.en;
+  const fallbackLang = SCRIPT_FAMILY_FALLBACKS[lang] || 'en';
+  const target = SCHEMES_TRANSLATIONS[lang] || SCHEMES_TRANSLATIONS[fallbackLang] || SCHEMES_TRANSLATIONS.en;
   const parts = path.split('.');
   let current = target;
   for (const p of parts) {
@@ -818,9 +466,13 @@ export function getSchemesText(lang, path, fallback = '') {
 export function localizeMinistry(ministry, lang) {
   if (!ministry || lang === 'en') return ministry;
 
+  const fallbackLang = SCRIPT_FAMILY_FALLBACKS[lang] || 'en';
   // Direct hit from master dictionary
   if (MINISTRY_MAP?.[lang]?.[ministry]) {
     return MINISTRY_MAP[lang][ministry];
+  }
+  if (MINISTRY_MAP?.[fallbackLang]?.[ministry]) {
+    return MINISTRY_MAP[fallbackLang][ministry];
   }
 
   const map = {
@@ -948,7 +600,12 @@ export function localizeMinistry(ministry, lang) {
  */
 export function localizeSchemeName(name, lang = 'en') {
   if (!name || lang === 'en') return name;
-  return SCHEME_NAMES_MAP?.[lang]?.[name] || SCHEME_NAMES_MAP?.[lang]?.[name.replace(/’/g, "'").trim()] || name;
+  const fallbackLang = SCRIPT_FAMILY_FALLBACKS[lang] || 'en';
+  return SCHEME_NAMES_MAP?.[lang]?.[name] ||
+    SCHEME_NAMES_MAP?.[lang]?.[name.replace(/’/g, "'").trim()] ||
+    SCHEME_NAMES_MAP?.[fallbackLang]?.[name] ||
+    SCHEME_NAMES_MAP?.[fallbackLang]?.[name.replace(/’/g, "'").trim()] ||
+    name;
 }
 
 /**
@@ -956,7 +613,12 @@ export function localizeSchemeName(name, lang = 'en') {
  */
 export function localizeSchemeBenefit(benefit, lang = 'en') {
   if (!benefit || lang === 'en') return benefit;
-  return SCHEME_BENEFITS_MAP?.[lang]?.[benefit] || SCHEME_BENEFITS_MAP?.[lang]?.[benefit.replace(/’/g, "'").trim()] || benefit;
+  const fallbackLang = SCRIPT_FAMILY_FALLBACKS[lang] || 'en';
+  return SCHEME_BENEFITS_MAP?.[lang]?.[benefit] ||
+    SCHEME_BENEFITS_MAP?.[lang]?.[benefit.replace(/’/g, "'").trim()] ||
+    SCHEME_BENEFITS_MAP?.[fallbackLang]?.[benefit] ||
+    SCHEME_BENEFITS_MAP?.[fallbackLang]?.[benefit.replace(/’/g, "'").trim()] ||
+    benefit;
 }
 
 /**

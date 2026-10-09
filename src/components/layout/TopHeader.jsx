@@ -65,6 +65,7 @@ export default function TopHeader({ onToggleMobile }) {
       case '/business': return t('nav.business', 'My Business');
       case '/schemes': return t('nav.schemes', 'Government Schemes');
       case '/funding': return t('nav.funding', 'Funding Intelligence');
+      case '/strategy': return t('nav.strategy', 'Business Strategy');
       case '/roadmap': return t('nav.roadmap', 'Business Roadmap');
       case '/professionals': return t('nav.professionals', 'Professional Directory');
       case '/advisor': return t('nav.advisor', 'AI Business Advisor');
@@ -87,7 +88,12 @@ export default function TopHeader({ onToggleMobile }) {
     { code: 'gu', native: 'ગુજરાતી', en: 'Gujarati' },
     { code: 'ta', native: 'தமிழ்', en: 'Tamil' },
     { code: 'te', native: 'తెలుగు', en: 'Telugu' },
-    { code: 'kn', native: 'ಕನ್ನಡ', en: 'Kannada' }
+    { code: 'kn', native: 'ಕನ್ನಡ', en: 'Kannada' },
+    { code: 'ml', native: 'മലയാളം', en: 'Malayalam' },
+    { code: 'pa', native: 'ਪੰਜਾਬੀ', en: 'Punjabi' },
+    { code: 'or', native: 'ଓଡ଼ିଆ', en: 'Odia' },
+    { code: 'as', native: 'অসমীয়া', en: 'Assamese' },
+    { code: 'ur', native: 'اردو', en: 'Urdu' }
   ];
 
   return (

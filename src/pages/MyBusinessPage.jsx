@@ -143,7 +143,7 @@ export default function MyBusinessPage() {
               </div>
 
               <p className="text-xs sm:text-sm text-slate-500 max-w-2xl leading-relaxed">
-                {business.description || 'Registered entity profile and operational details.'}
+                {business.description ? localizeBusinessValue(business.description, language) : t('business.registeredNotice', 'Registered entity profile and operational details.')}
               </p>
             </div>
           </div>
@@ -317,7 +317,7 @@ export default function MyBusinessPage() {
             <div>
               <span className="text-slate-500 font-bold block mb-1.5">{t('business.conceptDescription', 'Business Concept Description:')}</span>
               <p className="text-slate-800 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 min-h-[90px]">
-                {business.description || 'No business description provided.'}
+                {business.description ? localizeBusinessValue(business.description, language) : t('business.noDescription', 'No business description provided.')}
               </p>
             </div>
 

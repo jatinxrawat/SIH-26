@@ -18,9 +18,11 @@ import {
 import { useEntrepreneurProfile } from '../context/EntrepreneurProfileContext';
 import { useBusiness } from '../context/BusinessContext';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { sendAdvisorMessage } from '../services/aiAdvisorService';
 
 export default function AdvisorPage() {
+  const { language, t } = useLanguage();
   const routerLocation = useLocation();
   const initialPromptHandled = useRef(false);
   const { profile } = useEntrepreneurProfile();
@@ -31,8 +33,8 @@ export default function AdvisorPage() {
   const personal = business.personalInfo || {};
   const finances = business.financialProfile || {};
 
-  const displayName = personal.fullName || userProfile?.name || currentUser?.displayName || 'Entrepreneur';
-  const businessName = business.name || 'Your Enterprise';
+  const displayName = personal.fullName || userProfile?.name || currentUser?.displayName || t('common.entrepreneur', 'Entrepreneur');
+  const businessName = business.name || t('common.yourEnterprise', 'Your Enterprise');
   const sector = business.sector || 'Services';
   const stage = business.stage || 'IDEA';
   const location = business.location || (personal.district ? `${personal.district}, ${personal.state}` : 'India');
@@ -40,22 +42,57 @@ export default function AdvisorPage() {
   const state = personal.state || 'India';
 
   // Scoped chat storage key
-  const chatStorageKey = `udyamsaathi_advisor_chat_${activeBusinessId || 'default'}`;
+  const chatStorageKey = `udyamsaathi_advisor_chat_${activeBusinessId || 'default'}_${language}`;
 
-  const initialGreeting = {
-    id: 'msg_welcome',
-    sender: 'ai',
-    text: `Namaste ${displayName}! I am your **UdyamSaathi AI Business Advisor**.\n\n` +
-      `I have loaded your enterprise profile for **${businessName}** in the **${sector}** sector (${location}, **${stage}** stage).\n\n` +
-      `I can help you navigate:\n` +
-      `• **Government Subsidies & Schemes** (PMEGP, Mudra, Stand-Up India, CGTMSE, PMFME)\n` +
-      `• **Bank Loan DPR Preparation** & collateral-free appraisal norms\n` +
-      `• **Mandatory Licenses & Registrations** (Udyam, GST, Shop Act, FSSAI)\n` +
-      `• **Go-to-market strategies** tailored for ${location}\n\n` +
-      `What would you like to explore today?`,
-    provider: 'UdyamSaathi Core Engine',
-    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const getInitialGreeting = () => {
+    let greetingText = '';
+    if (language === 'hi') {
+      greetingText = `नमस्ते ${displayName}! मैं आपका **उद्यमसाथी एआई व्यावसायिक सलाहकार** हूँ।\n\n` +
+        `मैंने **${businessName}** (${sector} क्षेत्र, ${location}, **${stage}** चरण) का आपका प्रोफाइल लोड कर लिया है।\n\n` +
+        `मैं आपकी सहायता कर सकता हूँ:\n` +
+        `• **सरकारी सब्सिडी और योजनाएं** (PMEGP, Mudra, Stand-Up India, CGTMSE, PMFME)\n` +
+        `• **बैंक ऋण डीपीआर तैयारी** और संपार्श्विक-मुक्त मूल्यांकन नियम\n` +
+        `• **अनिवार्य लाइसेंस और पंजीकरण** (Udyam, GST, Shop Act, FSSAI)\n` +
+        `• **गो-टू-मार्केट रणनीतियां** (${location} हेतु)\n\n` +
+        `आज आप क्या जानना चाहेंगे?`;
+    } else if (language === 'bn') {
+      greetingText = `নমস্কার ${displayName}! আমি আপনার **উদ্যমসাথী এআই ব্যবসায়িক উপদেষ্টা**।\n\n` +
+        `আমি **${businessName}** (${sector} ক্ষেত্র, ${location}, **${stage}** পর্যায়)-এর জন্য আপনার প্রোফাইল লোড করেছি।\n\n` +
+        `আমি আপনাকে সাহায্য করতে পারি:\n` +
+        `• **সরকারি ভর্তুকি এবং প্রকল্পসমূহ** (PMEGP, Mudra, Stand-Up India, CGTMSE, PMFME)\n` +
+        `• **ব্যাংক লোন ডিপিআর প্রস্তুতি** এবং নিয়মাবলী\n` +
+        `• **বাধ্যতামূলক লাইসেন্স এবং নিবন্ধন** (Udyam, GST, Shop Act, FSSAI)\n` +
+        `• **বাজার কৌশল** (${location}-এর জন্য)\n\n` +
+        `আজ আপনি কী জানতে চান?`;
+    } else if (language === 'mr') {
+      greetingText = `नमस्ते ${displayName}! मी तुमचा **उद्यमसाथी एआय व्यावसायिक सल्लागार** आहे.\n\n` +
+        `मी **${businessName}** (${sector} क्षेत्र, ${location}, **${stage}** टप्पा) साठी तुमचे प्रोफाईल लोड केले आहे.\n\n` +
+        `मी तुम्हाला मदत करू शकतो:\n` +
+        `• **शासकीय योजना आणि अनुदान** (PMEGP, Mudra, CGTMSE इ.)\n` +
+        `• **बँक कर्ज डीपीआर निर्मिती**\n` +
+        `• **आवश्यक परवाने आणि नोंदणी**\n\n` +
+        `आज तुम्हाला कशाबद्दल मार्गदर्शन हवे आहे?`;
+    } else {
+      greetingText = `Namaste ${displayName}! I am your **UdyamSaathi AI Business Advisor**.\n\n` +
+        `I have loaded your enterprise profile for **${businessName}** in the **${sector}** sector (${location}, **${stage}** stage).\n\n` +
+        `I can help you navigate:\n` +
+        `• **Government Subsidies & Schemes** (PMEGP, Mudra, Stand-Up India, CGTMSE, PMFME)\n` +
+        `• **Bank Loan DPR Preparation** & collateral-free appraisal norms\n` +
+        `• **Mandatory Licenses & Registrations** (Udyam, GST, Shop Act, FSSAI)\n` +
+        `• **Go-to-market strategies** tailored for ${location}\n\n` +
+        `What would you like to explore today?`;
+    }
+
+    return {
+      id: 'msg_welcome',
+      sender: 'ai',
+      text: greetingText,
+      provider: 'UdyamSaathi Core Engine',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
   };
+
+  const initialGreeting = getInitialGreeting();
 
   const [messages, setMessages] = useState(() => {
     try {
@@ -118,7 +155,8 @@ export default function AdvisorPage() {
       const response = await sendAdvisorMessage({
         message: query,
         history: messages,
-        profile: business
+        profile: business,
+        preferredLanguage: language
       });
 
       const aiMsg = {
@@ -139,7 +177,7 @@ export default function AdvisorPage() {
       const errorMsg = {
         id: `ai_err_${Date.now()}`,
         sender: 'ai',
-        text: `I encountered an issue connecting to the AI inference engine. Please check your internet connection or try asking again.`,
+        text: t('advisor.errorMessage', 'I encountered an issue connecting to the AI inference engine. Please check your internet connection or try asking again.'),
         provider: 'System Fallback',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
@@ -168,10 +206,10 @@ export default function AdvisorPage() {
   };
 
   const suggestedPrompts = [
-    `Which government scheme offers the highest capital subsidy for ${businessName}?`,
-    `How much margin money will banks ask for under PMEGP or Mudra?`,
-    `What mandatory statutory licenses are required before I start operations?`,
-    `Can you review my DPR funding plan for ${finances.estimatedProjectCost || '₹3,00,000'} project cost?`
+    t('advisor.prompt1', `Which government scheme offers the highest capital subsidy for ${businessName}?`),
+    t('advisor.prompt2', `How much margin money will banks ask for under PMEGP or Mudra?`),
+    t('advisor.prompt3', `What mandatory statutory licenses are required before I start operations?`),
+    t('advisor.prompt4', `Can you review my DPR funding plan for ${finances.estimatedProjectCost || '₹3,00,000'} project cost?`)
   ];
 
   // Helper to render markdown-like formatting (bold, bullet points, headers)
@@ -247,15 +285,15 @@ export default function AdvisorPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-lg sm:text-xl font-black text-slate-900">
-                AI Business Advisor
+                {t('advisor.title', 'AI Business Advisor')}
               </h1>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1">
                 <Zap className="w-3 h-3 text-emerald-600" />
-                <span>Live Active</span>
+                <span>{t('advisor.liveActive', 'Live Active')}</span>
               </span>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
-              Personalized guidance on Indian MSME schemes, banking appraisal, and compliance.
+              {t('advisor.subtitle', 'Personalized guidance on Indian MSME schemes, banking appraisal, and compliance.')}
             </p>
           </div>
         </div>
@@ -263,14 +301,14 @@ export default function AdvisorPage() {
         <div className="flex items-center gap-2.5 self-end sm:self-center">
           <div className="flex items-center gap-1.5 text-xs text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200/70 font-semibold shadow-soft-xs">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span className="truncate max-w-[160px]">Active: {businessName}</span>
+            <span className="truncate max-w-[160px]">{t('advisor.active', 'Active')}: {businessName}</span>
           </div>
 
           <button
             type="button"
             onClick={handleResetChat}
-            title="Restart conversation"
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors"
+            title={t('advisor.restart', 'Restart conversation')}
+            className="p-2 rounded-xl text-slate-500 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer"
           >
             <RotateCcw className="w-4 h-4" />
           </button>
@@ -333,7 +371,7 @@ export default function AdvisorPage() {
             </div>
             <div className="bg-slate-50 border border-slate-200/80 rounded-2xl rounded-tl-none p-3.5 text-xs text-slate-600 flex items-center gap-2">
               <Loader2 className="w-4 h-4 text-emerald-600 animate-spin" />
-              <span>Analyzing enterprise parameters and generating response...</span>
+              <span>{t('advisor.analyzing', 'Analyzing enterprise parameters and generating response...')}</span>
             </div>
           </div>
         )}
@@ -343,7 +381,7 @@ export default function AdvisorPage() {
           <div className="pt-3 border-t border-slate-100 max-w-2xl space-y-2">
             <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1">
               <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
-              <span>Suggested Queries for {businessName} ({stage})</span>
+              <span>{t('advisor.suggestedQueries', 'Suggested Queries')} ({businessName})</span>
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {suggestedPrompts.map((prompt, idx) => (
@@ -351,7 +389,7 @@ export default function AdvisorPage() {
                   key={idx}
                   type="button"
                   onClick={() => handleSend(prompt)}
-                  className="p-3 text-left rounded-xl bg-slate-50 border border-slate-200/80 hover:bg-emerald-50 hover:border-emerald-200 text-xs text-slate-700 font-semibold transition-all shadow-2xs hover:-translate-y-0.5"
+                  className="p-3 text-left rounded-xl bg-slate-50 border border-slate-200/80 hover:bg-emerald-50 hover:border-emerald-200 text-xs text-slate-700 font-semibold transition-all shadow-2xs hover:-translate-y-0.5 cursor-pointer"
                 >
                   "{prompt}"
                 </button>
@@ -377,22 +415,22 @@ export default function AdvisorPage() {
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
             disabled={loading}
-            placeholder={`Ask anything about schemes, loans, licenses, or DPR for ${businessName}...`}
+            placeholder={t('advisor.inputPlaceholder', `Ask anything about schemes, loans, licenses, or DPR...`)}
             className="w-full pl-4 pr-24 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
           />
           <button
             type="submit"
             disabled={loading || !inputVal.trim()}
-            className="absolute right-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition-all shadow-soft-xs flex items-center gap-1.5"
+            className="absolute right-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition-all shadow-soft-xs flex items-center gap-1.5 cursor-pointer"
           >
-            <span>Ask</span>
+            <span>{t('advisor.ask', 'Ask')}</span>
             <Send className="w-3.5 h-3.5" />
           </button>
         </form>
 
         <div className="flex items-center justify-between px-2 pt-2 text-[10px] text-slate-400">
-          <span>⚡ Live engine: {activeProvider}</span>
-          <span>Zero hallucination policy • Grounded in Indian MSME regulations</span>
+          <span>⚡ {t('advisor.liveEngine', 'Live engine')}: {activeProvider}</span>
+          <span>{t('advisor.zeroHallucinationNotice', 'Zero hallucination policy • Grounded in Indian MSME regulations')}</span>
         </div>
       </div>
     </div>

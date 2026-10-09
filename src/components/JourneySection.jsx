@@ -15,9 +15,12 @@ import {
 import SectionHeader from './common/SectionHeader';
 import Badge from './common/Badge';
 import { journeyStages } from '../data/mockData';
+import { useLanguage } from '../context/LanguageContext';
+import { localizeBusinessValue } from '../i18n/platformTranslations';
 
 export default function JourneySection() {
   const [selectedStage, setSelectedStage] = useState(3); // Default to Stage 4 (index 3: Plan Funding)
+  const { t, language } = useLanguage();
 
   const icons = [
     Lightbulb,
@@ -39,9 +42,9 @@ export default function JourneySection() {
         
         {/* Section Header */}
         <SectionHeader
-          badge="The Unified Architecture"
-          title="One business journey. Everything connected."
-          subtitle="UdyamSaathi brings fragmented business support into one personalized journey."
+          badge={t('dashboard.enterpriseJourney', 'The Unified Architecture')}
+          title={t('dashboard.enterpriseJourney', 'One business journey. Everything connected.')}
+          subtitle={t('dashboard.enterpriseJourneyDesc', 'UdyamSaathi brings fragmented business support into one personalized journey.')}
           align="center"
         />
 
@@ -66,6 +69,7 @@ export default function JourneySection() {
               return (
                 <button
                   key={stage.id}
+                  type="button"
                   onClick={() => setSelectedStage(idx)}
                   className={`flex flex-col items-center text-center p-3.5 sm:p-4 rounded-2xl transition-all duration-200 border text-left focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
                     isSelected
@@ -75,39 +79,28 @@ export default function JourneySection() {
                       : 'bg-[#FBFBFA] border-slate-200/80 text-slate-600 hover:bg-slate-100/80'
                   }`}
                 >
-                  {/* Step Node */}
                   <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 transition-colors ${
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs mb-2.5 transition-colors ${
                       isSelected
-                        ? 'bg-emerald-500 text-slate-950 font-bold shadow-soft-sm'
+                        ? 'bg-emerald-500 text-slate-950'
                         : isPast
                         ? 'bg-emerald-600 text-white'
-                        : 'bg-white border border-slate-200 text-slate-700'
+                        : 'bg-white text-slate-600 border border-slate-200'
                     }`}
                   >
-                    {isPast ? (
-                      <Check className="w-5 h-5 stroke-[2.5]" />
-                    ) : (
-                      <Icon className="w-5 h-5" />
-                    )}
+                    {isPast ? <Check className="w-4 h-4 stroke-[3]" /> : <Icon className="w-4 h-4" />}
                   </div>
 
-                  {/* Stage Code */}
-                  <span
-                    className={`text-[10px] font-bold tracking-wider uppercase ${
-                      isSelected ? 'text-emerald-400' : 'text-slate-500'
-                    }`}
-                  >
-                    Stage 0{idx + 1}
+                  <span className={`text-[10px] font-extrabold uppercase tracking-wider block mb-1 ${
+                    isSelected ? 'text-emerald-400' : 'text-slate-400'
+                  }`}>
+                    {t('dashboard.stageOf', 'Stage')} {idx + 1}
                   </span>
 
-                  {/* Stage Title */}
-                  <span
-                    className={`text-xs sm:text-sm font-bold mt-1 line-clamp-2 ${
-                      isSelected ? 'text-white' : 'text-slate-900'
-                    }`}
-                  >
-                    {stage.code}
+                  <span className={`text-xs font-bold leading-tight line-clamp-2 ${
+                    isSelected ? 'text-white' : 'text-slate-800'
+                  }`}>
+                    {localizeBusinessValue(stage.title, language)}
                   </span>
                 </button>
               );
@@ -116,82 +109,46 @@ export default function JourneySection() {
 
         </div>
 
-        {/* Dynamic Detail Card for Selected Milestone */}
-        <div className="mt-8 bg-slate-50 border border-slate-200/90 rounded-2xl p-6 sm:p-8 transition-all">
+        {/* Dynamic Detail Card for Selected Stage */}
+        <div className="mt-8 bg-sand/30 border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-soft-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
             
-            <div className="lg:col-span-7">
-              <div className="flex items-center gap-2 mb-3">
-                <Badge variant={selectedStage <= 3 ? "growth" : "neutral"} size="sm">
-                  {selectedStage <= 2 ? "Completed in Profile" : selectedStage === 3 ? "Active Milestone" : "Next Milestone"}
+            <div className="lg:col-span-8 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                  {t('dashboard.stageOf', 'Stage')} {selectedStage + 1}: {localizeBusinessValue(currentStage.title, language)}
+                </span>
+                <Badge variant="growth" size="sm">
+                  {t('common.active', 'Active Module')}
                 </Badge>
-                <span className="text-xs text-slate-400 font-medium">Stage {selectedStage + 1} of 6</span>
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-                {currentStage.code} — <span className="text-emerald-700 font-medium">{currentStage.tagline}</span>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900">
+                {localizeBusinessValue(currentStage.tagline || currentStage.title, language)}
               </h3>
 
-              <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
-                {currentStage.description}
+              <p className="text-sm text-slate-600 leading-relaxed">
+                {localizeBusinessValue(currentStage.description, language)}
               </p>
 
-              {/* Real entrepreneur context */}
-              <div className="mt-4 p-4 rounded-xl bg-white border border-slate-200/80 flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5">
-                  <Sparkles className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="text-xs font-bold text-slate-900 uppercase tracking-wide block">
-                    Real Journey Example (Sita's Micro-Unit):
-                  </span>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
-                    {currentStage.sitaContext}
-                  </p>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                {(currentStage.deliverables || []).map((item, idx) => (
+                  <div key={idx} className="bg-white p-3 rounded-xl border border-slate-200/80 text-xs text-slate-700 font-medium flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>{localizeBusinessValue(item, language)}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="lg:col-span-5 bg-white p-5 rounded-xl border border-slate-200/80 shadow-soft-sm flex flex-col justify-between">
-              <div>
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                  Current Action Output
-                </span>
-                <h4 className="text-base font-bold text-slate-900 mt-1">
-                  {currentStage.action}
-                </h4>
-                <div className="mt-3 space-y-2 text-xs text-slate-600">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Deterministic rule evaluation</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Official portal criteria mapped</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Zero jargon explanation</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
-                <button
-                  onClick={() => setSelectedStage((prev) => (prev + 1) % journeyStages.length)}
-                  className="text-xs font-semibold text-slate-600 hover:text-slate-900 inline-flex items-center gap-1"
-                >
-                  <span>Inspect Next Stage</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-                <a
-                  href="#features"
-                  className="px-3.5 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-soft-sm transition-colors inline-flex items-center gap-1"
-                >
-                  <span>Explore Intelligence</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </a>
-              </div>
+            <div className="lg:col-span-4 flex flex-col items-center sm:items-end justify-center">
+              <a
+                href="/signup"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-soft-sm transition-all"
+              >
+                <span>{t('landing.startJourney', 'Unlock This Stage')}</span>
+                <ArrowRight className="w-4 h-4" />
+              </a>
             </div>
 
           </div>

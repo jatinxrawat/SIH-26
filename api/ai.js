@@ -1,7 +1,33 @@
 /**
  * Vercel Serverless Function for /api/ai
- * Provides server-side Gemini/Grok calls in deployed environments.
+ * Provides server-side Gemini/Grok calls with strict multilingual enforcement.
  */
+
+const LANGUAGE_MAP = {
+  en: { name: 'English', native: 'English', script: 'Latin' },
+  hi: { name: 'Hindi', native: 'हिन्दी', script: 'Devanagari' },
+  mr: { name: 'Marathi', native: 'मराठी', script: 'Devanagari' },
+  bn: { name: 'Bengali', native: 'বাংলা', script: 'Bengali' },
+  gu: { name: 'Gujarati', native: 'ગુજરાતી', script: 'Gujarati' },
+  ta: { name: 'Tamil', native: 'தமிழ்', script: 'Tamil' },
+  te: { name: 'Telugu', native: 'తెలుగు', script: 'Telugu' },
+  kn: { name: 'Kannada', native: 'ಕನ್ನಡ', script: 'Kannada' },
+  ml: { name: 'Malayalam', native: 'മലയാളം', script: 'Malayalam' },
+  pa: { name: 'Punjabi', native: 'ਪੰਜਾਬੀ', script: 'Gurmukhi' },
+  or: { name: 'Odia', native: 'ଓଡ଼ିଆ', script: 'Odia' },
+  as: { name: 'Assamese', native: 'অসমীয়া', script: 'Bengali-Assamese' },
+  ur: { name: 'Urdu', native: 'اردو', script: 'Perso-Arabic' },
+  sa: { name: 'Sanskrit', native: 'संस्कृतम्', script: 'Devanagari' },
+  mai: { name: 'Maithili', native: 'मैथिली', script: 'Devanagari' },
+  ne: { name: 'Nepali', native: 'नेपाली', script: 'Devanagari' },
+  kok: { name: 'Konkani', native: 'कोंकणी', script: 'Devanagari' },
+  sd: { name: 'Sindhi', native: 'सिंधी', script: 'Devanagari/Arabic' },
+  ks: { name: 'Kashmiri', native: 'कॉशुर', script: 'Perso-Arabic/Devanagari' },
+  doi: { name: 'Dogri', native: 'डोगरी', script: 'Devanagari' },
+  mni: { name: 'Manipuri', native: 'মৈতৈলোন্', script: 'Bengali' },
+  brx: { name: 'Bodo', native: 'बड़ो', script: 'Devanagari' },
+  sat: { name: 'Santali', native: 'ᱥᱟᱱᱛᱟᱲᱤ', script: 'Ol Chiki' }
+};
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -12,12 +38,19 @@ export default async function handler(req, res) {
   const grokKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
 
   try {
-    const { provider, task, context, question, messages, type } = req.body || {};
+    const { provider, task, context, question, messages, type, preferredLanguage: bodyLang } = req.body || {};
+    const langCode = bodyLang || context?.preferredLanguage || 'en';
+    const langInfo = LANGUAGE_MAP[langCode] || LANGUAGE_MAP.en;
+
     const businessName = context?.businessName || context?.name || 'Your Business';
     const sector = context?.sector || 'General';
     const companyDescription = context?.businessDescription || context?.description || context?.productService || context?.domainTitle || '';
     const targetCustomers = context?.targetCustomers || context?.targetAudience || '';
     const taskTitle = task?.title || 'this task';
+
+    const langDirective = langCode !== 'en'
+      ? `\n\nCRITICAL LANGUAGE INSTRUCTION:\nThe user has selected ${langInfo.name} (${langInfo.native}, code: ${langCode}, script: ${langInfo.script}) as their language.\nYou MUST write your entire response, including all explanations, steps, warnings, document names, and headings, strictly in ${langInfo.name} using natural native phrasing.\nKeep standard government scheme acronyms (PMEGP, Mudra, Udyam, CGTMSE, GST, PAN, FSSAI) and numerical figures with currency (₹) legible.\nDo NOT mix English sentences into the output.`
+      : '';
 
     // --- A. Conversational Chat Mode for AI Advisor ---
     if (type === 'chat' || messages || (!task && question)) {
@@ -39,8 +72,8 @@ Guidelines:
 - Provide actionable, factual advice tailored specifically to this business in India.
 - Cite relevant government programs with official subsidy/guarantee terms (e.g. PMEGP 25-35% capital subsidy, Mudra loan up to ₹10L, CGTMSE collateral-free guarantee, Stand-Up India, PMFME 35% credit-linked subsidy).
 - Highlight statutory steps (Udyam, GST, Shop & Establishment, FSSAI) and bank DPR norms.
-- Warn against middlemen fees and unverified external agents.${context?.preferredLanguage && context.preferredLanguage !== 'en' ? `\n- The user's preferred official Indian language is language code "${context.preferredLanguage}". Respond fluently in this language (using natural native phrasing) while keeping official scheme acronyms (PMEGP, Mudra, Udyam, CGTMSE) recognizable.` : ''}
-- Format with clean markdown: bold headings, bullet points, and actionable next steps.`;
+- Warn against middlemen fees and unverified external agents.
+- Format with clean markdown: bold headings, bullet points, and actionable next steps.${langDirective}`;
 
       if (activeGroqKey) {
         try {
@@ -130,16 +163,16 @@ Guidelines:
 Business: ${businessName} (${sector}, ${context?.location || 'India'}).
 Topic: ${taskTitle}.
 Context Details: ${JSON.stringify(context?.financials || {})}.
-User Question: ${question || 'How should I structure my finances?'}.
+User Question: ${question || 'How should I structure my finances?'}.${langDirective}
 
 Provide a response in JSON format with exactly these keys:
 {
-  "answer": "Clear, encouraging, jargon-free explanation grounded strictly in the provided figures",
-  "why": "Financial context or reason for this structure",
-  "whatToDo": ["Key insight 1", "Key insight 2", "Key insight 3"],
-  "documents": "Mandatory financial documents or 'None required'",
-  "nextStep": "Recommended next financial step",
-  "warnings": "Important financial or compliance risk to avoid"
+  "answer": "Clear, encouraging explanation grounded strictly in the provided figures in ${langInfo.name}",
+  "why": "Financial context or reason for this structure in ${langInfo.name}",
+  "whatToDo": ["Key insight 1 in ${langInfo.name}", "Key insight 2 in ${langInfo.name}", "Key insight 3 in ${langInfo.name}"],
+  "documents": "Mandatory financial documents or 'None required' in ${langInfo.name}",
+  "nextStep": "Recommended next financial step in ${langInfo.name}",
+  "warnings": "Important financial or compliance risk in ${langInfo.name}"
 }`
           : `You are an expert AI Business Advisor for an Indian micro-enterprise entrepreneur.
 Business Name: ${businessName}
@@ -149,18 +182,18 @@ Target Customers: ${targetCustomers || 'Local buyers'}
 Registered Sector: ${sector}
 Current Task: ${taskTitle}.
 Context: ${JSON.stringify(task || {})}.
-User Question: ${question || 'How do I complete this task efficiently?'}.
+User Question: ${question || 'How do I complete this task efficiently?'}.${langDirective}
 
 Important instruction: Base your advice strictly on what this company actually makes and does (${companyDescription || sector}). Do NOT make generic assumptions or confuse their trade with unrelated sectors.
 
 Provide a response in JSON format with exactly these keys:
 {
-  "answer": "Clear, jargon-free summary answering the question tailored to what this company actually does",
-  "why": "Why this task is critical for this specific business",
-  "whatToDo": ["Step 1", "Step 2", "Step 3", "Step 4"],
-  "documents": "Mandatory documents or 'None required'",
-  "nextStep": "What unlocking happens next",
-  "warnings": "Important warning or compliance trap to avoid"
+  "answer": "Clear, summary answering the question tailored to what this company actually does in ${langInfo.name}",
+  "why": "Why this task is critical for this specific business in ${langInfo.name}",
+  "whatToDo": ["Step 1 in ${langInfo.name}", "Step 2 in ${langInfo.name}", "Step 3 in ${langInfo.name}", "Step 4 in ${langInfo.name}"],
+  "documents": "Mandatory documents in ${langInfo.name}",
+  "nextStep": "What unlocking happens next in ${langInfo.name}",
+  "warnings": "Important warning or compliance trap in ${langInfo.name}"
 }`;
 
         const geminiRes = await fetch(
@@ -196,16 +229,16 @@ Provide a response in JSON format with exactly these keys:
           ? `${systemRole}
 Business: ${businessName} (${sector}, ${context?.location || 'India'}).
 Grounded Financial Calculations: ${JSON.stringify(context?.financials || {})}.
-User Question: ${question || 'How should I structure my finances?'}.
+User Question: ${question || 'How should I structure my finances?'}.${langDirective}
 
 Respond ONLY with valid JSON containing:
 {
-  "answer": "Clear, encouraging, jargon-free explanation grounded strictly in the provided figures (e.g. loan amount, margin, interest, repayment)",
-  "why": "Financial context or reason for this structure",
-  "whatToDo": ["Key insight 1", "Key insight 2", "Key insight 3"],
-  "documents": "Mandatory financial documents or 'None required'",
-  "nextStep": "Recommended next financial step",
-  "warnings": "Important financial or compliance risk to avoid"
+  "answer": "Clear, encouraging explanation grounded strictly in the provided figures in ${langInfo.name}",
+  "why": "Financial context or reason in ${langInfo.name}",
+  "whatToDo": ["Key insight 1 in ${langInfo.name}", "Key insight 2 in ${langInfo.name}", "Key insight 3 in ${langInfo.name}"],
+  "documents": "Mandatory financial documents in ${langInfo.name}",
+  "nextStep": "Recommended next financial step in ${langInfo.name}",
+  "warnings": "Important financial risk in ${langInfo.name}"
 }`
           : `You are an expert Indian MSME & startup advisor.
 Business Name: ${businessName}
@@ -215,18 +248,18 @@ Target Customers: ${targetCustomers || 'Local buyers'}
 Registered Sector: ${sector}
 Current Task: ${taskTitle}.
 Context: ${JSON.stringify(task || {})}.
-Question: ${question || 'How do I execute this task step-by-step?'}.
+Question: ${question || 'How do I execute this task step-by-step?'}.${langDirective}
 
-Important instruction: Base your advice strictly on what this company actually makes and does (${companyDescription || sector}). Do NOT make generic assumptions or confuse their trade with unrelated sectors.
+Important instruction: Base your advice strictly on what this company actually makes and does (${companyDescription || sector}).
 
 Respond ONLY with valid JSON containing:
 {
-  "answer": "Concise, actionable advice tailored to what this company actually makes and provides",
-  "why": "Why this specific step is critical for bank credit or government compliance for this exact business",
-  "whatToDo": ["Step 1", "Step 2", "Step 3", "Step 4"],
-  "documents": "Mandatory paperwork or 'None required'",
-  "nextStep": "What will be unlocked next",
-  "warnings": "Common fraud, agent fee, or compliance trap to avoid"
+  "answer": "Concise, actionable advice tailored to what this company makes in ${langInfo.name}",
+  "why": "Why this specific step is critical for bank credit or government compliance in ${langInfo.name}",
+  "whatToDo": ["Step 1 in ${langInfo.name}", "Step 2 in ${langInfo.name}", "Step 3 in ${langInfo.name}", "Step 4 in ${langInfo.name}"],
+  "documents": "Mandatory paperwork in ${langInfo.name}",
+  "nextStep": "What will be unlocked next in ${langInfo.name}",
+  "warnings": "Common fraud or agent fee to avoid in ${langInfo.name}"
 }`;
 
         const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -237,9 +270,9 @@ Respond ONLY with valid JSON containing:
           },
           body: JSON.stringify({
             model: 'groq/compound-mini',
-            max_tokens: 500,
+            max_tokens: 600,
             messages: [
-              { role: 'system', content: isFunding ? 'You are an expert MSME Financial Advisor. Always respond in valid JSON format.' : 'You are an expert MSME Business Advisor on Indian government schemes and compliance. Always respond in valid JSON format.' },
+              { role: 'system', content: isFunding ? `You are an expert MSME Financial Advisor. Always respond in valid JSON format.${langDirective}` : `You are an expert MSME Business Advisor on Indian government schemes. Always respond in valid JSON format.${langDirective}` },
               { role: 'user', content: prompt }
             ],
             response_format: { type: 'json_object' }
@@ -261,62 +294,152 @@ Respond ONLY with valid JSON containing:
 
     // Default structured response
     let structured;
+    const fin = context?.financials || {};
+    const costFormatted = `₹${(fin.projectCost || 1000000).toLocaleString('en-IN')}`;
+    const marginFormatted = `₹${(fin.availableMargin || 100000).toLocaleString('en-IN')}`;
+    const loanFormatted = `₹${(fin.potentialLoan || 900000).toLocaleString('en-IN')}`;
+    const installmentFormatted = `₹${(fin.periodicInstallment || 42291).toLocaleString('en-IN')}`;
+
     if (isFunding) {
-      const fin = context?.financials || {};
-      const qLower = (question || '').toLowerCase();
-      let answer = `Under the configured financial structuring framework, your available margin of ₹${(fin.availableMargin || 100000).toLocaleString('en-IN')} supports an indicative project outlay of ₹${(fin.projectCost || 1000000).toLocaleString('en-IN')}. This qualifies you for the ${fin.fundingTier || 'Term Loan Scheme'} with potential financing of up to ₹${(fin.potentialLoan || 900000).toLocaleString('en-IN')} at ${fin.interestRate || 8}% p.a. over ${fin.tenureYears || 7} years.`;
-
-      if (qLower.includes('afford')) {
-        answer = `Based on your numbers, your available margin of ₹${(fin.availableMargin || 100000).toLocaleString('en-IN')} supports an indicative ₹${(fin.projectCost || 1000000).toLocaleString('en-IN')} project. With an estimated ${fin.repaymentFrequency || 'quarterly'} repayment of ₹${(fin.periodicInstallment || 42291).toLocaleString('en-IN')} (~₹${(fin.monthlyEquivalent || 14097).toLocaleString('en-IN')}/mo) and a projected monthly surplus of ₹${(fin.monthlySurplus || 55000).toLocaleString('en-IN')}, your repayment coverage ratio is approximately ${fin.coverageRatio || 3.9}x (Comfortable).`;
-      } else if (qLower.includes('how much should i borrow') || qLower.includes('how much to borrow')) {
-        answer = `For a project cost of ₹${(fin.projectCost || 1000000).toLocaleString('en-IN')}, your maximum potential loan is ₹${(fin.potentialLoan || 900000).toLocaleString('en-IN')} (90% debt financing). However, prudent practice advises borrowing only what is strictly required for essential machinery and 2-3 months of working capital to keep your debt service burden low.`;
-      } else if (qLower.includes('tier') || qLower.includes('why')) {
-        answer = `Your project outlay of ₹${(fin.projectCost || 1000000).toLocaleString('en-IN')} falls into the ${fin.fundingTier || 'Term Loan Scheme'} (for projects between ₹1.40 Lakh and ₹50 Lakh). This tier provides an 8.0% p.a. interest rate, a 7-year repayment tenure, and a 6-month moratorium grace period.`;
-      } else if (qLower.includes('repay')) {
-        answer = `For a potential loan of ₹${(fin.potentialLoan || 900000).toLocaleString('en-IN')} at ${fin.interestRate || 8}% p.a., your estimated ${fin.repaymentFrequency || 'quarterly'} installment is ₹${(fin.periodicInstallment || 42291).toLocaleString('en-IN')}. Over ${fin.tenureYears || 7} years, your estimated total repayment is ₹${(fin.totalRepayment || 1184148).toLocaleString('en-IN')}, including ₹${(fin.totalInterest || 284148).toLocaleString('en-IN')} in interest.`;
-      } else if (qLower.includes('moratorium')) {
-        answer = `During the ${fin.moratoriumMonths || 6}-month moratorium grace period, no principal repayments are due. Regular repayments of ₹${(fin.periodicInstallment || 42291).toLocaleString('en-IN')} commence from Month ${(fin.moratoriumMonths || 6) + 1}.`;
-      } else if (qLower.includes('reduce')) {
-        answer = `You can reduce your debt requirement by: 1) Stacking government capital subsidies like PMEGP (15-35% subsidy) or PMFME (35% grant up to ₹10L); 2) Contributing higher promoter margin above 10%; and 3) Phasing machinery purchases.`;
-      } else if (qLower.includes('working capital')) {
-        answer = `For your venture, we recommend keeping an illustrative working capital reserve of ₹${(fin.workingCapitalReserve || 130000).toLocaleString('en-IN')} (2 months of operating expenses) to safeguard against payment delays.`;
-      } else if (qLower.includes('50,000') || qLower.includes('50000')) {
-        answer = `With ₹50,000 margin, under the 10% model your feasible project cost becomes ₹5,00,000, with potential financing of ₹4,50,000 under the Term Loan Scheme (8% p.a., 7 years tenure, 6 months moratorium).`;
+      if (langCode === 'hi') {
+        structured = {
+          answer: `आपके उपलब्ध मार्जिन ${marginFormatted} के आधार पर, 10% प्रमोटर मार्जिन मॉडल के तहत आपकी परियोजना लागत ${costFormatted} बनती है। आप ${fin.fundingTier || 'टर्म लोन योजना'} के लिए पात्र हैं जिसमें ${loanFormatted} तक का ऋण ${fin.interestRate || 8}% प्रति वर्ष की दर से ${fin.tenureYears || 7} वर्षों के लिए उपलब्ध हो सकता है।`,
+          why: `यह संरचना आपके ${fin.fundingTier || 'टर्म लोन'} के निर्धारित मापदंडों के अनुसार तैयार की गई है।`,
+          whatToDo: [
+            `परियोजना व्यय: ${costFormatted}`,
+            `संभावित ऋण राशि: ${loanFormatted}`,
+            `अनुमानित किस्त: ${installmentFormatted} (${fin.repaymentFrequency || 'त्रैमासिक'})`
+          ],
+          documents: 'विस्तृत परियोजना रिपोर्ट (DPR), मशीनरी कोटेशन, उद्यम पंजीकरण',
+          nextStep: 'विक्रेताओं से कोटेशन एकत्र करें और उद्यम पोर्टल पर पंजीकरण करें',
+          warnings: 'ऋण आंकड़े सांकेतिक हैं। अंतिम स्वीकृति बैंक द्वारा परियोजना मूल्यांकन पर निर्भर करेगी।',
+          source: 'Saathi Strategic Intelligence',
+          isLive: false
+        };
+      } else if (langCode === 'mr') {
+        structured = {
+          answer: `तुमच्या उपलब्ध भांडवल ${marginFormatted} नुसार, १०% प्रमोटर मार्जिन मॉडेलनुसार तुमचा प्रकल्प खर्च ${costFormatted} ठरतो. तुम्ही ${fin.fundingTier || 'मुदत कर्ज योजना'} साठी पात्र आहात ज्यात ${loanFormatted} पर्यंतचे कर्ज ${fin.interestRate || 8}% वार्षिक दराने ${fin.tenureYears || 7} वर्षांसाठी मिळू शकते.`,
+          why: `ही रचना तुमच्या ${fin.fundingTier || 'मुदत कर्ज'} निकषांनुसार तयार करण्यात आली आहे.`,
+          whatToDo: [
+            `प्रकल्प खर्च: ${costFormatted}`,
+            `संभाव्य कर्ज: ${loanFormatted}`,
+            `अंदाजे हप्ता: ${installmentFormatted} (${fin.repaymentFrequency || 'त्रैमासिक'})`
+          ],
+          documents: 'सविस्तर प्रकल्प अहवाल (DPR), मशिनरी कोटेशन, उद्यम नोंदणी',
+          nextStep: 'विक्रेत्यांकडून कोटेशन गोळा करा आणि उद्यम पोर्टलवर नोंदणी करा',
+          warnings: 'कर्जाचे आकडे अंदाजे आहेत. अंतिम मंजुरी बँकेच्या मूल्यांकनावर अवलंबून असेल.',
+          source: 'Saathi Strategic Intelligence',
+          isLive: false
+        };
+      } else if (langCode === 'bn') {
+        structured = {
+          answer: `আপনার উপলব্ধ মার্জিন ${marginFormatted}-এর ভিত্তিতে, ১০% প্রবর্তক মার্জিন মডেলে আপনার প্রকল্প ব্যয় হয় ${costFormatted}। আপনি ${fin.fundingTier || 'মেয়াদী ঋণ প্রকল্প'}-এর জন্য যোগ্য যাতে ${fin.tenureYears || 7} বছরের জন্য ${fin.interestRate || 8}% বার্ষিক হারে ${loanFormatted} পর্যন্ত ঋণ পেতে পারেন।`,
+          why: `এই কাঠামোটি আপনার ${fin.fundingTier || 'মেয়াদী ঋণ'} পরামিতির সাথে সরাসরি সংগতিপূর্ণ।`,
+          whatToDo: [
+            `প্রকল্প ব্যয়: ${costFormatted}`,
+            `সম্ভাব্য ঋণ: ${loanFormatted}`,
+            `আনুমানিক কিস্তি: ${installmentFormatted} (${fin.repaymentFrequency || 'ত্রৈমাসিক'})`
+          ],
+          documents: 'বিস্তারিত প্রকল্প রিপোর্ট (DPR), যন্ত্রপাতির কোটেশন, উদ্যম নিবন্ধন',
+          nextStep: 'বিক্রেতাদের কাছ থেকে কোটেশন সংগ্রহ করুন এবং উদ্যম পোর্টালে নিবন্ধন করুন',
+          warnings: 'ঋণের পরিসংখ্যান নির্দেশক। চূড়ান্ত অনুমোদন ব্যাংকের মূল্যায়নের উপর নির্ভর করবে।',
+          source: 'Saathi Strategic Intelligence',
+          isLive: false
+        };
+      } else {
+        structured = {
+          answer: `Under the configured financial model, your available margin of ${marginFormatted} supports an indicative project outlay of ${costFormatted}. This qualifies you for the ${fin.fundingTier || 'Term Loan Scheme'} with potential financing of up to ${loanFormatted} at ${fin.interestRate || 8}% p.a. over ${fin.tenureYears || 7} years.`,
+          why: `Structured under configured ${fin.fundingTier || 'Term Loan'} parameters.`,
+          whatToDo: [
+            `Project Outlay: ${costFormatted}`,
+            `Potential Loan: ${loanFormatted}`,
+            `Repayment: ${installmentFormatted} (${fin.repaymentFrequency || 'quarterly'})`
+          ],
+          documents: 'Detailed Project Report (DPR), quotation for machinery, Udyam registration',
+          nextStep: 'Consolidate vendor quotations and register on Udyam portal',
+          warnings: 'Loan figures are estimates based on scheme parameters. Sanction is subject to bank underwriting.',
+          source: 'Saathi Strategic Intelligence',
+          isLive: false
+        };
       }
-
-      structured = {
-        answer,
-        why: `Structured under configured ${fin.fundingTier || 'Term Loan'} institutional parameters.`,
-        whatToDo: [
-          `Project Outlay: ₹${(fin.projectCost || 1000000).toLocaleString('en-IN')}`,
-          `Potential Loan: ₹${(fin.potentialLoan || 900000).toLocaleString('en-IN')}`,
-          `Repayment: ₹${(fin.periodicInstallment || 42291).toLocaleString('en-IN')} (${fin.repaymentFrequency || 'quarterly'})`
-        ],
-        documents: 'Detailed Project Report (DPR), quotation for machinery, Udyam registration',
-        nextStep: 'Consolidate vendor quotations and register on Udyam portal',
-        warnings: 'Loan figures are estimates based on scheme parameters. Sanction is subject to bank underwriting.',
-        source: 'Saathi Strategic Intelligence',
-        isLive: false
-      };
     } else {
-      structured = {
-        answer: `For ${businessName} in ${sector}, executing "${taskTitle}" establishes verifiable traction required by banks and government schemes.`,
-        why: task?.whyThisMatters || 'Essential for mitigating risk and meeting official underwriting standards.',
-        whatToDo: task?.whatToDo || [
-          `Define specific parameters for ${taskTitle}.`,
-          'Verify against local government guidelines or bank appraisal forms.',
-          'Record evidence in UdyamSaathi to unlock subsequent milestones.'
-        ],
-        documents: task?.requiredDocuments?.length > 0
-          ? `Required: ${task.requiredDocuments.join(', ')}`
-          : 'No statutory attachments required.',
-        nextStep: task?.unlocks?.length > 0
-          ? `Completing this unlocks: ${task.unlocks.join(', ')}`
-          : 'Proceed to next milestone in roadmap.',
-        warnings: 'Never pay intermediaries for free central government registrations (Udyam, FoSCoS).',
-        source: provider === 'gemini' ? 'Saathi Strategic Intelligence' : 'Saathi Tactical Action Engine',
-        isLive: Boolean((provider === 'gemini' && geminiKey) || (provider === 'grok' && grokKey))
-      };
+      if (langCode === 'hi') {
+        structured = {
+          answer: `${sector} क्षेत्र में ${businessName} के लिए "${taskTitle}" को पूरा करना बैंकों और सरकारी योजनाओं के लिए आवश्यक प्रमाण स्थापित करता है।`,
+          why: task?.whyThisMatters || 'जोखिम कम करने और सरकारी मानकों को पूरा करने के लिए यह कदम अनिवार्य है।',
+          whatToDo: [
+            `"${taskTitle}" के लिए विशिष्ट आवश्यकताएं निर्धारित करें।`,
+            'स्थानीय सरकारी दिशानिर्देशों या बैंक मूल्यांकन प्रपत्रों के अनुसार सत्यापन करें।',
+            'रोडमॅप में अगले चरण को अनलॉक करने के लिए उद्यमसाथी में जानकारी दर्ज करें।'
+          ],
+          documents: task?.requiredDocuments?.length > 0
+            ? `आवश्यक दस्तावेज: ${task.requiredDocuments.join(', ')}`
+            : 'किसी विशेष वैधानिक दस्तावेज की आवश्यकता नहीं है।',
+          nextStep: task?.unlocks?.length > 0
+            ? `इसे पूरा करने पर अनलॉक होगा: ${task.unlocks.join(', ')}`
+            : 'रोडमॅप के अगले मील के पत्थर पर आगे बढ़ें।',
+          warnings: 'मुफ्त सरकारी पंजीकरणों (उद्यम, FoSCoS) के लिए कभी भी दलालों को पैसे न दें।',
+          source: provider === 'gemini' ? 'Saathi Strategic Intelligence' : 'Saathi Tactical Action Engine',
+          isLive: false
+        };
+      } else if (langCode === 'mr') {
+        structured = {
+          answer: `${sector} क्षेत्रातील ${businessName} साठी "${taskTitle}" पूर्ण केल्याने बँक आणि शासकीय योजनांसाठी आवश्यक पडताळणी पूर्ण होते.`,
+          why: task?.whyThisMatters || 'जोखीम कमी करण्यासाठी आणि अधिकृत मानकांची पूर्तता करण्यासाठी हे आवश्यक आहे.',
+          whatToDo: [
+            `"${taskTitle}" साठी आवश्यक बाबी निश्चित करा.`,
+            'स्थानिक शासकीय मार्गदर्शक तत्त्वांचे पालन करून पडताळणी करा.',
+            'पुढील टप्पा अनलॉक करण्यासाठी उद्यमसाथीमध्ये नोंदी ठेवा.'
+          ],
+          documents: task?.requiredDocuments?.length > 0
+            ? `आवश्यक कागदपत्रे: ${task.requiredDocuments.join(', ')}`
+            : 'कोणत्याही विशेष कागदपत्रांची आवश्यकता नाही.',
+          nextStep: task?.unlocks?.length > 0
+            ? `हे पूर्ण केल्यावर अनलॉक होईल: ${task.unlocks.join(', ')}`
+            : 'पुढील टप्प्याकडे वाटचाल करा.',
+          warnings: 'विनामूल्य सरकारी नोंदणीसाठी (उद्यम, FoSCoS) कधीही दलालांना पैसे देऊ नका.',
+          source: provider === 'gemini' ? 'Saathi Strategic Intelligence' : 'Saathi Tactical Action Engine',
+          isLive: false
+        };
+      } else if (langCode === 'bn') {
+        structured = {
+          answer: `${sector} খাতে ${businessName}-এর জন্য "${taskTitle}" সম্পন্ন করা ব্যাংক ও সরকারি প্রকল্পের জন্য প্রয়োজনীয় ট্র্যাকশন স্থাপন করে।`,
+          why: task?.whyThisMatters || 'ঝুঁকি হ্রাস এবং সরকারি মূল্যায়ন মান পূরণের জন্য এটি অপরিহার্য।',
+          whatToDo: [
+            `"${taskTitle}"-এর জন্য নির্দিষ্ট মানদণ্ড নির্ধারণ করুন।`,
+            'স্থানীয় সরকারি নির্দেশিকা বা ব্যাংক মূল্যায়ন ফর্ম যাচাই করুন।',
+            'পরবর্তী ধাপ আনলক করতে উদ্যমসাথীতে তথ্য লিপিবদ্ধ করুন।'
+          ],
+          documents: task?.requiredDocuments?.length > 0
+            ? `প্রয়োজনীয় নথিপত্র: ${task.requiredDocuments.join(', ')}`
+            : 'কোনো বিধিবদ্ধ সংযুক্তি প্রয়োজন নেই।',
+          nextStep: task?.unlocks?.length > 0
+            ? `এটি সম্পন্ন করলে আনলক হবে: ${task.unlocks.join(', ')}`
+            : 'রোডম্যাপের পরবর্তী মাইলফলকে এগিয়ে যান।',
+          warnings: 'বিনামূল্যের সরকারি নিবন্ধনের (উদ্যম, FoSCoS) জন্য কখনই মধ্যস্বত্বভোগীদের অর্থ প্রদান করবেন না।',
+          source: provider === 'gemini' ? 'Saathi Strategic Intelligence' : 'Saathi Tactical Action Engine',
+          isLive: false
+        };
+      } else {
+        structured = {
+          answer: `For ${businessName} in ${sector}, executing "${taskTitle}" establishes verifiable traction required by banks and government schemes.`,
+          why: task?.whyThisMatters || 'Essential for mitigating risk and meeting official underwriting standards.',
+          whatToDo: task?.whatToDo || [
+            `Define specific parameters for ${taskTitle}.`,
+            'Verify against local government guidelines or bank appraisal forms.',
+            'Record evidence in UdyamSaathi to unlock subsequent milestones.'
+          ],
+          documents: task?.requiredDocuments?.length > 0
+            ? `Required: ${task.requiredDocuments.join(', ')}`
+            : 'No statutory attachments required.',
+          nextStep: task?.unlocks?.length > 0
+            ? `Completing this unlocks: ${task.unlocks.join(', ')}`
+            : 'Proceed to next milestone in roadmap.',
+          warnings: 'Never pay intermediaries for free central government registrations (Udyam, FoSCoS).',
+          source: provider === 'gemini' ? 'Saathi Strategic Intelligence' : 'Saathi Tactical Action Engine',
+          isLive: false
+        };
+      }
     }
 
     return res.status(200).json({ success: true, structured });
